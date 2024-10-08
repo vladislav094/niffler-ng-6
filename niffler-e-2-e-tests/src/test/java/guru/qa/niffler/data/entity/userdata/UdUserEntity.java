@@ -1,7 +1,7 @@
 package guru.qa.niffler.data.entity.userdata;
 
 import guru.qa.niffler.model.CurrencyValues;
-import guru.qa.niffler.model.UdUserJson;
+import guru.qa.niffler.model.UserdataUserJson;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,7 +20,7 @@ public class UdUserEntity {
     private byte[] photoSmall;
     private String fullname;
 
-    public static UdUserEntity fromJson(UdUserJson json) {
+    public static UdUserEntity fromJson(UserdataUserJson json) {
         UdUserEntity ue = new UdUserEntity();
         ue.setId(json.id());
         ue.setUsername(json.username());

@@ -1,5 +1,6 @@
 package guru.qa.niffler.data.daoImplementation.spend;
 
+import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.spend.CategoryDao;
 import guru.qa.niffler.data.entity.spend.CategoryEntity;
 import guru.qa.niffler.data.mapper.CategoryEntityRowMapper;
@@ -14,17 +15,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static guru.qa.niffler.data.tpl.DataSources.getDataSource;
+
 public class CategoryDaoSpringJdbc implements CategoryDao {
 
-    private DataSource dataSource;
-
-    public CategoryDaoSpringJdbc(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
+    private static final Config CFG = Config.getInstance();
 
     @Override
     public CategoryEntity create(CategoryEntity category) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(getDataSource(CFG.spendJdbcUrl()));
         KeyHolder kh = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(
@@ -43,7 +42,7 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
 
     @Override
     public CategoryEntity updateCategory(CategoryEntity category) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(getDataSource(CFG.spendJdbcUrl()));
         KeyHolder kh = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement("UPDATE category SET name = ?, username = ?, archived = ? WHERE id",
@@ -59,7 +58,7 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
     @Override
     public Optional<CategoryEntity> findCategoryById(UUID id) {
         return Optional.ofNullable(
-                new JdbcTemplate(dataSource).queryForObject(
+                new JdbcTemplate(getDataSource(CFG.spendJdbcUrl())).queryForObject(
                         "SELECT * FROM category WHERE id = ?",
                         CategoryEntityRowMapper.instance,
                         id
@@ -70,7 +69,7 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
     @Override
     public Optional<CategoryEntity> findCategoryByUsernameAndCategoryName(String username, String categoryName) {
         return Optional.ofNullable(
-                new JdbcTemplate(dataSource).queryForObject(
+                new JdbcTemplate(getDataSource(CFG.spendJdbcUrl())).queryForObject(
                         "SELECT * FROM category WHERE username = ? AND name = ?",
                         CategoryEntityRowMapper.instance,
                         username, categoryName
@@ -80,7 +79,7 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
 
     @Override
     public List<CategoryEntity> findAllByUsername(String username) {
-        return new JdbcTemplate(dataSource).query(
+        return new JdbcTemplate(getDataSource(CFG.spendJdbcUrl())).query(
                 "SELECT * FROM category WHERE username = ?",
                 CategoryEntityRowMapper.instance,
                 username
@@ -89,7 +88,7 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
 
     @Override
     public List<CategoryEntity> findAll() {
-        return new JdbcTemplate(dataSource).query(
+        return new JdbcTemplate(getDataSource(CFG.spendJdbcUrl())).query(
                 "SELECT * FROM category",
                 CategoryEntityRowMapper.instance
         );
@@ -97,7 +96,7 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
 
     @Override
     public void deleteCategory(CategoryEntity category) {
-        new JdbcTemplate(dataSource).update(
+        new JdbcTemplate(getDataSource(CFG.spendJdbcUrl())).update(
                 "DELETE FROM category WHERE id = ?",
                 category.getId()
         );
