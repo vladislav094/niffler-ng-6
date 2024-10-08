@@ -15,6 +15,13 @@ public class CategoryEntity implements Serializable {
     private String username;
     private boolean archived;
 
+    public CategoryEntity(UUID id) {
+        this.id = id;
+    }
+
+    public CategoryEntity() {
+    }
+
     public static CategoryEntity fromJson(CategoryJson json) {
         CategoryEntity ce = new CategoryEntity();
         ce.setId(json.id());

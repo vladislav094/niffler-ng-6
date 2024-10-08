@@ -1,13 +1,16 @@
-package guru.qa.niffler.data.dao.implementation;
+package guru.qa.niffler.data.daoImplementation.auth;
 
 import guru.qa.niffler.data.dao.auth.AuthAuthorityDao;
 import guru.qa.niffler.data.entity.auth.AuthAuthorityEntity;
-import guru.qa.niffler.model.Authority;
+import guru.qa.niffler.data.entity.auth.Authority;
+import guru.qa.niffler.data.mapper.AuthAuthorityEntityRowMapper;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
@@ -19,31 +22,24 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
     }
 
     @Override
-    public AuthAuthorityEntity create(UUID userId, String authority) {
-        AuthAuthorityEntity entity = new AuthAuthorityEntity();
+    public void create(AuthAuthorityEntity... authority) {
         try (PreparedStatement ps = connection.prepareStatement(
                 "INSERT INTO authority (user_id, authority) VALUES (?, ?)",
-                Statement.RETURN_GENERATED_KEYS
-        )) {
-            ps.setObject(1, userId);
-            ps.setObject(2, authority);
-            ps.executeUpdate();
-            UUID generateKey;
-            try (ResultSet rs = ps.getGeneratedKeys()) {
-                if (rs.next()) {
-                    generateKey = rs.getObject("id", UUID.class);
-                } else throw new SQLException("Can't find ID in ResultSet");
+                PreparedStatement.RETURN_GENERATED_KEYS)) {
+            for (AuthAuthorityEntity a : authority) {
+                ps.setObject(1, a.getUserId());
+                ps.setString(2, a.getAuthority().name());
+                ps.addBatch();
+                ps.clearParameters();
             }
-            entity.setId(generateKey);
-
-            return entity;
+            ps.executeBatch();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public Optional<List<AuthAuthorityEntity>> findById(UUID id) {
+    public List<AuthAuthorityEntity> findById(UUID id) {
         List<AuthAuthorityEntity> result = new ArrayList<>();
         try (PreparedStatement ps = connection.prepareStatement(
                 "SELECT * FROM authority WHERE  id = ?"
@@ -58,11 +54,7 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
                     entity.setAuthority(rs.getObject("authority", Authority.class));
                     result.add(entity);
                 }
-                if (!result.isEmpty()) {
-                    return Optional.of(result);
-                } else {
-                    return Optional.empty();
-                }
+                return result;
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -70,7 +62,7 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
     }
 
     @Override
-    public Optional<List<AuthAuthorityEntity>> findByUserId(UUID userId) {
+    public List<AuthAuthorityEntity> findByUserId(UUID userId) {
         List<AuthAuthorityEntity> result = new ArrayList<>();
         try (PreparedStatement ps = connection.prepareStatement(
                 "SELECT * FROM authority WHERE  user_id = ?"
@@ -85,11 +77,7 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
                     entity.setAuthority(rs.getObject("authority", Authority.class));
                     result.add(entity);
                 }
-                if (!result.isEmpty()) {
-                    return Optional.of(result);
-                } else {
-                    return Optional.empty();
-                }
+                return result;
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -97,16 +85,17 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
     }
 
     @Override
-    public void update(UUID userId, String authority) {
+    public List<AuthAuthorityEntity> findAll() {
         try (PreparedStatement ps = connection.prepareStatement(
-                "DELETE FROM authority WHERE user_id = ?;" +
-                        "INSERT INTO authority (user_id, authority) VALUES (?, ?);"
-        )) {
-            ps.setObject(1, userId);
-            ps.setObject(2, userId);
-            ps.setString(3, authority);
-
-            ps.executeUpdate();
+                "SELECT * FROM authority")) {
+            ps.execute();
+            List<AuthAuthorityEntity> result = new ArrayList<>();
+            try (ResultSet rs = ps.getResultSet()) {
+                while (rs.next()) {
+                    result.add(AuthAuthorityEntityRowMapper.instance.mapRow(rs, rs.getRow()));
+                }
+            }
+            return result;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
