@@ -37,15 +37,37 @@ public class JdbcTest {
         UserdataDbClient userdataDbClient = new UserdataDbClient();
 
         UserJson authUser = userdataDbClient.createUser(
-                new AuthUserJson(
+                new UserJson(
                         null,
-                        "pork21",
-                        "12345",
-                        true,
-                        true,
-                        true,
-                        true
+                        "pork2121",
+                        null,
+                        null,
+                        null,
+                        CurrencyValues.RUB,
+                        null,
+                        null,
+                        null
                 ));
         System.out.println(authUser);
+    }
+
+    @Test
+    void springJdbcTest() {
+        UserdataDbClient userdataDbClient = new UserdataDbClient();
+
+        UserJson auth = userdataDbClient.createUserSpringJdbc(
+                new UserJson(
+                        null,
+                        "springJdbc21",
+                        null,
+                        null,
+                        null,
+                        CurrencyValues.RUB,
+                        null,
+                        null,
+                        null
+                )
+        );
+        System.out.println(auth);
     }
 }

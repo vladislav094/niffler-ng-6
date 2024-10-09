@@ -7,7 +7,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface AuthAuthorityDao {
-    AuthAuthorityEntity create(UUID userId, String authority);
+
+    void create(AuthAuthorityEntity... authority);
 
     Optional<List<AuthAuthorityEntity>> findById(UUID id);
 

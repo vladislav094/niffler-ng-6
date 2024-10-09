@@ -1,25 +1,25 @@
 package guru.qa.niffler.data.dao.implementation;
 
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.data.dao.userdata.UserDao;
-import guru.qa.niffler.data.entity.userdata.UserEntity;
+import guru.qa.niffler.data.dao.userdata.UdUserDao;
+import guru.qa.niffler.data.entity.userdata.UdUserEntity;
 import guru.qa.niffler.model.CurrencyValues;
 
 import java.sql.*;
 import java.util.Optional;
 import java.util.UUID;
 
-public class UserDaoJdbc implements UserDao {
+public class UdUserDaoJdbc implements UdUserDao {
 
     private static final Config CFG = Config.getInstance();
     private final Connection connection;
 
-    public UserDaoJdbc(Connection connection) {
+    public UdUserDaoJdbc(Connection connection) {
         this.connection = connection;
     }
 
     @Override
-    public UserEntity create(UserEntity user) {
+    public UdUserEntity createUser(UdUserEntity user) {
         try (PreparedStatement ps = connection.prepareStatement(
                 "INSERT INTO \"user\" (username, currency, firstname, surname, photo, photo_small, full_name) " +
                         "VALUES (?, ?, ?, ?, ?, ?, ?)",
@@ -48,7 +48,7 @@ public class UserDaoJdbc implements UserDao {
     }
 
     @Override
-    public Optional<UserEntity> findById(UUID id) {
+    public Optional<UdUserEntity> findById(UUID id) {
         try (PreparedStatement ps = connection.prepareStatement(
                 "SELECT * FROM \"user\" WHERE  id = ?"
         )) {
@@ -56,7 +56,7 @@ public class UserDaoJdbc implements UserDao {
             ps.execute();
             try (ResultSet rs = ps.getResultSet()) {
                 if (rs.next()) {
-                    UserEntity ue = new UserEntity();
+                    UdUserEntity ue = new UdUserEntity();
                     ue.setId(rs.getObject("id", UUID.class));
                     ue.setUsername(rs.getString("username"));
                     ue.setCurrency(CurrencyValues.valueOf(rs.getString("currency")));
@@ -77,7 +77,7 @@ public class UserDaoJdbc implements UserDao {
     }
 
     @Override
-    public Optional<UserEntity> findByUsername(String username) {
+    public Optional<UdUserEntity> findByUsername(String username) {
         try (PreparedStatement ps = connection.prepareStatement(
                 "SELECT * FROM \"user\" WHERE username = ?"
         )) {
@@ -86,7 +86,7 @@ public class UserDaoJdbc implements UserDao {
 
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    UserEntity ue = new UserEntity();
+                    UdUserEntity ue = new UdUserEntity();
                     ue.setId(rs.getObject("id", UUID.class));
                     ue.setUsername(rs.getString("username"));
                     ue.setCurrency(CurrencyValues.valueOf(rs.getString("currency")));
@@ -105,7 +105,7 @@ public class UserDaoJdbc implements UserDao {
     }
 
     @Override
-    public void delete(UserEntity user) {
+    public void delete(UdUserEntity user) {
         UUID categoryId = user.getId();
         try (PreparedStatement ps = connection.prepareStatement(
                 "DELETE FROM \"user\" WHERE id = ?"

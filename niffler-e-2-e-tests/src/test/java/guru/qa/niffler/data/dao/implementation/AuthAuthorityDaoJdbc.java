@@ -19,24 +19,17 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
     }
 
     @Override
-    public AuthAuthorityEntity create(UUID userId, String authority) {
-        AuthAuthorityEntity entity = new AuthAuthorityEntity();
+    public void create(AuthAuthorityEntity... authority) {
         try (PreparedStatement ps = connection.prepareStatement(
                 "INSERT INTO authority (user_id, authority) VALUES (?, ?)",
-                Statement.RETURN_GENERATED_KEYS
-        )) {
-            ps.setObject(1, userId);
-            ps.setObject(2, authority);
-            ps.executeUpdate();
-            UUID generateKey;
-            try (ResultSet rs = ps.getGeneratedKeys()) {
-                if (rs.next()) {
-                    generateKey = rs.getObject("id", UUID.class);
-                } else throw new SQLException("Can't find ID in ResultSet");
+                PreparedStatement.RETURN_GENERATED_KEYS)) {
+            for (AuthAuthorityEntity a : authority) {
+                ps.setObject(1, a.getUserId());
+                ps.setString(2, a.getAuthority().name());
+                ps.addBatch();
+                ps.clearParameters();
             }
-            entity.setId(generateKey);
-
-            return entity;
+            ps.executeBatch();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
