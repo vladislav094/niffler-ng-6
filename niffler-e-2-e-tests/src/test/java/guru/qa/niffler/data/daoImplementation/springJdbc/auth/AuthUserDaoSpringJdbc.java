@@ -1,4 +1,4 @@
-package guru.qa.niffler.data.dao.implementation.springJdbc;
+package guru.qa.niffler.data.daoImplementation.springJdbc.auth;
 
 import guru.qa.niffler.data.dao.auth.AuthUserDao;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
@@ -28,8 +28,8 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(
                     "INSERT INTO \"user\" (username, password, enabled, account_non_expired, account_non_locked, " +
-                    "credentials_non_expired) VALUES (?, ?, ?, ?, ?, ?)",
-                            Statement.RETURN_GENERATED_KEYS
+                            "credentials_non_expired) VALUES (?, ?, ?, ?, ?, ?)",
+                    Statement.RETURN_GENERATED_KEYS
             );
             ps.setString(1, user.getUsername());
             ps.setString(2, user.getPassword());
@@ -60,11 +60,21 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
 
     @Override
     public Optional<AuthUserEntity> findByUsername(String username) {
-        return Optional.empty();
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        return Optional.ofNullable(
+                jdbcTemplate.queryForObject(
+                        "SELECT * FROM \"user\" WHERE username = ?",
+                        AuthUserEntityRowMapper.instance,
+                        username
+                )
+        );
     }
 
     @Override
     public void delete(AuthUserEntity user) {
-
+        new JdbcTemplate(dataSource).update(
+                "DELETE FROM \"user\" WHERE id = ?",
+                user.getId()
+        );
     }
 }

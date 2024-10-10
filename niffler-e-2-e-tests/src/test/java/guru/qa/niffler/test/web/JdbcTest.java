@@ -6,6 +6,7 @@ import guru.qa.niffler.service.UserdataDbClient;
 import org.junit.jupiter.api.Test;
 
 import java.util.Date;
+import java.util.List;
 
 public class JdbcTest {
 
@@ -69,5 +70,19 @@ public class JdbcTest {
                 )
         );
         System.out.println(auth);
+    }
+
+    @Test
+    void springJdbcGetCategoriesByUsername() {
+        SpendDbClient spendDbClient = new SpendDbClient();
+        UserdataDbClient userdataDbClient = new UserdataDbClient();
+        List<AuthAuthorityJson> list = userdataDbClient.getAllAuthority();
+        for (AuthAuthorityJson authAuthorityJson : list) {
+            System.out.println(authAuthorityJson);
+        }
+//        List<CategoryJson> categoryJsonList = spendDbClient.getCategoriesByUsernameSpringJdbc("vladislav");
+//        for (CategoryJson categoryJson : categoryJsonList) {
+//            System.out.println(categoryJson);
+//        }
     }
 }

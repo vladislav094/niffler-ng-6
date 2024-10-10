@@ -1,4 +1,4 @@
-package guru.qa.niffler.data.dao.implementation;
+package guru.qa.niffler.data.daoImplementation.jdbc.auth;
 
 import guru.qa.niffler.data.dao.auth.AuthUserDao;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
@@ -50,7 +50,7 @@ public class AuthUserDaoJdbc implements AuthUserDao {
     @Override
     public Optional<AuthUserEntity> findById(UUID id) {
         try (PreparedStatement ps = connection.prepareStatement(
-                "SELECT * FROM public.user WHERE  id = ?"
+                "SELECT * FROM \"user\" WHERE  id = ?"
         )) {
             ps.setObject(1, id);
             ps.execute();
@@ -77,7 +77,7 @@ public class AuthUserDaoJdbc implements AuthUserDao {
     @Override
     public Optional<AuthUserEntity> findByUsername(String username) {
         try (PreparedStatement ps = connection.prepareStatement(
-                "SELECT * FROM public.user WHERE username = ?"
+                "SELECT * FROM \"user\" WHERE username = ?"
         )) {
             ps.setString(1, username);
             ps.execute();
@@ -105,7 +105,7 @@ public class AuthUserDaoJdbc implements AuthUserDao {
     public void delete(AuthUserEntity user) {
         UUID categoryId = user.getId();
         try (PreparedStatement ps = connection.prepareStatement(
-                "DELETE FROM public.user WHERE id = ?"
+                "DELETE FROM \"user\" WHERE id = ?"
         )) {
             ps.setObject(1, categoryId);
             ps.executeUpdate();

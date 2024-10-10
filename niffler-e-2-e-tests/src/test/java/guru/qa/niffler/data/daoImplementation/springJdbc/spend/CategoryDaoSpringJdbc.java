@@ -1,7 +1,8 @@
-package guru.qa.niffler.data.dao.implementation.springJdbc;
+package guru.qa.niffler.data.daoImplementation.springJdbc.spend;
 
 import guru.qa.niffler.data.dao.spend.CategoryDao;
 import guru.qa.niffler.data.entity.spend.CategoryEntity;
+import guru.qa.niffler.data.mapper.CategoryEntityRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -57,21 +58,40 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
 
     @Override
     public Optional<CategoryEntity> findCategoryById(UUID id) {
-        return Optional.empty();
+        return Optional.ofNullable(
+                new JdbcTemplate(dataSource).queryForObject(
+                        "SELECT * FROM category WHERE id = ?",
+                        CategoryEntityRowMapper.instance,
+                        id
+                )
+        );
     }
 
     @Override
     public Optional<CategoryEntity> findCategoryByUsernameAndCategoryName(String username, String categoryName) {
-        return Optional.empty();
+        return Optional.ofNullable(
+                new JdbcTemplate(dataSource).queryForObject(
+                        "SELECT * FROM category WHERE username = ? AND name = ?",
+                        CategoryEntityRowMapper.instance,
+                        username, categoryName
+                )
+        );
     }
 
     @Override
     public List<CategoryEntity> findAllByUsername(String username) {
-        return List.of();
+        return new JdbcTemplate(dataSource).query(
+                "SELECT * FROM category WHERE username = ?",
+                CategoryEntityRowMapper.instance,
+                username
+        );
     }
 
     @Override
     public void deleteCategory(CategoryEntity category) {
-
+        new JdbcTemplate(dataSource).update(
+                "DELETE FROM category WHERE id = ?",
+                category.getId()
+        );
     }
 }

@@ -2,13 +2,16 @@ package guru.qa.niffler.service;
 
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.Databases;
-import guru.qa.niffler.data.dao.implementation.*;
-import guru.qa.niffler.data.dao.implementation.springJdbc.AuthAuthorityDaoSpringJdbc;
-import guru.qa.niffler.data.dao.implementation.springJdbc.AuthUserDaoSpringJdbc;
-import guru.qa.niffler.data.dao.implementation.springJdbc.UdUserDaoSpringJdbc;
+import guru.qa.niffler.data.daoImplementation.jdbc.auth.AuthAuthorityDaoJdbc;
+import guru.qa.niffler.data.daoImplementation.jdbc.auth.AuthUserDaoJdbc;
+import guru.qa.niffler.data.daoImplementation.jdbc.userdata.UdUserDaoJdbc;
+import guru.qa.niffler.data.daoImplementation.springJdbc.auth.AuthAuthorityDaoSpringJdbc;
+import guru.qa.niffler.data.daoImplementation.springJdbc.auth.AuthUserDaoSpringJdbc;
+import guru.qa.niffler.data.daoImplementation.springJdbc.userdata.UdUserDaoSpringJdbc;
 import guru.qa.niffler.data.entity.auth.AuthAuthorityEntity;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.entity.userdata.UdUserEntity;
+import guru.qa.niffler.model.AuthAuthorityJson;
 import guru.qa.niffler.model.Authority;
 import guru.qa.niffler.model.UserJson;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -16,6 +19,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.sql.Connection;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static guru.qa.niffler.data.Databases.getDataSource;
 import static guru.qa.niffler.data.Databases.xaTransaction;
@@ -52,6 +57,15 @@ public class UserdataDbClient {
         return UserJson.fromEntity(new UdUserDaoSpringJdbc(getDataSource(CFG.userdataJdbcUrl()))
                         .createUser(UdUserEntity.fromJson(user)),
                 null);
+    }
+
+    public List<AuthAuthorityJson> getAllAuthority() {
+        return Databases.transaction(connection -> {
+            List<AuthAuthorityEntity> entities = new AuthAuthorityDaoJdbc(connection).findAll();
+            return entities.stream()
+                    .map(AuthAuthorityJson::fromEntity)
+                    .toList();
+        }, CFG.authJdbcUrl(), Connection.TRANSACTION_READ_COMMITTED);
     }
 
     public UserJson createUser(UserJson user) {
