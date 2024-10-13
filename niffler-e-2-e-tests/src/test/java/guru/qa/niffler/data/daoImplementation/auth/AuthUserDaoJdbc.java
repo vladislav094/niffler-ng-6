@@ -1,11 +1,14 @@
-package guru.qa.niffler.data.dao.implementation;
+package guru.qa.niffler.data.daoImplementation.auth;
 
 import guru.qa.niffler.data.dao.auth.AuthUserDao;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
+import guru.qa.niffler.data.mapper.AuthUserEntityRowMapper;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -50,7 +53,7 @@ public class AuthUserDaoJdbc implements AuthUserDao {
     @Override
     public Optional<AuthUserEntity> findById(UUID id) {
         try (PreparedStatement ps = connection.prepareStatement(
-                "SELECT * FROM public.user WHERE  id = ?"
+                "SELECT * FROM \"user\" WHERE  id = ?"
         )) {
             ps.setObject(1, id);
             ps.execute();
@@ -77,7 +80,7 @@ public class AuthUserDaoJdbc implements AuthUserDao {
     @Override
     public Optional<AuthUserEntity> findByUsername(String username) {
         try (PreparedStatement ps = connection.prepareStatement(
-                "SELECT * FROM public.user WHERE username = ?"
+                "SELECT * FROM \"user\" WHERE username = ?"
         )) {
             ps.setString(1, username);
             ps.execute();
@@ -105,10 +108,27 @@ public class AuthUserDaoJdbc implements AuthUserDao {
     public void delete(AuthUserEntity user) {
         UUID categoryId = user.getId();
         try (PreparedStatement ps = connection.prepareStatement(
-                "DELETE FROM public.user WHERE id = ?"
+                "DELETE FROM \"user\" WHERE id = ?"
         )) {
             ps.setObject(1, categoryId);
             ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public List<AuthUserEntity> findAll() {
+        try (PreparedStatement ps = connection.prepareStatement(
+                "SELECT * FROM \"user\"")) {
+            ps.execute();
+            List<AuthUserEntity> result = new ArrayList<>();
+            try (ResultSet rs = ps.getResultSet()) {
+                while (rs.next()) {
+                    result.add(AuthUserEntityRowMapper.instance.mapRow(rs, rs.getRow()));
+                }
+            }
+            return result;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

@@ -1,12 +1,12 @@
 package guru.qa.niffler.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import guru.qa.niffler.data.entity.userdata.UserEntity;
+import guru.qa.niffler.data.entity.userdata.UdUserEntity;
 
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
-public record UserJson(
+public record UdUserJson(
         @JsonProperty("id")
         UUID id,
         @JsonProperty("username")
@@ -22,18 +22,21 @@ public record UserJson(
         @JsonProperty("photo")
         String photo,
         @JsonProperty("photoSmall")
-        String photoSmall) {
+        String photoSmall,
+        @JsonProperty("friendState")
+        FriendState friendState) {
 
-    public static UserJson fromEntity(UserEntity entity) {
-        return new UserJson(
+    public static UdUserJson fromEntity(UdUserEntity entity, FriendState friendState) {
+        return new UdUserJson(
                 entity.getId(),
                 entity.getUsername(),
                 entity.getFirstname(),
                 entity.getSurname(),
                 entity.getFullname(),
                 entity.getCurrency(),
-                entity.getPhoto() == null ? null : entity.getPhoto().toString(),
-                entity.getPhotoSmall() == null ? null : entity.getPhotoSmall().toString()
+                entity.getPhoto() != null && entity.getPhoto().length > 0 ? new String(entity.getPhoto(), StandardCharsets.UTF_8) : null,
+                entity.getPhotoSmall() != null && entity.getPhotoSmall().length > 0 ? new String(entity.getPhotoSmall(), StandardCharsets.UTF_8) : null,
+                friendState
         );
     }
 }
