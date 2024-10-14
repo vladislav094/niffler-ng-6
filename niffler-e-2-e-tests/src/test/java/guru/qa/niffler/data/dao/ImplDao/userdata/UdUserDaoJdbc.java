@@ -1,12 +1,15 @@
-package guru.qa.niffler.data.daoImplementation.userdata;
+package guru.qa.niffler.data.dao.ImplDao.userdata;
 
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.data.dao.userdata.UserdataUserDao;
+import guru.qa.niffler.data.dao.userdata.UdUserDao;
 import guru.qa.niffler.data.entity.userdata.UdUserEntity;
-import guru.qa.niffler.data.mapper.UdUserEntityRowMapper;
+import guru.qa.niffler.data.mapper.UserdataUserEntityRowMapper;
 import guru.qa.niffler.model.CurrencyValues;
 
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -14,7 +17,7 @@ import java.util.UUID;
 
 import static guru.qa.niffler.data.tpl.Connections.holder;
 
-public class UserdataUserDaoJdbc implements UserdataUserDao {
+public class UdUserDaoJdbc implements UdUserDao {
 
     private static final Config CFG = Config.getInstance();
 
@@ -86,15 +89,8 @@ public class UserdataUserDaoJdbc implements UserdataUserDao {
 
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    UdUserEntity ue = new UdUserEntity();
-                    ue.setId(rs.getObject("id", UUID.class));
-                    ue.setUsername(rs.getString("username"));
-                    ue.setCurrency(CurrencyValues.valueOf(rs.getString("currency")));
-                    ue.setFirstname(rs.getString("firstname"));
-                    ue.setSurname(rs.getString("surname"));
-                    ue.setPhoto(rs.getBytes("photo"));
-                    ue.setPhotoSmall(rs.getBytes("photo_small"));
-                    return Optional.of(ue);
+                    return Optional.ofNullable(
+                            UserdataUserEntityRowMapper.instance.mapRow(rs, rs.getRow()));
                 } else {
                     return Optional.empty();
                 }
@@ -112,7 +108,7 @@ public class UserdataUserDaoJdbc implements UserdataUserDao {
             List<UdUserEntity> result = new ArrayList<>();
             try (ResultSet rs = ps.getResultSet()) {
                 while (rs.next()) {
-                    result.add(UdUserEntityRowMapper.instance.mapRow(rs, rs.getRow()));
+                    result.add(UserdataUserEntityRowMapper.instance.mapRow(rs, rs.getRow()));
                 }
             }
             return result;

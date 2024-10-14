@@ -1,4 +1,4 @@
-package guru.qa.niffler.data.daoImplementation.spend;
+package guru.qa.niffler.data.dao.ImplDao.spend;
 
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.spend.SpendDao;
@@ -8,7 +8,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
-import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
@@ -32,7 +31,7 @@ public class SpendingDaoSpringJdbc implements SpendDao {
                                     "VALUES (?, ?, ?, ?, ?, ?)",
                             Statement.RETURN_GENERATED_KEYS);
                     ps.setString(1, spend.getUsername());
-                    ps.setDate(2, spend.getSpendDate());
+                    ps.setDate(2, new java.sql.Date(spend.getSpendDate().getTime()));
                     ps.setString(3, spend.getCurrency().name());
                     ps.setDouble(4, spend.getAmount());
                     ps.setString(5, spend.getDescription());

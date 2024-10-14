@@ -6,7 +6,7 @@ import guru.qa.niffler.data.entity.userdata.UdUserEntity;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
-public record UserdataUserJson(
+public record UdUserJson(
         @JsonProperty("id")
         UUID id,
         @JsonProperty("username")
@@ -26,8 +26,8 @@ public record UserdataUserJson(
         @JsonProperty("friendState")
         FriendState friendState) {
 
-    public static UserdataUserJson fromEntity(UdUserEntity entity, FriendState friendState) {
-        return new UserdataUserJson(
+    public static UdUserJson fromEntity(UdUserEntity entity, FriendState friendState) {
+        return new UdUserJson(
                 entity.getId(),
                 entity.getUsername(),
                 entity.getFirstname(),
