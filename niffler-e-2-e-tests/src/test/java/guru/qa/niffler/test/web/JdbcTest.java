@@ -14,25 +14,25 @@ public class JdbcTest {
     void jdbcAndSpringJdbcCreateUser() {
         UserdataDbClient userdataDbClient = new UserdataDbClient();
 
-        UserdataUserJson userJdbc = userdataDbClient.creatUserJdbcNotTransaction(
-                new UserdataUserJson(
-                        null,
-                        "springJdbc412",
-                        null,
-                        null,
-                        null,
-                        CurrencyValues.RUB,
-                        null,
-                        null,
-                        null
-                )
-        );
-        System.out.println(userJdbc);
+//        UserdataUserJson userJdbc = userdataDbClient.creatUserJdbcNotTransaction(
+//                new UserdataUserJson(
+//                        null,
+//                        "springJdbc412",
+//                        null,
+//                        null,
+//                        null,
+//                        CurrencyValues.RUB,
+//                        null,
+//                        null,
+//                        null
+//                )
+//        );
+//        System.out.println(userJdbc);
 
         UserdataUserJson userJdbcTransaction = userdataDbClient.createUserJdbcTransaction(
                 new UserdataUserJson(
                         null,
-                        "springJdbc52",
+                        "springJdbc77711",
                         null,
                         null,
                         null,
@@ -44,36 +44,36 @@ public class JdbcTest {
         );
         System.out.println(userJdbcTransaction);
 
-
-        UserdataUserJson userSpringJdbc = userdataDbClient.creatUserSpringJdbcNotTransaction(
-                new UserdataUserJson(
-                        null,
-                        "springJdbc62",
-                        null,
-                        null,
-                        null,
-                        CurrencyValues.RUB,
-                        null,
-                        null,
-                        null
-                )
-        );
-        System.out.println(userSpringJdbc);
-
-        UserdataUserJson userSpringJdbcTransaction = userdataDbClient.createUserSpringJdbcTransaction(
-                new UserdataUserJson(
-                        null,
-                        "springJdbc72",
-                        null,
-                        null,
-                        null,
-                        CurrencyValues.RUB,
-                        null,
-                        null,
-                        null
-                )
-        );
-        System.out.println(userSpringJdbcTransaction);
+//
+//        UserdataUserJson userSpringJdbc = userdataDbClient.creatUserSpringJdbcNotTransaction(
+//                new UserdataUserJson(
+//                        null,
+//                        "springJdbc62",
+//                        null,
+//                        null,
+//                        null,
+//                        CurrencyValues.RUB,
+//                        null,
+//                        null,
+//                        null
+//                )
+//        );
+//        System.out.println(userSpringJdbc);
+//
+//        UserdataUserJson userSpringJdbcTransaction = userdataDbClient.createUserSpringJdbcTransaction(
+//                new UserdataUserJson(
+//                        null,
+//                        "springJdbc72",
+//                        null,
+//                        null,
+//                        null,
+//                        CurrencyValues.RUB,
+//                        null,
+//                        null,
+//                        null
+//                )
+//        );
+//        System.out.println(userSpringJdbcTransaction);
     }
 
     @Test

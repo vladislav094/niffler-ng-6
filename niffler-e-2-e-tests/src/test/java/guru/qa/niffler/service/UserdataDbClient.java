@@ -14,6 +14,8 @@ import guru.qa.niffler.data.entity.auth.AuthAuthorityEntity;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.entity.auth.Authority;
 import guru.qa.niffler.data.entity.userdata.UserdataUserEntity;
+import guru.qa.niffler.data.repository.AuthUserRepository;
+import guru.qa.niffler.data.repository.impl.AuthUserRepositoryJdbc;
 import guru.qa.niffler.data.tpl.DataSources;
 import guru.qa.niffler.data.tpl.JdbcTransactionsTemplate;
 import guru.qa.niffler.data.tpl.XaTransactionsTemplate;
@@ -35,10 +37,12 @@ public class UserdataDbClient {
     private final AuthUserDao authUserDaoSpringJdbc = new AuthUserDaoSpringJdbc();
     private final AuthAuthorityDao authAuthorityDaoSpringJdbc = new AuthAuthorityDaoSpringJdbc();
     private final UserdataUserDao userdataUserDaoSpringJdbc = new UserdataUserDaoSpringJdbc();
-    // Jdbc
+    // JDBC
     private final AuthUserDao authUserDaoJdbc = new AuthUserDaoJdbc();
     private final AuthAuthorityDao authAuthorityDaoJdbc = new AuthAuthorityDaoJdbc();
     private final UserdataUserDao userdataUserDaoJdbc = new UserdataUserDaoJdbc();
+    // RepositoryJdbc
+    private final AuthUserRepository authUserRepositoryJdbc = new AuthUserRepositoryJdbc();
 
     private final TransactionTemplate txTemplate = new TransactionTemplate(
             new ChainedTransactionManager(
@@ -94,20 +98,17 @@ public class UserdataDbClient {
             authUser.setAccountNonExpired(true);
             authUser.setAccountNonLocked(true);
             authUser.setCredentialsNonExpired(true);
-
-            AuthUserEntity cratedAuthUser = authUserDaoJdbc.create(authUser);
-
-            AuthAuthorityEntity[] userAuthorities = Arrays.stream(Authority.values()).map(
-                    a -> {
-                        AuthAuthorityEntity ae = new AuthAuthorityEntity();
-                        ae.setUser(cratedAuthUser);
-                        ae.setAuthority(a);
-                        return ae;
-                    }
-            ).toArray(AuthAuthorityEntity[]::new);
-
-            authAuthorityDaoJdbc.create(userAuthorities);
-
+            authUser.setAuthorities(
+                    Arrays.stream(Authority.values()).map(
+                            a -> {
+                                AuthAuthorityEntity ae = new AuthAuthorityEntity();
+                                ae.setUser(authUser);
+                                ae.setAuthority(a);
+                                return ae;
+                            }
+                    ).toList()
+            );
+            authUserRepositoryJdbc.create(authUser);
             return UserdataUserJson.fromEntity(
                     userdataUserDaoJdbc.createUser(UserdataUserEntity.fromJson(user)),
                     null);
