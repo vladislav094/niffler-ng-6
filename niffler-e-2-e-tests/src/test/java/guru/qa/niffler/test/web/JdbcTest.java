@@ -17,7 +17,7 @@ public class JdbcTest {
         UserdataUserJson userJdbc = userdataDbClient.creatUserJdbcNotTransaction(
                 new UserdataUserJson(
                         null,
-                        "springJdbc4",
+                        "springJdbc412",
                         null,
                         null,
                         null,
@@ -32,7 +32,7 @@ public class JdbcTest {
         UserdataUserJson userJdbcTransaction = userdataDbClient.createUserJdbcTransaction(
                 new UserdataUserJson(
                         null,
-                        "springJdbc5",
+                        "springJdbc52",
                         null,
                         null,
                         null,
@@ -48,7 +48,7 @@ public class JdbcTest {
         UserdataUserJson userSpringJdbc = userdataDbClient.creatUserSpringJdbcNotTransaction(
                 new UserdataUserJson(
                         null,
-                        "springJdbc6",
+                        "springJdbc62",
                         null,
                         null,
                         null,
@@ -63,7 +63,7 @@ public class JdbcTest {
         UserdataUserJson userSpringJdbcTransaction = userdataDbClient.createUserSpringJdbcTransaction(
                 new UserdataUserJson(
                         null,
-                        "springJdbc7",
+                        "springJdbc72",
                         null,
                         null,
                         null,

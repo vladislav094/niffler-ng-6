@@ -13,7 +13,7 @@ import guru.qa.niffler.data.daoImplementation.userdata.UserdataUserDaoSpringJdbc
 import guru.qa.niffler.data.entity.auth.AuthAuthorityEntity;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.entity.auth.Authority;
-import guru.qa.niffler.data.entity.userdata.UdUserEntity;
+import guru.qa.niffler.data.entity.userdata.UserdataUserEntity;
 import guru.qa.niffler.data.tpl.DataSources;
 import guru.qa.niffler.data.tpl.JdbcTransactionsTemplate;
 import guru.qa.niffler.data.tpl.XaTransactionsTemplate;
@@ -71,7 +71,7 @@ public class UserdataDbClient {
         AuthAuthorityEntity[] userAuthorities = Arrays.stream(Authority.values()).map(
                 a -> {
                     AuthAuthorityEntity ae = new AuthAuthorityEntity();
-                    ae.setUserId(cratedAuthUser.getId());
+                    ae.setUser(cratedAuthUser);
                     ae.setAuthority(a);
                     return ae;
                 }
@@ -80,7 +80,7 @@ public class UserdataDbClient {
         authAuthorityDaoJdbc.create(userAuthorities);
 
         return UserdataUserJson.fromEntity(
-                userdataUserDaoJdbc.createUser(UdUserEntity.fromJson(user)),
+                userdataUserDaoJdbc.createUser(UserdataUserEntity.fromJson(user)),
                 null);
     }
 
@@ -100,7 +100,7 @@ public class UserdataDbClient {
             AuthAuthorityEntity[] userAuthorities = Arrays.stream(Authority.values()).map(
                     a -> {
                         AuthAuthorityEntity ae = new AuthAuthorityEntity();
-                        ae.setUserId(cratedAuthUser.getId());
+                        ae.setUser(cratedAuthUser);
                         ae.setAuthority(a);
                         return ae;
                     }
@@ -109,14 +109,14 @@ public class UserdataDbClient {
             authAuthorityDaoJdbc.create(userAuthorities);
 
             return UserdataUserJson.fromEntity(
-                    userdataUserDaoJdbc.createUser(UdUserEntity.fromJson(user)),
+                    userdataUserDaoJdbc.createUser(UserdataUserEntity.fromJson(user)),
                     null);
         });
     }
 
     // JDBC без транзакции
     public List<UserdataUserJson> getAllUserJdbcNotTransaction() {
-        List<UdUserEntity> entities = userdataUserDaoJdbc.findAll();
+        List<UserdataUserEntity> entities = userdataUserDaoJdbc.findAll();
         return entities.stream()
                 .map(m -> UserdataUserJson.fromEntity(m, null))
                 .toList();
@@ -125,7 +125,7 @@ public class UserdataDbClient {
     // JDBC транзакция с использованием ChainedTransactionManager
     public List<UserdataUserJson> getAllUserJdbcTransaction() {
         return txTemplate.execute(action -> {
-            List<UdUserEntity> entities = userdataUserDaoJdbc.findAll();
+            List<UserdataUserEntity> entities = userdataUserDaoJdbc.findAll();
             return entities.stream()
                     .map(m -> UserdataUserJson.fromEntity(m, null))
                     .toList();
@@ -147,7 +147,7 @@ public class UserdataDbClient {
         AuthAuthorityEntity[] userAuthorities = Arrays.stream(Authority.values()).map(
                 a -> {
                     AuthAuthorityEntity ae = new AuthAuthorityEntity();
-                    ae.setUserId(cratedAuthUser.getId());
+                    ae.setUser(cratedAuthUser);
                     ae.setAuthority(a);
                     return ae;
                 }
@@ -156,7 +156,7 @@ public class UserdataDbClient {
         authAuthorityDaoSpringJdbc.create(userAuthorities);
 
         return UserdataUserJson.fromEntity(
-                userdataUserDaoSpringJdbc.createUser(UdUserEntity.fromJson(user)),
+                userdataUserDaoSpringJdbc.createUser(UserdataUserEntity.fromJson(user)),
                 null);
     }
 
@@ -176,7 +176,7 @@ public class UserdataDbClient {
             AuthAuthorityEntity[] userAuthorities = Arrays.stream(Authority.values()).map(
                     a -> {
                         AuthAuthorityEntity ae = new AuthAuthorityEntity();
-                        ae.setUserId(cratedAuthUser.getId());
+                        ae.setUser(cratedAuthUser);
                         ae.setAuthority(a);
                         return ae;
                     }
@@ -185,14 +185,14 @@ public class UserdataDbClient {
             authAuthorityDaoSpringJdbc.create(userAuthorities);
 
             return UserdataUserJson.fromEntity(
-                    userdataUserDaoSpringJdbc.createUser(UdUserEntity.fromJson(user)),
+                    userdataUserDaoSpringJdbc.createUser(UserdataUserEntity.fromJson(user)),
                     null);
         });
     }
 
     // SpringJdbc без транзакции
     public List<UserdataUserJson> getAllUserSpringJdbcNotTransaction() {
-        List<UdUserEntity> entities = userdataUserDaoSpringJdbc.findAll();
+        List<UserdataUserEntity> entities = userdataUserDaoSpringJdbc.findAll();
         return entities.stream()
                 .map(m -> UserdataUserJson.fromEntity(m, null))
                 .toList();
@@ -201,7 +201,7 @@ public class UserdataDbClient {
     // SpringJdbc транзакция с использованием ChainedTransactionManager
     public List<UserdataUserJson> getAllUserSpringJdbcTransaction() {
         return txTemplate.execute(action -> {
-            List<UdUserEntity> entities = userdataUserDaoSpringJdbc.findAll();
+            List<UserdataUserEntity> entities = userdataUserDaoSpringJdbc.findAll();
             return entities.stream()
                     .map(m -> UserdataUserJson.fromEntity(m, null))
                     .toList();
