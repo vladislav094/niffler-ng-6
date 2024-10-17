@@ -12,7 +12,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@Table(name = "authority")
+@Table(name = "authority", schema = "public", catalog = "niffler-auth")
 public class AuthAuthorityEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

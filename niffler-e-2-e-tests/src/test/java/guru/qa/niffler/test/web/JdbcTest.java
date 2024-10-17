@@ -1,7 +1,7 @@
 package guru.qa.niffler.test.web;
 
 import guru.qa.niffler.model.CurrencyValues;
-import guru.qa.niffler.model.UserdataUserJson;
+import guru.qa.niffler.model.UdUserJson;
 import guru.qa.niffler.service.UserdataDbClient;
 import org.junit.jupiter.api.Test;
 
@@ -29,8 +29,8 @@ public class JdbcTest {
 //        );
 //        System.out.println(userJdbc);
 
-        UserdataUserJson userJdbcTransaction = userdataDbClient.createUserJdbcTransaction(
-                new UserdataUserJson(
+        UdUserJson userJdbcTransaction = userdataDbClient.createUserJdbcTransaction(
+                new UdUserJson(
                         null,
                         "springJdbc77711",
                         null,
@@ -81,27 +81,35 @@ public class JdbcTest {
         UserdataDbClient userdataDbClient = new UserdataDbClient();
 
         System.out.println("====JDBC not transaction====");
-        List<UserdataUserJson> usUserJdbc = userdataDbClient.getAllUserJdbcNotTransaction();
-        for (UserdataUserJson userdataUserJson : usUserJdbc) {
-            System.out.println(userdataUserJson);
+        List<UdUserJson> usUserJdbc = userdataDbClient.getAllUserJdbcNotTransaction();
+        for (UdUserJson udUserJson : usUserJdbc) {
+            System.out.println(udUserJson);
         }
 
         System.out.println("====JDBC transaction====");
-        List<UserdataUserJson> udUserJdbcTransaction = userdataDbClient.getAllUserJdbcTransaction();
-        for (UserdataUserJson userdataUserJson : udUserJdbcTransaction) {
-            System.out.println(userdataUserJson);
+        List<UdUserJson> udUserJdbcTransaction = userdataDbClient.getAllUserJdbcTransaction();
+        for (UdUserJson udUserJson : udUserJdbcTransaction) {
+            System.out.println(udUserJson);
         }
 
         System.out.println("====Spring Jdbc not transaction====");
-        List<UserdataUserJson> userdataUserSpringJdbc = userdataDbClient.getAllUserSpringJdbcNotTransaction();
-        for (UserdataUserJson userdataUserJson : userdataUserSpringJdbc) {
-            System.out.println(userdataUserJson);
+        List<UdUserJson> userdataUserSpringJdbc = userdataDbClient.getAllUserSpringJdbcNotTransaction();
+        for (UdUserJson udUserJson : userdataUserSpringJdbc) {
+            System.out.println(udUserJson);
         }
 
         System.out.println("====Spring Jdbc transaction====");
-        List<UserdataUserJson> udUserSpringJdbcTransaction = userdataDbClient.getAllUserSpringJdbcTransaction();
-        for (UserdataUserJson userdataUserJson : udUserSpringJdbcTransaction) {
-            System.out.println(userdataUserJson);
+        List<UdUserJson> udUserSpringJdbcTransaction = userdataDbClient.getAllUserSpringJdbcTransaction();
+        for (UdUserJson udUserJson : udUserSpringJdbcTransaction) {
+            System.out.println(udUserJson);
         }
+    }
+
+    @Test
+    void userdataUserRepositoryJdbc() {
+        UserdataDbClient userdataDbClient = new UserdataDbClient();
+
+        UdUserJson user = userdataDbClient.getUserByName("vladislav");
+        System.out.println(user);
     }
 }

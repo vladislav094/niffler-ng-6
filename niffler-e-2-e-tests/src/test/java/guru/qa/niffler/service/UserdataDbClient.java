@@ -16,10 +16,11 @@ import guru.qa.niffler.data.entity.auth.Authority;
 import guru.qa.niffler.data.entity.userdata.UserdataUserEntity;
 import guru.qa.niffler.data.repository.AuthUserRepository;
 import guru.qa.niffler.data.repository.impl.AuthUserRepositoryJdbc;
+import guru.qa.niffler.data.repository.impl.UdUserRepositoryJdbc;
 import guru.qa.niffler.data.tpl.DataSources;
 import guru.qa.niffler.data.tpl.JdbcTransactionsTemplate;
 import guru.qa.niffler.data.tpl.XaTransactionsTemplate;
-import guru.qa.niffler.model.UserdataUserJson;
+import guru.qa.niffler.model.UdUserJson;
 import org.springframework.data.transaction.ChainedTransactionManager;
 import org.springframework.jdbc.support.JdbcTransactionManager;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -28,12 +29,14 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 public class UserdataDbClient {
 
     private static final Config CFG = Config.getInstance();
     private static final PasswordEncoder pe = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-    // SpringJdbc
+    // Spring JDBC
     private final AuthUserDao authUserDaoSpringJdbc = new AuthUserDaoSpringJdbc();
     private final AuthAuthorityDao authAuthorityDaoSpringJdbc = new AuthAuthorityDaoSpringJdbc();
     private final UserdataUserDao userdataUserDaoSpringJdbc = new UserdataUserDaoSpringJdbc();
@@ -41,8 +44,9 @@ public class UserdataDbClient {
     private final AuthUserDao authUserDaoJdbc = new AuthUserDaoJdbc();
     private final AuthAuthorityDao authAuthorityDaoJdbc = new AuthAuthorityDaoJdbc();
     private final UserdataUserDao userdataUserDaoJdbc = new UserdataUserDaoJdbc();
-    // RepositoryJdbc
+    // Repository JDBC
     private final AuthUserRepository authUserRepositoryJdbc = new AuthUserRepositoryJdbc();
+    private final UdUserRepositoryJdbc udUserRepositoryJdbc = new UdUserRepositoryJdbc();
 
     private final TransactionTemplate txTemplate = new TransactionTemplate(
             new ChainedTransactionManager(
@@ -61,7 +65,7 @@ public class UserdataDbClient {
     );
 
     // JDBC без транзакции
-    public UserdataUserJson creatUserJdbcNotTransaction(UserdataUserJson user) {
+    public UdUserJson creatUserJdbcNotTransaction(UdUserJson user) {
         AuthUserEntity authUser = new AuthUserEntity();
         authUser.setUsername(user.username());
         authUser.setPassword(pe.encode("1234"));
@@ -83,13 +87,13 @@ public class UserdataDbClient {
 
         authAuthorityDaoJdbc.create(userAuthorities);
 
-        return UserdataUserJson.fromEntity(
+        return UdUserJson.fromEntity(
                 userdataUserDaoJdbc.createUser(UserdataUserEntity.fromJson(user)),
                 null);
     }
 
     // JDBC Транзакция с использованием ChainedTransactionManager
-    public UserdataUserJson createUserJdbcTransaction(UserdataUserJson user) {
+    public UdUserJson createUserJdbcTransaction(UdUserJson user) {
         return txTemplate.execute(action -> {
             AuthUserEntity authUser = new AuthUserEntity();
             authUser.setUsername(user.username());
@@ -109,32 +113,32 @@ public class UserdataDbClient {
                     ).toList()
             );
             authUserRepositoryJdbc.create(authUser);
-            return UserdataUserJson.fromEntity(
+            return UdUserJson.fromEntity(
                     userdataUserDaoJdbc.createUser(UserdataUserEntity.fromJson(user)),
                     null);
         });
     }
 
     // JDBC без транзакции
-    public List<UserdataUserJson> getAllUserJdbcNotTransaction() {
+    public List<UdUserJson> getAllUserJdbcNotTransaction() {
         List<UserdataUserEntity> entities = userdataUserDaoJdbc.findAll();
         return entities.stream()
-                .map(m -> UserdataUserJson.fromEntity(m, null))
+                .map(m -> UdUserJson.fromEntity(m, null))
                 .toList();
     }
 
     // JDBC транзакция с использованием ChainedTransactionManager
-    public List<UserdataUserJson> getAllUserJdbcTransaction() {
+    public List<UdUserJson> getAllUserJdbcTransaction() {
         return txTemplate.execute(action -> {
             List<UserdataUserEntity> entities = userdataUserDaoJdbc.findAll();
             return entities.stream()
-                    .map(m -> UserdataUserJson.fromEntity(m, null))
+                    .map(m -> UdUserJson.fromEntity(m, null))
                     .toList();
         });
     }
 
     // SpringJdbc без транзакции
-    public UserdataUserJson creatUserSpringJdbcNotTransaction(UserdataUserJson user) {
+    public UdUserJson creatUserSpringJdbcNotTransaction(UdUserJson user) {
         AuthUserEntity authUser = new AuthUserEntity();
         authUser.setUsername(user.username());
         authUser.setPassword(pe.encode("1234"));
@@ -156,13 +160,13 @@ public class UserdataDbClient {
 
         authAuthorityDaoSpringJdbc.create(userAuthorities);
 
-        return UserdataUserJson.fromEntity(
+        return UdUserJson.fromEntity(
                 userdataUserDaoSpringJdbc.createUser(UserdataUserEntity.fromJson(user)),
                 null);
     }
 
     // SpringJdbc транзакция с использованием ChainedTransactionManager
-    public UserdataUserJson createUserSpringJdbcTransaction(UserdataUserJson user) {
+    public UdUserJson createUserSpringJdbcTransaction(UdUserJson user) {
         return txTemplate.execute(action -> {
             AuthUserEntity authUser = new AuthUserEntity();
             authUser.setUsername(user.username());
@@ -185,27 +189,35 @@ public class UserdataDbClient {
 
             authAuthorityDaoSpringJdbc.create(userAuthorities);
 
-            return UserdataUserJson.fromEntity(
+            return UdUserJson.fromEntity(
                     userdataUserDaoSpringJdbc.createUser(UserdataUserEntity.fromJson(user)),
                     null);
         });
     }
 
     // SpringJdbc без транзакции
-    public List<UserdataUserJson> getAllUserSpringJdbcNotTransaction() {
+    public List<UdUserJson> getAllUserSpringJdbcNotTransaction() {
         List<UserdataUserEntity> entities = userdataUserDaoSpringJdbc.findAll();
         return entities.stream()
-                .map(m -> UserdataUserJson.fromEntity(m, null))
+                .map(m -> UdUserJson.fromEntity(m, null))
                 .toList();
     }
 
     // SpringJdbc транзакция с использованием ChainedTransactionManager
-    public List<UserdataUserJson> getAllUserSpringJdbcTransaction() {
+    public List<UdUserJson> getAllUserSpringJdbcTransaction() {
         return txTemplate.execute(action -> {
             List<UserdataUserEntity> entities = userdataUserDaoSpringJdbc.findAll();
             return entities.stream()
-                    .map(m -> UserdataUserJson.fromEntity(m, null))
+                    .map(m -> UdUserJson.fromEntity(m, null))
                     .toList();
+        });
+    }
+
+    // REPOSITORY PATTERN
+    public UdUserJson getUserByName(String name) {
+        return jdbcTxTemplate.execute(() -> {
+            Optional<UserdataUserEntity> ue = udUserRepositoryJdbc.findByUsername(name);
+            return UdUserJson.fromEntity(ue.orElseThrow(), null);
         });
     }
 }
