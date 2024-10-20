@@ -52,7 +52,6 @@ public class UserdataDbClient {
     private final UdUserRepository udUserRepositorySpringJdbc = new UdUserRepositorySpringJdbc();
     // Repository Hibernate
 
-
     private final TransactionTemplate txTemplate = new TransactionTemplate(
             new ChainedTransactionManager(
                     new JdbcTransactionManager(
