@@ -2,6 +2,7 @@ package guru.qa.niffler.test.web;
 
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.UdUserJson;
+import guru.qa.niffler.service.AuthDbClient;
 import guru.qa.niffler.service.UserdataDbClient;
 import org.junit.jupiter.api.Test;
 
@@ -106,18 +107,18 @@ public class JdbcTest {
     }
 
     @Test
-    void userdataSendFriendshipRequest() {
+    void  userdataSendFriendshipRequest() {
 
         UserdataDbClient userdataDbClient = new UserdataDbClient();
+        AuthDbClient authDbClient = new AuthDbClient();
 //        UdUserJson from = userdataDbClient.getUserByNameJdbc("vladislav");
 //        UdUserJson to = userdataDbClient.getUserByNameJdbc("pork");
 //        userdataDbClient.createFriendshipRequestJdbc(from, to);
 
-        UdUserJson from = userdataDbClient.getUserByNameSpringJdbc("vladislav");
-        UdUserJson to = userdataDbClient.getUserByNameSpringJdbc("pork");
-        System.out.println(from);
-        System.out.println(to);
+//        UdUserJson from = userdataDbClient.getUserByNameSpringJdbc("vladislav");
+//        UdUserJson to = userdataDbClient.getUserByNameSpringJdbc("pork");
+//        System.out.println(from);
+//        System.out.println(to);
 //        userdataDbClient.createFriendshipRequestSpringJdbc(from, to);
-        userdataDbClient.deleteFriendShipSpringJdbc(from, to);
     }
 }

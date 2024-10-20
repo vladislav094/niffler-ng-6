@@ -7,11 +7,14 @@ import guru.qa.niffler.data.dao.ImplDao.auth.AuthAuthorityDaoSpringJdbc;
 import guru.qa.niffler.data.dao.ImplDao.auth.AuthUserDaoSpringJdbc;
 import guru.qa.niffler.data.entity.auth.AuthAuthorityEntity;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
+import guru.qa.niffler.data.repository.AuthUserRepository;
+import guru.qa.niffler.data.repository.implRepository.auth.AuthUserRepositoryHibernate;
 import guru.qa.niffler.data.tpl.JdbcTransactionsTemplate;
 import guru.qa.niffler.model.AuthAuthorityJson;
 import guru.qa.niffler.model.AuthUserJson;
 
 import java.util.List;
+import java.util.Optional;
 
 public class AuthDbClient {
 
@@ -19,6 +22,8 @@ public class AuthDbClient {
 
     private final AuthUserDao authUserDao = new AuthUserDaoSpringJdbc();
     private final AuthAuthorityDao authAuthorityDao = new AuthAuthorityDaoSpringJdbc();
+    // Repository Hibernate
+    private final AuthUserRepository authUserRepositoryHibernate = new AuthUserRepositoryHibernate();
 
     private final JdbcTransactionsTemplate jdbcTxTemplate = new JdbcTransactionsTemplate(
             CFG.userdataJdbcUrl());
@@ -41,5 +46,10 @@ public class AuthDbClient {
                     .map(AuthUserJson::fromEntity)
                     .toList();
         });
+    }
+
+    // Hibernate
+    public AuthUserJson getUserByNameHibernate(String username) {
+        return AuthUserJson.fromEntity(Optional.of(authUserRepositoryHibernate.findByUsername(username)).get().orElseThrow());
     }
 }
