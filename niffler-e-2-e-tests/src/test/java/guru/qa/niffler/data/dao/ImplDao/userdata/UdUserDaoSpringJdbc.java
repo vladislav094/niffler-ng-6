@@ -19,10 +19,11 @@ import static guru.qa.niffler.data.tpl.DataSources.getDataSource;
 public class UdUserDaoSpringJdbc implements UdUserDao {
 
     private static final Config CFG = Config.getInstance();
+    private final String url = CFG.userdataJdbcUrl();
 
     @Override
-    public UdUserEntity createUser(UdUserEntity user) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(getDataSource(CFG.userdataJdbcUrl()));
+    public UdUserEntity create(UdUserEntity user) {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(getDataSource(url));
         KeyHolder kh = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(
@@ -46,39 +47,63 @@ public class UdUserDaoSpringJdbc implements UdUserDao {
     }
 
     @Override
+    public UdUserEntity update(UdUserEntity user) {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(getDataSource(url));
+        KeyHolder kh = new GeneratedKeyHolder();
+        jdbcTemplate.update(con -> {
+            PreparedStatement ps = con.prepareStatement(
+                    "UPDATE \"user\" SET currency = ?," +
+                            "firstname = ?," +
+                            "surname = ?," +
+                            "photo = ?," +
+                            "photo_small = ?," +
+                            "full_name = ? WHERE id = ? AND username = ?",
+                    Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, user.getCurrency().name());
+            ps.setString(2, user.getFirstname());
+            ps.setString(3, user.getFullname());
+            ps.setBytes(4, user.getPhoto());
+            ps.setBytes(5, user.getPhotoSmall());
+            ps.setString(6, user.getFullname());
+            ps.setObject(7, user.getId());
+            ps.setString(8, user.getUsername());
+            return ps;
+        }, kh);
+        return user;
+    }
+
+    @Override
     public Optional<UdUserEntity> findById(UUID id) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(getDataSource(CFG.userdataJdbcUrl()));
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(getDataSource(url));
         return Optional.ofNullable(
                 jdbcTemplate.queryForObject(
                         "SELECT * FROM \"user\" WHERE id = ?",
                         UserdataUserEntityRowMapper.instance,
                         id
-                )
-        );
+                ));
     }
 
     @Override
     public Optional<UdUserEntity> findByUsername(String username) {
         return Optional.ofNullable(
-                new JdbcTemplate(getDataSource(CFG.userdataJdbcUrl())).queryForObject(
+                new JdbcTemplate(getDataSource(url)).queryForObject(
                         "SELECT * FROM \"user\" WHERE username = ?",
                         UserdataUserEntityRowMapper.instance,
                         username
-                )
-        );
+                ));
     }
 
     @Override
     public List<UdUserEntity> findAll() {
-        return new JdbcTemplate(getDataSource(CFG.userdataJdbcUrl())).query(
+        return new JdbcTemplate(getDataSource(url)).query(
                 "SELECT * FROM \"user\"",
                 UserdataUserEntityRowMapper.instance
         );
     }
 
     @Override
-    public void delete(UdUserEntity user) {
-        new JdbcTemplate(getDataSource(CFG.userdataJdbcUrl())).update(
+    public void remove(UdUserEntity user) {
+        new JdbcTemplate(getDataSource(url)).update(
                 "DELETE FROM \"user\" WHERE id = ?",
                 user.getId()
         );

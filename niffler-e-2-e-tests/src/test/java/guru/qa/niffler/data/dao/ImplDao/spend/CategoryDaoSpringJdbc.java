@@ -19,10 +19,11 @@ import static guru.qa.niffler.data.tpl.DataSources.getDataSource;
 public class CategoryDaoSpringJdbc implements CategoryDao {
 
     private static final Config CFG = Config.getInstance();
+    private final String url = CFG.spendJdbcUrl();
 
     @Override
     public CategoryEntity create(CategoryEntity category) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(getDataSource(CFG.spendJdbcUrl()));
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(getDataSource(url));
         KeyHolder kh = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(
@@ -40,8 +41,8 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
     }
 
     @Override
-    public CategoryEntity updateCategory(CategoryEntity category) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(getDataSource(CFG.spendJdbcUrl()));
+    public CategoryEntity update(CategoryEntity category) {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(getDataSource(url));
         KeyHolder kh = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement("UPDATE category SET name = ?, username = ?, archived = ? WHERE id",
@@ -55,9 +56,9 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
     }
 
     @Override
-    public Optional<CategoryEntity> findCategoryById(UUID id) {
+    public Optional<CategoryEntity> findById(UUID id) {
         return Optional.ofNullable(
-                new JdbcTemplate(getDataSource(CFG.spendJdbcUrl())).queryForObject(
+                new JdbcTemplate(getDataSource(url)).queryForObject(
                         "SELECT * FROM category WHERE id = ?",
                         CategoryEntityRowMapper.instance,
                         id
@@ -66,36 +67,16 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
     }
 
     @Override
-    public Optional<CategoryEntity> findCategoryByUsernameAndCategoryName(String username, String categoryName) {
-        return Optional.ofNullable(
-                new JdbcTemplate(getDataSource(CFG.spendJdbcUrl())).queryForObject(
-                        "SELECT * FROM category WHERE username = ? AND name = ?",
-                        CategoryEntityRowMapper.instance,
-                        username, categoryName
-                )
-        );
-    }
-
-    @Override
-    public List<CategoryEntity> findAllByUsername(String username) {
-        return new JdbcTemplate(getDataSource(CFG.spendJdbcUrl())).query(
-                "SELECT * FROM category WHERE username = ?",
-                CategoryEntityRowMapper.instance,
-                username
-        );
-    }
-
-    @Override
     public List<CategoryEntity> findAll() {
-        return new JdbcTemplate(getDataSource(CFG.spendJdbcUrl())).query(
+        return new JdbcTemplate(getDataSource(url)).query(
                 "SELECT * FROM category",
                 CategoryEntityRowMapper.instance
         );
     }
 
     @Override
-    public void deleteCategory(CategoryEntity category) {
-        new JdbcTemplate(getDataSource(CFG.spendJdbcUrl())).update(
+    public void remove(CategoryEntity category) {
+        new JdbcTemplate(getDataSource(url)).update(
                 "DELETE FROM category WHERE id = ?",
                 category.getId()
         );

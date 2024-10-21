@@ -16,10 +16,11 @@ import static guru.qa.niffler.data.tpl.Connections.holder;
 public class CategoryDaoJdbc implements CategoryDao {
 
     private static final Config CFG = Config.getInstance();
+    private final String url = CFG.spendJdbcUrl();
 
     @Override
     public CategoryEntity create(CategoryEntity category) {
-        try (PreparedStatement ps = holder(CFG.spendJdbcUrl()).connection().prepareStatement(
+        try (PreparedStatement ps = holder(url).connection().prepareStatement(
                 "INSERT INTO category (username, name, archived) " +
                         "VALUES (?, ?, ?)",
                 Statement.RETURN_GENERATED_KEYS
@@ -43,8 +44,8 @@ public class CategoryDaoJdbc implements CategoryDao {
     }
 
     @Override
-    public CategoryEntity updateCategory(CategoryEntity category) {
-        try (PreparedStatement ps = holder(CFG.spendJdbcUrl()).connection().prepareStatement(
+    public CategoryEntity update(CategoryEntity category) {
+        try (PreparedStatement ps = holder(url).connection().prepareStatement(
                 "UPDATE category SET name = ?, username = ?, archived = ? WHERE id = ?"
         )) {
             ps.setString(1, category.getName());
@@ -62,8 +63,8 @@ public class CategoryDaoJdbc implements CategoryDao {
     }
 
     @Override
-    public Optional<CategoryEntity> findCategoryById(UUID id) {
-        try (PreparedStatement ps = holder(CFG.spendJdbcUrl()).connection().prepareStatement(
+    public Optional<CategoryEntity> findById(UUID id) {
+        try (PreparedStatement ps = holder(url).connection().prepareStatement(
                 "SELECT * FROM category WHERE  id = ?"
         )) {
             ps.setObject(1, id);
@@ -82,46 +83,8 @@ public class CategoryDaoJdbc implements CategoryDao {
     }
 
     @Override
-    public Optional<CategoryEntity> findCategoryByUsernameAndCategoryName(String username, String categoryName) {
-        try (PreparedStatement ps = holder(CFG.spendJdbcUrl()).connection().prepareStatement(
-                "SELECT * FROM category WHERE username = ? and name = ?"
-        )) {
-            ps.setString(1, username);
-            ps.setString(2, categoryName);
-            ps.execute();
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return Optional.ofNullable(
-                            CategoryEntityRowMapper.instance.mapRow(rs, rs.getRow()));
-                } else {
-                    return Optional.empty();
-                }
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public List<CategoryEntity> findAllByUsername(String username) {
-        try (PreparedStatement ps = holder(CFG.spendJdbcUrl()).connection().prepareStatement(
-                "SELECT * FROM category WHERE username = ?")) {
-            ps.setString(1, username);
-            List<CategoryEntity> result = new ArrayList<>();
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    result.add(CategoryEntityRowMapper.instance.mapRow(rs, rs.getRow()));
-                }
-            }
-            return result;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
     public List<CategoryEntity> findAll() {
-        try (PreparedStatement ps = holder(CFG.spendJdbcUrl()).connection().prepareStatement(
+        try (PreparedStatement ps = holder(url).connection().prepareStatement(
                 "SELECT * FROM category")) {
             ps.execute();
             List<CategoryEntity> result = new ArrayList<>();
@@ -137,9 +100,9 @@ public class CategoryDaoJdbc implements CategoryDao {
     }
 
     @Override
-    public void deleteCategory(CategoryEntity category) {
+    public void remove(CategoryEntity category) {
         UUID categoryId = category.getId();
-        try (PreparedStatement ps = holder(CFG.spendJdbcUrl()).connection().prepareStatement(
+        try (PreparedStatement ps = holder(url).connection().prepareStatement(
                 "DELETE FROM category WHERE id = ?"
         )) {
             ps.setObject(1, categoryId);

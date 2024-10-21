@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 
+import static java.sql.Connection.TRANSACTION_READ_COMMITTED;
+
 public class JdbcTransactionsTemplate {
 
     private final JdbcConnectionHolder holder;
@@ -47,7 +49,7 @@ public class JdbcTransactionsTemplate {
     }
 
     public <T> T execute(Supplier<T> action) {
-        return execute(action, Connection.TRANSACTION_READ_COMMITTED);
+        return execute(action, TRANSACTION_READ_COMMITTED);
     }
 
     public void execute(Runnable runnable, int transactionIsolation) {
@@ -73,6 +75,6 @@ public class JdbcTransactionsTemplate {
     }
 
     public void execute(Runnable runnable) {
-        execute(runnable, Connection.TRANSACTION_READ_COMMITTED);
+        execute(runnable, TRANSACTION_READ_COMMITTED);
     }
 }

@@ -1,123 +1,92 @@
 package guru.qa.niffler.test.web;
 
+import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.CurrencyValues;
+import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.UdUserJson;
-import guru.qa.niffler.service.UserdataDbClient;
+import guru.qa.niffler.service.impl.SpendDbClient;
+import guru.qa.niffler.service.impl.UserdataDbClient;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
-import java.util.List;
+import java.util.Date;
 
 public class JdbcTest {
 
+    public static UserdataDbClient userdataDbClient = new UserdataDbClient();
+
+    @ValueSource(strings = {
+            "valentin-12"
+    })
+    @ParameterizedTest
+    void hibernateTest(String uname) {
+//        UdUserJson user = userdataDbClient.createUser(uname, "1234");
+//        System.out.println(user);d
+//        userdataDbClient.addIncomeInvitation(user,1);
+//        userdataDbClient.addOutcomeInvitation(user,1);
+    }
 
     @Test
-    void jdbcAndSpringJdbcCreateUser() {
-        UserdataDbClient userdataDbClient = new UserdataDbClient();
+    void spendTest() {
 
-//        UserdataUserJson userJdbc = userdataDbClient.creatUserJdbcNotTransaction(
-//                new UserdataUserJson(
-//                        null,
-//                        "springJdbc412",
-//                        null,
-//                        null,
-//                        null,
-//                        CurrencyValues.RUB,
-//                        null,
-//                        null,
-//                        null
-//                )
-//        );
-//        System.out.println(userJdbc);
-
-        UdUserJson userJdbcTransaction = userdataDbClient.createUserJdbcTransaction(
-                new UdUserJson(
+        SpendDbClient spendDbClient = new SpendDbClient();
+        SpendJson spendJson = new SpendJson(
+                null,
+                new Date(),
+                new CategoryJson(
                         null,
-                        "springJdbc77711",
-                        null,
-                        null,
-                        null,
-                        CurrencyValues.RUB,
-                        null,
-                        null,
-                        null
-                )
+                        "spendCategoryName",
+                        "spendUsername10",
+                        false
+                ),
+                CurrencyValues.RUB,
+                700.00,
+                "spendDescription",
+                "spendUsername10"
         );
-        System.out.println(userJdbcTransaction);
 
+        spendJson = spendDbClient.createSpend(spendJson);
+
+        System.out.println(spendJson);
+
+        spendJson = spendDbClient.updateSpend(spendJson);
 //
-//        UserdataUserJson userSpringJdbc = userdataDbClient.creatUserSpringJdbcNotTransaction(
-//                new UserdataUserJson(
-//                        null,
-//                        "springJdbc62",
-//                        null,
-//                        null,
-//                        null,
-//                        CurrencyValues.RUB,
-//                        null,
-//                        null,
-//                        null
-//                )
-//        );
-//        System.out.println(userSpringJdbc);
-//
-//        UserdataUserJson userSpringJdbcTransaction = userdataDbClient.createUserSpringJdbcTransaction(
-//                new UserdataUserJson(
-//                        null,
-//                        "springJdbc72",
-//                        null,
-//                        null,
-//                        null,
-//                        CurrencyValues.RUB,
-//                        null,
-//                        null,
-//                        null
-//                )
-//        );
-//        System.out.println(userSpringJdbcTransaction);
+        System.out.println(spendJson);
     }
 
     @Test
-    void jdbcAndSpringJdbcGetAllUserdataUser() {
-        UserdataDbClient userdataDbClient = new UserdataDbClient();
-
-        System.out.println("====JDBC not transaction====");
-        List<UdUserJson> usUserJdbc = userdataDbClient.getAllUserJdbcNotTransaction();
-        for (UdUserJson udUserJson : usUserJdbc) {
-            System.out.println(udUserJson);
-        }
-
-        System.out.println("====JDBC transaction====");
-        List<UdUserJson> udUserJdbcTransaction = userdataDbClient.getAllUserJdbcTransaction();
-        for (UdUserJson udUserJson : udUserJdbcTransaction) {
-            System.out.println(udUserJson);
-        }
-
-        System.out.println("====Spring Jdbc not transaction====");
-        List<UdUserJson> userdataUserSpringJdbc = userdataDbClient.getAllUserSpringJdbcNotTransaction();
-        for (UdUserJson udUserJson : userdataUserSpringJdbc) {
-            System.out.println(udUserJson);
-        }
-
-        System.out.println("====Spring Jdbc transaction====");
-        List<UdUserJson> udUserSpringJdbcTransaction = userdataDbClient.getAllUserSpringJdbcTransaction();
-        for (UdUserJson udUserJson : udUserSpringJdbcTransaction) {
-            System.out.println(udUserJson);
-        }
+    void debugTest() {
+//        UdUserJson u = userdataDbClient.getDebug("valentin-12");
+//        UdUserJson u = userdataDbClient.getUserById("645ac424-898d-11ef-8e45-0242ac110002");
+        UdUserJson leon = userdataDbClient.getUserByName("springJdbc41");
+//        System.out.println(u);
+//        System.out.println(leon);
+//        leon = userdataDbClient.updateUser(leon);
+//        System.out.println(leon);
+        userdataDbClient.deleteUdUser(leon);
     }
 
     @Test
-    void userdataSendFriendshipRequest() {
+    void debug2Test() {
+        SpendDbClient spendDbClient = new SpendDbClient();
 
-        UserdataDbClient userdataDbClient = new UserdataDbClient();
-//        UdUserJson from = userdataDbClient.getUserByNameJdbc("vladislav");
-//        UdUserJson to = userdataDbClient.getUserByNameJdbc("pork");
-//        userdataDbClient.createFriendshipRequestJdbc(from, to);
+        SpendJson spendById = spendDbClient.getSpendById("fb469e54-916b-11ef-be40-0242ac110002");
+        System.out.println(spendById);
+        spendDbClient.removeSpend(spendById);
+//
+//        CategoryJson categoryJson = spendDbClient.getCategoryById("7edcd378-baf6-48e1-b6d6-72ee354a84de");
+//        System.out.println(categoryJson);
+//
+//        spendDbClient.deleteCategory(categoryJson);
+    }
 
-        UdUserJson from = userdataDbClient.getUserByNameSpringJdbc("vladislav");
-        UdUserJson to = userdataDbClient.getUserByNameSpringJdbc("pork");
-        System.out.println(from);
-        System.out.println(to);
-//        userdataDbClient.createFriendshipRequestSpringJdbc(from, to);
-        userdataDbClient.deleteFriendShipSpringJdbc(from, to);
+    @Test
+    void testFriendshipInvitation() {
+
+        UdUserJson user = userdataDbClient.getUserByName("vladislav");
+//        userdataDbClient.addOutcomeInvitation(user, 1);
+//        userdataDbClient.addIncomeInvitation(user, 1);
+        userdataDbClient.createFriend(user, 1);
     }
 }
