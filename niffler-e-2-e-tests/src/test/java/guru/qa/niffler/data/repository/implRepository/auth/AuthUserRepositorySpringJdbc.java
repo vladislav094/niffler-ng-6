@@ -11,7 +11,6 @@ import guru.qa.niffler.data.extractor.AuthUserEntityExtractor;
 import guru.qa.niffler.data.repository.AuthUserRepository;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -28,6 +27,11 @@ public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
         authUserDao.create(user);
         authAuthorityDao.create(user.getAuthorities().toArray(new AuthAuthorityEntity[0]));
         return user;
+    }
+
+    @Override
+    public AuthUserEntity update(AuthUserEntity user) {
+        return authUserDao.update(user);
     }
 
     @Override
@@ -73,12 +77,7 @@ public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
     }
 
     @Override
-    public List<AuthUserEntity> findAll() {
-        return authUserDao.findAll();
-    }
-
-    @Override
-    public void delete(AuthUserEntity user) {
-        authUserDao.delete(user);
+    public void remove(AuthUserEntity user) {
+        authUserDao.remove(user);
     }
 }
