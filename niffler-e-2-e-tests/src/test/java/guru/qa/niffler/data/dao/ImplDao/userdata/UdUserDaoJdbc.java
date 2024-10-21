@@ -22,7 +22,7 @@ public class UdUserDaoJdbc implements UdUserDao {
     private static final Config CFG = Config.getInstance();
 
     @Override
-    public UdUserEntity createUser(UdUserEntity user) {
+    public UdUserEntity create(UdUserEntity user) {
         try (PreparedStatement ps = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
                 "INSERT INTO \"user\" (username, currency, firstname, surname, photo, photo_small, full_name) " +
                         "VALUES (?, ?, ?, ?, ?, ?, ?)",

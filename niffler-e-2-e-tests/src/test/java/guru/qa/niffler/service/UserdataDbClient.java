@@ -16,12 +16,15 @@ import guru.qa.niffler.data.entity.auth.Authority;
 import guru.qa.niffler.data.entity.userdata.UdUserEntity;
 import guru.qa.niffler.data.repository.AuthUserRepository;
 import guru.qa.niffler.data.repository.UdUserRepository;
+import guru.qa.niffler.data.repository.implRepository.auth.AuthUserRepositoryHibernate;
 import guru.qa.niffler.data.repository.implRepository.auth.AuthUserRepositoryJdbc;
+import guru.qa.niffler.data.repository.implRepository.userdata.UdUserRepositoryHibernate;
 import guru.qa.niffler.data.repository.implRepository.userdata.UdUserRepositoryJdbc;
 import guru.qa.niffler.data.repository.implRepository.userdata.UdUserRepositorySpringJdbc;
 import guru.qa.niffler.data.tpl.DataSources;
 import guru.qa.niffler.data.tpl.JdbcTransactionsTemplate;
-import guru.qa.niffler.data.tpl.XaTransactionsTemplate;
+import guru.qa.niffler.data.tpl.XaTransactionTemplate;
+import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.UdUserJson;
 import org.springframework.data.transaction.ChainedTransactionManager;
 import org.springframework.jdbc.support.JdbcTransactionManager;
@@ -29,9 +32,13 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
+
+import static guru.qa.niffler.faker.RandomDataUtils.randomUsername;
 
 public class UserdataDbClient {
 
@@ -50,6 +57,9 @@ public class UserdataDbClient {
     private final UdUserRepository udUserRepositoryJdbc = new UdUserRepositoryJdbc();
     // Repository Spring JDBC
     private final UdUserRepository udUserRepositorySpringJdbc = new UdUserRepositorySpringJdbc();
+    // Repository Hibernate
+    private final AuthUserRepository authUserRepositoryHibernate = new AuthUserRepositoryHibernate();
+    private final UdUserRepository udUserRepositoryHibernate = new UdUserRepositoryHibernate();
 
     private final TransactionTemplate txTemplate = new TransactionTemplate(
             new ChainedTransactionManager(
@@ -62,7 +72,7 @@ public class UserdataDbClient {
             CFG.userdataJdbcUrl()
     );
 
-    private final XaTransactionsTemplate xaTxTemplate = new XaTransactionsTemplate(
+    private final XaTransactionTemplate xaTxTemplate = new XaTransactionTemplate(
             CFG.authJdbcUrl(),
             CFG.userdataJdbcUrl()
     );
@@ -91,35 +101,89 @@ public class UserdataDbClient {
         authAuthorityDaoJdbc.create(userAuthorities);
 
         return UdUserJson.fromEntity(
-                udUserDaoJdbc.createUser(UdUserEntity.fromJson(user)),
+                udUserDaoJdbc.create(UdUserEntity.fromJson(user)),
                 null);
     }
 
     // JDBC Транзакция с использованием ChainedTransactionManager
-    public UdUserJson createUserJdbcTransaction(UdUserJson user) {
-        return txTemplate.execute(action -> {
-            AuthUserEntity authUser = new AuthUserEntity();
-            authUser.setUsername(user.username());
-            authUser.setPassword(pe.encode("1234"));
-            authUser.setEnabled(true);
-            authUser.setAccountNonExpired(true);
-            authUser.setAccountNonLocked(true);
-            authUser.setCredentialsNonExpired(true);
-            authUser.setAuthorities(
-                    Arrays.stream(Authority.values()).map(
-                            a -> {
-                                AuthAuthorityEntity ae = new AuthAuthorityEntity();
-                                ae.setUser(authUser);
-                                ae.setAuthority(a);
-                                return ae;
-                            }
-                    ).toList()
-            );
-            authUserRepositoryJdbc.create(authUser);
+    public UdUserJson createUser(String username, String password) {
+        return xaTxTemplate.execute(() -> {
+            AuthUserEntity authUser = authUserEntity(username, password);
+            authUserRepositoryHibernate.create(authUser);
             return UdUserJson.fromEntity(
-                    udUserDaoJdbc.createUser(UdUserEntity.fromJson(user)),
+                    udUserRepositoryHibernate.create(userEntity(username)),
                     null);
         });
+    }
+
+    public void addIncomeInvitation(UdUserJson targetUser, int count) {
+        if (count > 0) {
+            UdUserEntity targetEntity = udUserRepositoryHibernate.findById(
+                    targetUser.id()
+            ).orElseThrow();
+            for (int i = 0; i < count; i ++) {
+                xaTxTemplate.execute(() -> {
+                    String username = randomUsername();
+                    AuthUserEntity authUser = authUserEntity(username, "1234");
+                    authUserRepositoryHibernate.create(authUser);
+                    UdUserEntity addressee = udUserRepositoryHibernate.create(userEntity(username));
+                    udUserRepositoryHibernate.addIncomeInvitation(targetEntity, addressee);
+                    return null;
+                });
+            }
+        }
+    }
+
+    public void addOutcomeInvitation(UdUserJson targetUser, int count) {
+        if (count > 0) {
+            UdUserEntity targetEntity = udUserRepositoryHibernate.findById(
+                    targetUser.id()
+            ).orElseThrow();
+            for (int i = 0; i < count; i ++) {
+                xaTxTemplate.execute(() -> {
+                    String username = randomUsername();
+                    AuthUserEntity authUser = authUserEntity(username, "1234");
+                    authUserRepositoryHibernate.create(authUser);
+                    UdUserEntity addressee = udUserRepositoryHibernate.create(userEntity(username));
+                    udUserRepositoryHibernate.addOutcomeInvitation(targetEntity, addressee);
+                    return null;
+                });
+            }
+        }
+    }
+
+    void addFriend(UdUserJson targetUser, int count) {
+
+    }
+
+
+
+    private UdUserEntity userEntity(String username) {
+        UdUserEntity ue = new UdUserEntity();
+        ue.setUsername(username);
+        ue.setCurrency(CurrencyValues.RUB);
+        return ue;
+    }
+
+    private AuthUserEntity authUserEntity(String username, String password) {
+        AuthUserEntity authUser = new AuthUserEntity();
+        authUser.setUsername(username);
+        authUser.setPassword(pe.encode(password));
+        authUser.setEnabled(true);
+        authUser.setAccountNonExpired(true);
+        authUser.setAccountNonLocked(true);
+        authUser.setCredentialsNonExpired(true);
+        authUser.setAuthorities(
+                Arrays.stream(Authority.values()).map(
+                        a -> {
+                            AuthAuthorityEntity ae = new AuthAuthorityEntity();
+                            ae.setUser(authUser);
+                            ae.setAuthority(a);
+                            return ae;
+                        }
+                ).toList()
+        );
+        return authUser;
     }
 
     // JDBC без транзакции
@@ -164,7 +228,7 @@ public class UserdataDbClient {
         authAuthorityDaoSpringJdbc.create(userAuthorities);
 
         return UdUserJson.fromEntity(
-                udUserDaoSpringJdbc.createUser(UdUserEntity.fromJson(user)),
+                udUserDaoSpringJdbc.create(UdUserEntity.fromJson(user)),
                 null);
     }
 
@@ -193,7 +257,7 @@ public class UserdataDbClient {
             authAuthorityDaoSpringJdbc.create(userAuthorities);
 
             return UdUserJson.fromEntity(
-                    udUserDaoSpringJdbc.createUser(UdUserEntity.fromJson(user)),
+                    udUserDaoSpringJdbc.create(UdUserEntity.fromJson(user)),
                     null);
         });
     }
@@ -229,7 +293,6 @@ public class UserdataDbClient {
                 UdUserEntity.fromJson(requester), UdUserEntity.fromJson(addressee)
         ));
     }
-
 
     // REPOSITORY SPRING JDBC
     public UdUserJson getUserByNameSpringJdbc(String name) {

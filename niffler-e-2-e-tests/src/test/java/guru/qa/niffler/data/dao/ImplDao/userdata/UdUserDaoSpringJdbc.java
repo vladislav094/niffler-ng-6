@@ -21,7 +21,7 @@ public class UdUserDaoSpringJdbc implements UdUserDao {
     private static final Config CFG = Config.getInstance();
 
     @Override
-    public UdUserEntity createUser(UdUserEntity user) {
+    public UdUserEntity create(UdUserEntity user) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(getDataSource(CFG.userdataJdbcUrl()));
         KeyHolder kh = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
