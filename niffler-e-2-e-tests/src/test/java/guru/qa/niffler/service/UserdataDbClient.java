@@ -51,6 +51,7 @@ public class UserdataDbClient {
     // Repository Spring JDBC
     private final UdUserRepository udUserRepositorySpringJdbc = new UdUserRepositorySpringJdbc();
 
+
     private final TransactionTemplate txTemplate = new TransactionTemplate(
             new ChainedTransactionManager(
                     new JdbcTransactionManager(
@@ -229,7 +230,6 @@ public class UserdataDbClient {
                 UdUserEntity.fromJson(requester), UdUserEntity.fromJson(addressee)
         ));
     }
-
 
     // REPOSITORY SPRING JDBC
     public UdUserJson getUserByNameSpringJdbc(String name) {
