@@ -122,7 +122,6 @@ public class JdbcTest {
 
         UdUserJson user = userdataDbClient.createUser(uname, "1234");
         System.out.println(user);
-//        userdataDbClient.removeUser(user);
         userdataDbClient.addIncomeInvitation(user,1);
         userdataDbClient.addOutcomeInvitation(user,1);
     }
