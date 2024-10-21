@@ -1,24 +1,45 @@
 package guru.qa.niffler.data.entity.auth;
 
-import guru.qa.niffler.model.AuthAuthorityJson;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.proxy.HibernateProxy;
 
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.UUID;
 
 @Getter
 @Setter
+@Entity
+@Table(name = "authority", schema = "public", catalog = "niffler-auth")
 public class AuthAuthorityEntity implements Serializable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id", nullable = false, columnDefinition = "UUID default gen_random_uuid()")
     private UUID id;
-    private UUID userId;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Authority authority;
 
-    public static AuthAuthorityEntity fromJson(AuthAuthorityJson json) {
-        AuthAuthorityEntity entity = new AuthAuthorityEntity();
-        entity.setId(json.id());
-        entity.setUserId(json.userId());
-        entity.setAuthority(json.authority());
-        return entity;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private AuthUserEntity user;
+
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null) return false;
+        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+        if (thisEffectiveClass != oEffectiveClass) return false;
+        AuthAuthorityEntity that = (AuthAuthorityEntity) o;
+        return getId() != null && Objects.equals(getId(), that.getId());
+    }
+
+    @Override
+    public final int hashCode() {
+        return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
     }
 }

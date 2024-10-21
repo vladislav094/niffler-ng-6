@@ -1,9 +1,9 @@
-package guru.qa.niffler.data.daoImplementation.userdata;
+package guru.qa.niffler.data.dao.ImplDao.userdata;
 
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.data.dao.userdata.UserdataUserDao;
+import guru.qa.niffler.data.dao.userdata.UdUserDao;
 import guru.qa.niffler.data.entity.userdata.UdUserEntity;
-import guru.qa.niffler.data.mapper.UdUserEntityRowMapper;
+import guru.qa.niffler.data.mapper.UserdataUserEntityRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -16,7 +16,7 @@ import java.util.UUID;
 
 import static guru.qa.niffler.data.tpl.DataSources.getDataSource;
 
-public class UserdataUserDaoSpringJdbc implements UserdataUserDao {
+public class UdUserDaoSpringJdbc implements UdUserDao {
 
     private static final Config CFG = Config.getInstance();
 
@@ -51,7 +51,7 @@ public class UserdataUserDaoSpringJdbc implements UserdataUserDao {
         return Optional.ofNullable(
                 jdbcTemplate.queryForObject(
                         "SELECT * FROM \"user\" WHERE id = ?",
-                        UdUserEntityRowMapper.instance,
+                        UserdataUserEntityRowMapper.instance,
                         id
                 )
         );
@@ -62,7 +62,7 @@ public class UserdataUserDaoSpringJdbc implements UserdataUserDao {
         return Optional.ofNullable(
                 new JdbcTemplate(getDataSource(CFG.userdataJdbcUrl())).queryForObject(
                         "SELECT * FROM \"user\" WHERE username = ?",
-                        UdUserEntityRowMapper.instance,
+                        UserdataUserEntityRowMapper.instance,
                         username
                 )
         );
@@ -72,7 +72,7 @@ public class UserdataUserDaoSpringJdbc implements UserdataUserDao {
     public List<UdUserEntity> findAll() {
         return new JdbcTemplate(getDataSource(CFG.userdataJdbcUrl())).query(
                 "SELECT * FROM \"user\"",
-                UdUserEntityRowMapper.instance
+                UserdataUserEntityRowMapper.instance
         );
     }
 
