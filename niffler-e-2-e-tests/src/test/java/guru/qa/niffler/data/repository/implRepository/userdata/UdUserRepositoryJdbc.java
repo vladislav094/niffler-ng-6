@@ -22,7 +22,7 @@ public class UdUserRepositoryJdbc implements UdUserRepository {
 
     @Override
     public UdUserEntity create(UdUserEntity user) {
-        return udUserDao.createUser(user);
+        return udUserDao.create(user);
     }
 
     @Override

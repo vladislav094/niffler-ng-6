@@ -5,6 +5,10 @@ import guru.qa.niffler.model.UdUserJson;
 import guru.qa.niffler.service.AuthDbClient;
 import guru.qa.niffler.service.UserdataDbClient;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 
@@ -30,22 +34,6 @@ public class JdbcTest {
 //        );
 //        System.out.println(userJdbc);
 
-        UdUserJson userJdbcTransaction = userdataDbClient.createUserJdbcTransaction(
-                new UdUserJson(
-                        null,
-                        "springJdbc77711",
-                        null,
-                        null,
-                        null,
-                        CurrencyValues.RUB,
-                        null,
-                        null,
-                        null
-                )
-        );
-        System.out.println(userJdbcTransaction);
-
-//
 //        UserdataUserJson userSpringJdbc = userdataDbClient.creatUserSpringJdbcNotTransaction(
 //                new UserdataUserJson(
 //                        null,
@@ -119,6 +107,23 @@ public class JdbcTest {
 //        UdUserJson to = userdataDbClient.getUserByNameSpringJdbc("pork");
 //        System.out.println(from);
 //        System.out.println(to);
+
 //        userdataDbClient.createFriendshipRequestSpringJdbc(from, to);
+    }
+
+    public static UserdataDbClient userdataDbClient = new UserdataDbClient();
+
+    @ValueSource(strings = {
+            "valentin-12"
+    })
+    @ParameterizedTest
+    void hibernateTest(String uname) {
+        AuthDbClient authDbClient = new AuthDbClient();
+
+        UdUserJson user = userdataDbClient.createUser(uname, "1234");
+        System.out.println(user);
+//        userdataDbClient.removeUser(user);
+        userdataDbClient.addIncomeInvitation(user,1);
+        userdataDbClient.addOutcomeInvitation(user,1);
     }
 }

@@ -7,17 +7,16 @@ import jakarta.transaction.UserTransaction;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 
-public class XaTransactionsTemplate {
-
+public class XaTransactionTemplate {
 
     private final JdbcConnectionHolders holders;
     private final AtomicBoolean closeAfterActions = new AtomicBoolean(true);
 
-    public XaTransactionsTemplate(String... jdbcUrl) {
+    public XaTransactionTemplate(String... jdbcUrl) {
         this.holders = Connections.holders(jdbcUrl);
     }
 
-    public XaTransactionsTemplate holdConnectionAfterAction() {
+    public XaTransactionTemplate holdConnectionAfterAction() {
         this.closeAfterActions.set(false);
         return this;
     }

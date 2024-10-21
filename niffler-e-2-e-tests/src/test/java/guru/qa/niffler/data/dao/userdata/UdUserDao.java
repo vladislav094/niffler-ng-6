@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public interface UdUserDao {
 
-    UdUserEntity createUser(UdUserEntity user);
+    UdUserEntity create(UdUserEntity user);
 
     Optional<UdUserEntity> findById(UUID id);
 
