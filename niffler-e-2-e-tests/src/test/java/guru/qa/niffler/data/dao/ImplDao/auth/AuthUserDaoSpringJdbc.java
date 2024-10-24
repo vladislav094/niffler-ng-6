@@ -19,10 +19,11 @@ import static guru.qa.niffler.data.tpl.DataSources.getDataSource;
 public class AuthUserDaoSpringJdbc implements AuthUserDao {
 
     private static final Config CFG = Config.getInstance();
+    private final String url = CFG.authJdbcUrl();
 
     @Override
     public AuthUserEntity create(AuthUserEntity user) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(getDataSource(CFG.authJdbcUrl()));
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(getDataSource(url));
         KeyHolder kh = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(
@@ -47,7 +48,7 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
 
     @Override
     public Optional<AuthUserEntity> findById(UUID id) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(getDataSource(CFG.authJdbcUrl()));
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(getDataSource(url));
         return Optional.ofNullable(
                 jdbcTemplate.queryForObject(
                         "SELECT * FROM \"user\" WHERE id = ?",
@@ -59,7 +60,7 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
 
     @Override
     public Optional<AuthUserEntity> findByUsername(String username) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(getDataSource(CFG.authJdbcUrl()));
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(getDataSource(url));
         return Optional.ofNullable(
                 jdbcTemplate.queryForObject(
                         "SELECT * FROM \"user\" WHERE username = ?",
@@ -71,15 +72,15 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
 
     @Override
     public List<AuthUserEntity> findAll() {
-        return new JdbcTemplate(getDataSource(CFG.authJdbcUrl())).query(
+        return new JdbcTemplate(getDataSource(url)).query(
                 "SELECT * FROM \"user\"",
                 AuthUserEntityRowMapper.instance
         );
     }
 
     @Override
-    public void delete(AuthUserEntity user) {
-        new JdbcTemplate(getDataSource(CFG.authJdbcUrl())).update(
+    public void remove(AuthUserEntity user) {
+        new JdbcTemplate(getDataSource(url)).update(
                 "DELETE FROM \"user\" WHERE id = ?",
                 user.getId()
         );

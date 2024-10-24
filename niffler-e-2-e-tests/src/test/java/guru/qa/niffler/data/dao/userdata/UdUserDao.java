@@ -8,7 +8,9 @@ import java.util.UUID;
 
 public interface UdUserDao {
 
-    UdUserEntity createUser(UdUserEntity user);
+    UdUserEntity create(UdUserEntity user);
+
+    UdUserEntity update(UdUserEntity user);
 
     Optional<UdUserEntity> findById(UUID id);
 
@@ -16,5 +18,5 @@ public interface UdUserDao {
 
     List<UdUserEntity> findAll();
 
-    void delete(UdUserEntity user);
+    void remove(UdUserEntity user);
 }
