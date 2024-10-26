@@ -21,12 +21,13 @@ import static guru.qa.niffler.data.tpl.Connections.holder;
 public class AuthUserDaoJdbc implements AuthUserDao {
 
     private static final Config CFG = Config.getInstance();
+    private final String url = CFG.authJdbcUrl();
 
     private static final PasswordEncoder pe = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
     @Override
     public AuthUserEntity create(AuthUserEntity user) {
-        try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
+        try (PreparedStatement ps = holder(url).connection().prepareStatement(
                 "INSERT INTO \"user\" (username, password, enabled, account_non_expired, account_non_locked, " +
                         "credentials_non_expired) VALUES (?, ?, ?, ?, ?, ?)",
                 Statement.RETURN_GENERATED_KEYS
@@ -53,8 +54,33 @@ public class AuthUserDaoJdbc implements AuthUserDao {
     }
 
     @Override
+    public AuthUserEntity update(AuthUserEntity user) {
+        try(PreparedStatement ps = holder(url).connection().prepareStatement(
+                "UPDATE \"user\" SET password = ?," +
+                        " enabled = ?," +
+                        "account_non_expired = ?," +
+                        "account_non_locked = ?," +
+                        "credentials_non_expired = ?" +
+                        "WHERE id = ? AND username = ?"
+        )) {
+            ps.setString(1, user.getPassword());
+            ps.setBoolean(2, user.getEnabled());
+            ps.setBoolean(3, user.getAccountNonExpired());
+            ps.setBoolean(4, user.getAccountNonLocked());
+            ps.setBoolean(5, user.getCredentialsNonExpired());
+            int rowsUpdate = ps.executeUpdate();
+            if (rowsUpdate == 0) {
+                throw new SQLException("Failed to update spend. Spend not found");
+            }
+            return user;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public Optional<AuthUserEntity> findById(UUID id) {
-        try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
+        try (PreparedStatement ps = holder(url).connection().prepareStatement(
                 "SELECT * FROM \"user\" WHERE  id = ?"
         )) {
             ps.setObject(1, id);
@@ -74,7 +100,7 @@ public class AuthUserDaoJdbc implements AuthUserDao {
 
     @Override
     public Optional<AuthUserEntity> findByUsername(String username) {
-        try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
+        try (PreparedStatement ps = holder(url).connection().prepareStatement(
                 "SELECT * FROM \"user\" WHERE username = ?"
         )) {
             ps.setString(1, username);
@@ -93,21 +119,8 @@ public class AuthUserDaoJdbc implements AuthUserDao {
     }
 
     @Override
-    public void delete(AuthUserEntity user) {
-        UUID categoryId = user.getId();
-        try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
-                "DELETE FROM \"user\" WHERE id = ?"
-        )) {
-            ps.setObject(1, categoryId);
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
     public List<AuthUserEntity> findAll() {
-        try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
+        try (PreparedStatement ps = holder(url).connection().prepareStatement(
                 "SELECT * FROM \"user\"")) {
             ps.execute();
             List<AuthUserEntity> result = new ArrayList<>();
@@ -117,6 +130,19 @@ public class AuthUserDaoJdbc implements AuthUserDao {
                 }
             }
             return result;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void remove(AuthUserEntity user) {
+        UUID categoryId = user.getId();
+        try (PreparedStatement ps = holder(url).connection().prepareStatement(
+                "DELETE FROM \"user\" WHERE id = ?"
+        )) {
+            ps.setObject(1, categoryId);
+            ps.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

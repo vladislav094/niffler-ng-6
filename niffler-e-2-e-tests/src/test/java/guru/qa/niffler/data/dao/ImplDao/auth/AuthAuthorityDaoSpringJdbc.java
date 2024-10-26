@@ -17,11 +17,11 @@ import static guru.qa.niffler.data.tpl.DataSources.getDataSource;
 public class AuthAuthorityDaoSpringJdbc implements AuthAuthorityDao {
 
     private static final Config CFG = Config.getInstance();
-
+    private final String url = CFG.authJdbcUrl();
 
     @Override
     public void create(AuthAuthorityEntity... authority) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(getDataSource(CFG.authJdbcUrl()));
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(getDataSource(url));
         jdbcTemplate.batchUpdate(
                 "INSERT INTO authority (user_id, authority) values (?, ?)",
                 new BatchPreparedStatementSetter() {
@@ -41,7 +41,7 @@ public class AuthAuthorityDaoSpringJdbc implements AuthAuthorityDao {
 
     @Override
     public List<AuthAuthorityEntity> findById(UUID id) {
-        return new JdbcTemplate(getDataSource(CFG.authJdbcUrl())).query(
+        return new JdbcTemplate(getDataSource(url)).query(
                 "SELECT * FROM authority WHERE id = ?",
                 AuthAuthorityEntityRowMapper.instance,
                 id
@@ -49,8 +49,8 @@ public class AuthAuthorityDaoSpringJdbc implements AuthAuthorityDao {
     }
 
     @Override
-    public List<AuthAuthorityEntity> findByUserId(UUID userId) {
-        return new JdbcTemplate(getDataSource(CFG.authJdbcUrl())).query(
+    public List<AuthAuthorityEntity> findAllByUserId(UUID userId) {
+        return new JdbcTemplate(getDataSource(url)).query(
                 "SELECT * FROM authority WHERE user_id = ?",
                 AuthAuthorityEntityRowMapper.instance,
                 userId
@@ -59,7 +59,7 @@ public class AuthAuthorityDaoSpringJdbc implements AuthAuthorityDao {
 
     @Override
     public List<AuthAuthorityEntity> findAll() {
-        return new JdbcTemplate(getDataSource(CFG.authJdbcUrl())).query(
+        return new JdbcTemplate(getDataSource(url)).query(
                 "SELECT * FROM authority",
                 AuthAuthorityEntityRowMapper.instance
         );
@@ -67,8 +67,8 @@ public class AuthAuthorityDaoSpringJdbc implements AuthAuthorityDao {
 
 
     @Override
-    public void delete(AuthAuthorityEntity user) {
-        new JdbcTemplate(getDataSource(CFG.authJdbcUrl())).update(
+    public void remove(AuthAuthorityEntity user) {
+        new JdbcTemplate(getDataSource(url)).update(
                 "DELETE FROM authority WHERE id = ?",
                 user.getId()
         );

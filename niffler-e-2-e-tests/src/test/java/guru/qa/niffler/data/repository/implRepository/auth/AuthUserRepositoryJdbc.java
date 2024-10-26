@@ -11,7 +11,6 @@ import guru.qa.niffler.data.repository.AuthUserRepository;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -30,10 +29,15 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
     }
 
     @Override
+    public AuthUserEntity update(AuthUserEntity user) {
+        return authUserDao.update(user);
+    }
+
+    @Override
     public Optional<AuthUserEntity> findById(UUID id) {
         Optional<AuthUserEntity> user = authUserDao.findById(id);
         user.ifPresent(u ->
-                u.addAuthorities(authAuthorityDao.findByUserId(id)
+                u.addAuthorities(authAuthorityDao.findAllByUserId(id)
                         .toArray(new AuthAuthorityEntity[0])));
         return user;
     }
@@ -42,18 +46,13 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
     public Optional<AuthUserEntity> findByUsername(String username) {
         Optional<AuthUserEntity> user = authUserDao.findByUsername(username);
         user.ifPresent(u ->
-                u.addAuthorities(authAuthorityDao.findByUserId(u.getId())
+                u.addAuthorities(authAuthorityDao.findAllByUserId(u.getId())
                         .toArray(new AuthAuthorityEntity[0])));
         return user;
     }
 
     @Override
-    public void delete(AuthUserEntity user) {
-        authUserDao.delete(user);
-    }
-
-    @Override
-    public List<AuthUserEntity> findAll() {
-        return authUserDao.findAll();
+    public void remove(AuthUserEntity user) {
+        authUserDao.remove(user);
     }
 }

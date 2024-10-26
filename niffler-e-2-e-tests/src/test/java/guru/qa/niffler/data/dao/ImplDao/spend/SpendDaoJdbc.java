@@ -19,10 +19,11 @@ import static guru.qa.niffler.data.tpl.Connections.holder;
 public class SpendDaoJdbc implements SpendDao {
 
     private static final Config CFG = Config.getInstance();
+    private final String url = CFG.spendJdbcUrl();
 
     @Override
     public SpendEntity create(SpendEntity spend) {
-        try (PreparedStatement ps = holder(CFG.spendJdbcUrl()).connection().prepareStatement(
+        try (PreparedStatement ps = holder(url).connection().prepareStatement(
                 "INSERT INTO spend (username, spend_date, currency, amount, description, category_id) " +
                         "VALUES (?, ?, ?, ?, ?, ?)",
                 Statement.RETURN_GENERATED_KEYS
@@ -51,8 +52,28 @@ public class SpendDaoJdbc implements SpendDao {
     }
 
     @Override
-    public Optional<SpendEntity> findSpendById(UUID id) {
-        try (PreparedStatement ps = holder(CFG.spendJdbcUrl()).connection().prepareStatement(
+    public SpendEntity update(SpendEntity spend) {
+        try(PreparedStatement ps = holder(url).connection().prepareStatement(
+                "UPDATE spend SET spend_date = ?, currency = ?, amount = ?, description = ? WHERE id = ?"
+        )) {
+            ps.setDate(1, new java.sql.Date(spend.getSpendDate().getTime()));
+            ps.setString(2, spend.getCurrency().name());
+            ps.setDouble(3, spend.getAmount());
+            ps.setString(4, spend.getDescription());
+            ps.setObject(5, spend.getId());
+            int rowsUpdate = ps.executeUpdate();
+            if (rowsUpdate == 0) {
+                throw new SQLException("Failed to update spend. Spend not found");
+            }
+            return spend;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public Optional<SpendEntity> findById(UUID id) {
+        try (PreparedStatement ps = holder(url).connection().prepareStatement(
                 "SELECT * FROM spend WHERE  id = ?"
         )) {
             ps.setObject(1, id);
@@ -70,25 +91,8 @@ public class SpendDaoJdbc implements SpendDao {
     }
 
     @Override
-    public List<SpendEntity> findAllByUsername(String username) {
-        try (PreparedStatement ps = holder(CFG.spendJdbcUrl()).connection().prepareStatement(
-                "SELECT * FROM spend WHERE username = ?")) {
-            ps.setString(1, username);
-            List<SpendEntity> spendEntityList = new ArrayList<>();
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    spendEntityList.add(SpendEntityRowMapper.instance.mapRow(rs, rs.getRow()));
-                }
-            }
-            return spendEntityList;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
     public List<SpendEntity> findAll() {
-        try (PreparedStatement ps = holder(CFG.spendJdbcUrl()).connection().prepareStatement(
+        try (PreparedStatement ps = holder(url).connection().prepareStatement(
                 "SELECT * FROM spend")) {
             ps.execute();
             List<SpendEntity> result = new ArrayList<>();
@@ -104,9 +108,9 @@ public class SpendDaoJdbc implements SpendDao {
     }
 
     @Override
-    public void deleteSpend(SpendEntity spend) {
+    public void remove(SpendEntity spend) {
         UUID categoryId = spend.getId();
-        try (PreparedStatement ps = holder(CFG.spendJdbcUrl()).connection().prepareStatement(
+        try (PreparedStatement ps = holder(url).connection().prepareStatement(
                 "DELETE FROM spend WHERE id = ?"
         )) {
             ps.setObject(1, categoryId);
