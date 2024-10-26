@@ -19,7 +19,6 @@ public class MainPage {
     private final SelenideElement friendsButton = $(".nav-link[href*='friends']");
     private final ElementsCollection categoryRows = $$(".css-gq8o4k");
 
-
     public EditSpendingPage editSpending(String spendingDescription) {
         tableRows.find(text(spendingDescription)).$$("td").get(5).click();
         return new EditSpendingPage();

@@ -5,6 +5,8 @@ import guru.qa.niffler.data.entity.spend.CategoryEntity;
 import guru.qa.niffler.data.entity.spend.SpendEntity;
 import guru.qa.niffler.data.repository.SpendRepository;
 import guru.qa.niffler.data.repository.implRepository.spend.SpendRepositoryHibernate;
+import guru.qa.niffler.data.repository.implRepository.spend.SpendRepositoryJdbc;
+import guru.qa.niffler.data.repository.implRepository.spend.SpendRepositorySpringJdbc;
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.SpendJson;
@@ -16,7 +18,7 @@ import java.util.UUID;
 public class SpendDbClient implements SpendClient {
 
     private static final Config CFG = Config.getInstance();
-    private final SpendRepository spendRepository = new SpendRepositoryHibernate();
+    private final SpendRepository spendRepository = new SpendRepositoryJdbc();
 //    private final JdbcTransactionsTemplate jdbcTxTemplate = new JdbcTransactionsTemplate(CFG.spendJdbcUrl());
 
     private final XaTransactionTemplate xaTxTemplate = new XaTransactionTemplate(
@@ -94,12 +96,5 @@ public class SpendDbClient implements SpendClient {
     public CategoryJson getCategoryByUsernameAndName(String username, String spendName) {
         Optional<CategoryEntity> entity = spendRepository.findCategoryByUsernameAndName(username, spendName);
         return entity.map(CategoryJson::fromEntity).orElseThrow();
-    }
-
-    public void deleteCategory(CategoryJson category) {
-        xaTxTemplate.execute(() -> {
-            spendRepository.removeCategory(CategoryEntity.fromJson(category));
-            return null;
-        });
     }
 }

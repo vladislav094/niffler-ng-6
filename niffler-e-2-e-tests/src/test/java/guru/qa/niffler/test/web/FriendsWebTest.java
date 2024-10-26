@@ -1,61 +1,66 @@
 package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
+import guru.qa.niffler.jupiter.annotations.User;
 import guru.qa.niffler.jupiter.annotations.meta.WebTest;
-import guru.qa.niffler.jupiter.extensions.UserQueueExtension.StaticUser;
-import guru.qa.niffler.jupiter.extensions.UserQueueExtension.UserType;
+import guru.qa.niffler.model.UdUserJson;
 import guru.qa.niffler.page.LoginPage;
 import org.junit.jupiter.api.Test;
-
-import static guru.qa.niffler.jupiter.extensions.UserQueueExtension.UserType.Type.*;
 
 @WebTest
 public class FriendsWebTest extends BaseWebTest {
 
+    @User(friends = 1)
     @Test
-    void friendShouldBePresentInFriendsTable(@UserType(type = WITH_FRIEND) StaticUser user) {
+    void friendShouldBePresentInFriendsTable(UdUserJson user) {
+        String expectedName = user.testData().friends().getFirst().username();
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .setUsername(user.username())
-                .setPassword(user.password())
+                .setPassword(user.testData().password())
                 .clickLogInButton()
                 .clickAvatarButton()
                 .clickFriendsButton()
-                .clickShowFriendsList()
-                .checkUserPresentInFriendTable(user.friend());
+                .searchInFriendsListByUsername(expectedName)
+                .checkUserPresentInFriendTable(expectedName);
     }
 
+    @User
     @Test
-    void friendsTableShouldBeEmptyForNewUser(@UserType(type = EMPTY) StaticUser user) {
+    void friendsTableShouldBeEmptyForNewUser(UdUserJson user) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .setUsername(user.username())
-                .setPassword(user.password())
+                .setPassword(user.testData().password())
                 .clickLogInButton()
                 .clickAvatarButton()
                 .clickFriendsButton()
                 .checkUserNotHaveFriend();
     }
 
+    @User(incomingRequests = 1)
     @Test
-    void incomeInvitationBePresentInFriendsTable(@UserType(type = WITH_INCOME_REQUEST) StaticUser user) {
+    void incomeInvitationBePresentInFriendsTable(UdUserJson user) {
+        String expectedName = user.testData().incomingRequest().getFirst().username();
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .setUsername(user.username())
-                .setPassword(user.password())
+                .setPassword(user.testData().password())
                 .clickLogInButton()
                 .clickAvatarButton()
                 .clickFriendsButton()
-                .clickShowFriendsList()
-                .checkInvitationInFriendFromUserByName(user.income());
+                .searchInFriendsListByUsername(expectedName)
+                .checkInvitationInFriendFromUserByName(expectedName);
     }
 
+    @User(outcomingRequests = 1)
     @Test
-    void outcomeInvitationBePresentInAppPeoplesTable(@UserType(type = WITH_OUTCOME_REQUEST) StaticUser user) {
+    void outcomeInvitationBePresentInAppPeoplesTable(UdUserJson user) {
+        String expectedName = user.testData().outcomingRequest().getFirst().username();
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .setUsername(user.username())
-                .setPassword(user.password())
+                .setPassword(user.testData().password())
                 .clickLogInButton()
                 .clickAvatarButton()
                 .clickFriendsButton()
-                .clickShowAllPeopleList()
-                .checkOutgoingFriendInvitationRequestForUserByName(user.outcome());
+                .searchInAllPeopleListByUsername(expectedName)
+                .checkOutgoingFriendInvitationRequestForUserByName(expectedName);
     }
 }

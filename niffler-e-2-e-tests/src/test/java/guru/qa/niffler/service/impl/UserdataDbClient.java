@@ -7,8 +7,12 @@ import guru.qa.niffler.data.entity.auth.Authority;
 import guru.qa.niffler.data.entity.userdata.UdUserEntity;
 import guru.qa.niffler.data.repository.AuthUserRepository;
 import guru.qa.niffler.data.repository.UdUserRepository;
+import guru.qa.niffler.data.repository.implRepository.auth.AuthUserRepositoryHibernate;
+import guru.qa.niffler.data.repository.implRepository.auth.AuthUserRepositoryJdbc;
 import guru.qa.niffler.data.repository.implRepository.auth.AuthUserRepositorySpringJdbc;
+import guru.qa.niffler.data.repository.implRepository.userdata.UdUserRepositoryHibernate;
 import guru.qa.niffler.data.repository.implRepository.userdata.UdUserRepositoryJdbc;
+import guru.qa.niffler.data.repository.implRepository.userdata.UdUserRepositorySpringJdbc;
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.UdUserJson;
@@ -27,7 +31,7 @@ public class UserdataDbClient implements UsersClient {
     private static final Config CFG = Config.getInstance();
     private static final PasswordEncoder pe = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
-    private final AuthUserRepository authUserRepository = new AuthUserRepositorySpringJdbc();
+    private final AuthUserRepository authUserRepository = new AuthUserRepositoryJdbc();
     private final UdUserRepository udUserRepository = new UdUserRepositoryJdbc();
 //    private final TransactionTemplate txTemplate = new TransactionTemplate(
 //            new ChainedTransactionManager(
@@ -72,7 +76,7 @@ public class UserdataDbClient implements UsersClient {
     }
 
     @Override
-    public void createIncomeInvitation(UdUserJson targetUser, int count) {
+    public void createIncomingInvitation(UdUserJson targetUser, int count) {
         if (count > 0) {
             UdUserEntity targetEntity = targetUserEntity(targetUser);
             for (int i = 0; i < count; i++) {
@@ -87,7 +91,7 @@ public class UserdataDbClient implements UsersClient {
     }
 
     @Override
-    public void crateOutcomeInvitation(UdUserJson targetUser, int count) {
+    public void createOutcomingInvitation(UdUserJson targetUser, int count) {
         if (count > 0) {
             UdUserEntity targetEntity = targetUserEntity(targetUser);
             for (int i = 0; i < count; i++) {

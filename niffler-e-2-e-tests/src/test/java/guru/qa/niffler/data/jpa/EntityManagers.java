@@ -1,16 +1,12 @@
 package guru.qa.niffler.data.jpa;
 
-import com.atomikos.jdbc.AtomikosDataSourceBean;
 import guru.qa.niffler.data.tpl.DataSources;
+import guru.qa.niffler.data.tpl.JdbcConnectionHolder;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
-import org.apache.commons.lang3.StringUtils;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import java.util.Map;
-import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class EntityManagers {
@@ -28,5 +24,9 @@ public class EntityManagers {
                     return Persistence.createEntityManagerFactory(jdbcUrl);
                 }
         ).createEntityManager();
+    }
+
+    public static void closeAllEmfs() {
+        emfs.values().forEach(EntityManagerFactory::close);
     }
 }

@@ -23,6 +23,12 @@ public class ProfilePage {
         return this;
     }
 
+    public ProfilePage searchCategoryByName(String categoryName) {
+        categoryInput.setValue(categoryName);
+        categoryInput.pressEnter();
+        return this;
+    }
+
     public ProfilePage showArchivedCategories() {
         showArchivedButton.scrollIntoView(false);
         showArchivedButton.click();

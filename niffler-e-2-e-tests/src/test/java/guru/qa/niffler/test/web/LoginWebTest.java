@@ -1,7 +1,11 @@
 package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
+import guru.qa.niffler.jupiter.annotations.Category;
+import guru.qa.niffler.jupiter.annotations.Spending;
+import guru.qa.niffler.jupiter.annotations.User;
 import guru.qa.niffler.jupiter.annotations.meta.WebTest;
+import guru.qa.niffler.model.UdUserJson;
 import guru.qa.niffler.page.LoginPage;
 import io.qameta.allure.Story;
 import org.junit.jupiter.api.DisplayName;
@@ -19,17 +23,29 @@ public class LoginWebTest extends BaseWebTest {
     private final String historyOfSpendingHeader = "History of Spendings";
     private final String badCredentialMessage = "Неверные учетные данные пользователя";
 
+
+    @User(
+            categories = {
+                    @Category(name = "cat_1", archived = false),
+                    @Category(name = "cat_2", archived = true)
+            },
+            spendings = {
+                    @Spending(
+                            category = "cat_3",
+                            description = "test_spend",
+                            amount = 100
+                    )
+            }
+    )
     @Test
     @Story("Успешная авторизация")
     @DisplayName("Выполняем авторизацию пользователя")
-    public void testMainPageShouldBeDisplayedAfterSuccessfulLogin() {
-
-        String persistentPassword = "root";
+    public void testMainPageShouldBeDisplayedAfterSuccessfulLogin(UdUserJson user) {
 
         step("Открываем страницу авторизации и заполняем форму персистентными данными (username, password)", () -> {
             Selenide.open(CFG.frontUrl(), LoginPage.class)
-                    .setUsername(persistentName)
-                    .setPassword(persistentPassword)
+                    .setUsername(user.username())
+                    .setPassword(user.testData().password())
                     .clickLogInButton();
         });
         step("Проверяем наличие заголовков на главное странице после авторизации", () -> {

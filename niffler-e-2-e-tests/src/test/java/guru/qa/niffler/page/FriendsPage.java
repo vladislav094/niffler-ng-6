@@ -17,6 +17,21 @@ public class FriendsPage {
     private final ElementsCollection friendRequestsTable = $("#requests").$$("tr");
     private final SelenideElement notFriendsText = $(By.xpath("//p[contains(text(), 'There are no users yet')]"));
     private final SelenideElement outcomingFriendRequestText = $(By.xpath("//span[contains(text(), 'Waiting...')]"));
+    private final SelenideElement searchInput = $("input[placeholder='Search']");
+
+    public FriendsPage searchInFriendsListByUsername(String username) {
+        friendsList.click();
+        searchInput.setValue(username);
+        searchInput.pressEnter();
+        return this;
+    }
+
+    public FriendsPage searchInAllPeopleListByUsername(String username) {
+        allPeoplesList.click();
+        searchInput.setValue(username);
+        searchInput.pressEnter();
+        return this;
+    }
 
     public FriendsPage clickShowFriendsList() {
         friendsList.click();

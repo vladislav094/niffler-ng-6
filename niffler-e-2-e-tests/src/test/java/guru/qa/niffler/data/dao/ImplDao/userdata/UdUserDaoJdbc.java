@@ -2,6 +2,7 @@ package guru.qa.niffler.data.dao.ImplDao.userdata;
 
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.userdata.UdUserDao;
+import guru.qa.niffler.data.entity.userdata.FriendshipEntity;
 import guru.qa.niffler.data.entity.userdata.UdUserEntity;
 import guru.qa.niffler.data.mapper.UserdataUserEntityRowMapper;
 import guru.qa.niffler.model.CurrencyValues;
@@ -53,26 +54,46 @@ public class UdUserDaoJdbc implements UdUserDao {
 
     @Override
     public UdUserEntity update(UdUserEntity user) {
-        try (PreparedStatement ps = holder(url).connection().prepareStatement(
-                "UPDATE \"user\" SET currency = ?, firstname = ?, surname = ?, photo = ?, photo_small = ?," +
-                        "full_name = ? WHERE id = ? AND username = ?"
-        )) {
-            ps.setString(1, user.getCurrency().name());
-            ps.setString(2, user.getFirstname());
-            ps.setString(3, user.getFullname());
-            ps.setBytes(4, user.getPhoto());
-            ps.setBytes(5, user.getPhotoSmall());
-            ps.setString(6, user.getFullname());
-            ps.setObject(7, user.getId());
-            ps.setString(8, user.getUsername());
-            int rowsUpdated = ps.executeUpdate();
-            if (rowsUpdated == 0) {
-                throw new RuntimeException("Failed to update user. user not found.");
+        try (PreparedStatement usersPs = holder(url).connection().prepareStatement(
+                """
+                      UPDATE "user"
+                        SET currency    = ?,
+                            firstname   = ?,
+                            surname     = ?,
+                            photo       = ?,
+                            photo_small = ?
+                        WHERE id = ?
+                    """);
+
+             PreparedStatement friendsPs = holder(url).connection().prepareStatement(
+                     """
+                         INSERT INTO friendship (requester_id, addressee_id, status)
+                         VALUES (?, ?, ?)
+                         ON CONFLICT (requester_id, addressee_id)
+                             DO UPDATE SET status = ?
+                         """)
+        ) {
+            usersPs.setString(1, user.getCurrency().name());
+            usersPs.setString(2, user.getFirstname());
+            usersPs.setString(3, user.getSurname());
+            usersPs.setBytes(4, user.getPhoto());
+            usersPs.setBytes(5, user.getPhotoSmall());
+            usersPs.setObject(6, user.getId());
+            usersPs.executeUpdate();
+
+            for (FriendshipEntity fe : user.getFriendshipRequests()) {
+                friendsPs.setObject(1, user.getId());
+                friendsPs.setObject(2, fe.getAddressee().getId());
+                friendsPs.setString(3, fe.getStatus().name());
+                friendsPs.setString(4, fe.getStatus().name());
+                friendsPs.addBatch();
+                friendsPs.clearParameters();
             }
-            return user;
+            friendsPs.executeBatch();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        return user;
     }
 
     @Override
