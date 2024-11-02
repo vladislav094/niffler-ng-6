@@ -4,16 +4,20 @@ import guru.qa.niffler.api.SpendApi;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.CurrencyValues;
-import guru.qa.niffler.model.PeriodValues;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.service.RestClient;
 import guru.qa.niffler.service.SpendClient;
 import retrofit2.Response;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
+import static java.util.Objects.requireNonNull;
 import static org.apache.hc.core5.http.HttpStatus.SC_CREATED;
 import static org.apache.hc.core5.http.HttpStatus.SC_OK;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -24,9 +28,9 @@ public class SpendApiClient implements SpendClient {
     private static final Config CFG = Config.getInstance();
     private final SpendApi spendApi = new RestClient.EmptyClient(CFG.spendUrl()).create(SpendApi.class);
 
-
     @Override
-    public SpendJson createSpend(SpendJson spendJson) {
+    @Nonnull
+    public SpendJson createSpend(@Nonnull SpendJson spendJson) {
         final Response<SpendJson> response;
         try {
             response = spendApi.addSpend(spendJson)
@@ -35,11 +39,12 @@ public class SpendApiClient implements SpendClient {
             throw new AssertionError(e);
         }
         assertEquals(SC_CREATED, response.code());
-        return response.body();
+        return requireNonNull(response.body());
     }
 
     @Override
-    public SpendJson updateSpend(SpendJson spendJson) {
+    @Nonnull
+    public SpendJson updateSpend(@Nonnull SpendJson spendJson) {
         final Response<SpendJson> response;
         try {
             response = spendApi.editSpend(spendJson)
@@ -48,10 +53,11 @@ public class SpendApiClient implements SpendClient {
             throw new AssertionError(e);
         }
         assertEquals(SC_OK, response.code());
-        return response.body();
+        return requireNonNull(response.body());
     }
 
-    public SpendJson getSpend(String id) {
+    @Nullable
+    public SpendJson getSpend(@Nonnull String id) {
         final Response<SpendJson> response;
         try {
             response = spendApi.getSpendById(id)
@@ -63,16 +69,22 @@ public class SpendApiClient implements SpendClient {
         return response.body();
     }
 
-    public List<SpendJson> getAllSpend(PeriodValues period, CurrencyValues currency) {
+    @Nullable
+    public List<SpendJson> getAllSpend(String username,
+                                                 @Nullable CurrencyValues currency,
+                                                 @Nullable String from,
+                                                 @Nullable String to) {
         final Response<List<SpendJson>> response;
         try {
-            response = spendApi.getAllSpends(period, currency)
+            response = spendApi.getAllSpends(username, currency, from, to)
                     .execute();
         } catch (IOException e) {
             throw new AssertionError(e);
         }
         assertEquals(SC_OK, response.code());
-        return response.body();
+        return response.body() != null
+                ? response.body()
+                : Collections.emptyList();
     }
 
     public void removeSpends(String username, List<String> ids) {
@@ -87,6 +99,7 @@ public class SpendApiClient implements SpendClient {
     }
 
     @Override
+    @Nonnull
     public CategoryJson createCategory(CategoryJson categoryJson) {
         final Response<CategoryJson> response;
         try {
@@ -96,10 +109,11 @@ public class SpendApiClient implements SpendClient {
             throw new AssertionError(e);
         }
         assertEquals(SC_OK, response.code());
-        return response.body();
+        return requireNonNull(response.body());
     }
 
     @Override
+    @Nonnull
     public CategoryJson updateCategory(CategoryJson categoryJson) {
         final Response<CategoryJson> response;
         try {
@@ -109,9 +123,10 @@ public class SpendApiClient implements SpendClient {
             throw new AssertionError(e);
         }
         assertEquals(SC_OK, response.code());
-        return response.body();
+        return requireNonNull(response.body());
     }
 
+    @Nullable
     public List<CategoryJson> getAllCategories(boolean excludeArchived) {
         final Response<List<CategoryJson>> response;
         try {
@@ -121,11 +136,13 @@ public class SpendApiClient implements SpendClient {
             throw new AssertionError(e);
         }
         assertEquals(SC_OK, response.code());
-        return response.body();
+        return response.body() != null
+                ? response.body()
+                : Collections.emptyList();
     }
 
     @Override
-    public void removeCategory(CategoryJson category) {
+    public void removeCategory(@Nonnull CategoryJson category) {
         throw new UnsupportedOperationException("Category can't remove by API");
     }
 }

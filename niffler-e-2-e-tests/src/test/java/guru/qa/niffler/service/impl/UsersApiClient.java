@@ -10,10 +10,12 @@ import guru.qa.niffler.service.ThreadSafeCookieStore;
 import guru.qa.niffler.service.UsersClient;
 import retrofit2.Response;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.Objects;
 
 import static guru.qa.niffler.faker.RandomDataUtils.randomUsername;
+import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class UsersApiClient implements UsersClient {
@@ -26,6 +28,7 @@ public class UsersApiClient implements UsersClient {
 
 
     @Override
+    @Nonnull
     public UdUserJson createUser(String username, String password) {
         try {
             authApi.getRegisterForm().execute();
@@ -36,7 +39,7 @@ public class UsersApiClient implements UsersClient {
                     ThreadSafeCookieStore.INSTANCE.cookieValue("XSRF-TOKEN")
             ).execute();
             System.out.println(ThreadSafeCookieStore.INSTANCE.cookieValue("XSRF-TOKEN"));
-            UdUserJson user = Objects.requireNonNull(userdataApi.getCurrentUser(username).execute().body());
+            UdUserJson user = requireNonNull(userdataApi.getCurrentUser(username).execute().body());
             return user.addTestData(
                     new TestData(password)
             );

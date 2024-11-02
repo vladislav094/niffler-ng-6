@@ -12,7 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 public class BaseWebTest {
 
     protected static final Config CFG = Config.getInstance();
-
+    protected static final String frontUrl = CFG.frontUrl();
     protected final Page page = new Page();
 
     protected static class Page {

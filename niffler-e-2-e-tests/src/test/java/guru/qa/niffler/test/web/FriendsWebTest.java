@@ -4,6 +4,7 @@ import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.jupiter.annotations.User;
 import guru.qa.niffler.jupiter.annotations.meta.WebTest;
 import guru.qa.niffler.model.UdUserJson;
+import guru.qa.niffler.page.FriendsPage;
 import guru.qa.niffler.page.LoginPage;
 import org.junit.jupiter.api.Test;
 
@@ -13,12 +14,13 @@ public class FriendsWebTest extends BaseWebTest {
     @User(friends = 1)
     @Test
     void friendShouldBePresentInFriendsTable(UdUserJson user) {
-        String expectedName = user.testData().friends().getFirst().username();
+        final String expectedName = user.testData().friends().getFirst().username();
+
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .setUsername(user.username())
                 .setPassword(user.testData().password())
                 .clickLogInButton()
-                .clickAvatarButton()
+                .clickMenuButton()
                 .clickFriendsButton()
                 .searchInFriendsListByUsername(expectedName)
                 .checkUserPresentInFriendTable(expectedName);
@@ -31,7 +33,7 @@ public class FriendsWebTest extends BaseWebTest {
                 .setUsername(user.username())
                 .setPassword(user.testData().password())
                 .clickLogInButton()
-                .clickAvatarButton()
+                .clickMenuButton()
                 .clickFriendsButton()
                 .checkUserNotHaveFriend();
     }
@@ -39,12 +41,13 @@ public class FriendsWebTest extends BaseWebTest {
     @User(incomingRequests = 1)
     @Test
     void incomeInvitationBePresentInFriendsTable(UdUserJson user) {
-        String expectedName = user.testData().incomingRequest().getFirst().username();
+        final String expectedName = user.testData().incomingRequest().getFirst().username();
+
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .setUsername(user.username())
                 .setPassword(user.testData().password())
                 .clickLogInButton()
-                .clickAvatarButton()
+                .clickMenuButton()
                 .clickFriendsButton()
                 .searchInFriendsListByUsername(expectedName)
                 .checkInvitationInFriendFromUserByName(expectedName);
@@ -53,14 +56,49 @@ public class FriendsWebTest extends BaseWebTest {
     @User(outcomingRequests = 1)
     @Test
     void outcomeInvitationBePresentInAppPeoplesTable(UdUserJson user) {
-        String expectedName = user.testData().outcomingRequest().getFirst().username();
+        final String expectedName = user.testData().outcomingRequest().getFirst().username();
+
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .setUsername(user.username())
                 .setPassword(user.testData().password())
                 .clickLogInButton()
-                .clickAvatarButton()
+                .clickMenuButton()
                 .clickFriendsButton()
                 .searchInAllPeopleListByUsername(expectedName)
                 .checkOutgoingFriendInvitationRequestForUserByName(expectedName);
+    }
+
+    @User(incomingRequests = 1)
+    @Test
+    void acceptFriendshipRequest(UdUserJson user) {
+        final String requesterName = user.testData().incomingRequest().getFirst().username();
+
+        FriendsPage friendsPage = Selenide.open(frontUrl, LoginPage.class)
+                .login(user.username(), user.testData().password())
+                .getHeader()
+                .toFriendsPage()
+                .acceptInvitationFromUser(requesterName);
+
+        Selenide.refresh();
+
+        friendsPage.checkFriendsCount(1)
+                .checkHaveFriendByUsername(requesterName);
+    }
+
+    @User(incomingRequests = 1)
+    @Test
+    void declineFriendshipRequest(UdUserJson user) {
+        final String requesterName = user.testData().incomingRequest().getFirst().username();
+
+        FriendsPage friendsPage = Selenide.open(frontUrl, LoginPage.class)
+                .login(user.username(), user.testData().password())
+                .getHeader()
+                .toFriendsPage()
+                .declineInvitationFromUser(requesterName);
+
+        Selenide.refresh();
+
+        friendsPage.checkInvitationCount(0)
+                .checkUserNotHaveFriend();
     }
 }

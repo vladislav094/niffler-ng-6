@@ -2,8 +2,10 @@ package guru.qa.niffler.service;
 
 import guru.qa.niffler.model.UdUserJson;
 
-public interface UsersClient {
+import javax.annotation.Nonnull;
 
+public interface UsersClient {
+    @Nonnull
     UdUserJson createUser(String username, String password);
 
     void createIncomingInvitation(UdUserJson targetUser, int count);
