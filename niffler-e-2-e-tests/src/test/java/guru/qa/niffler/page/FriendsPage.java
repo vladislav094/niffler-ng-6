@@ -21,15 +21,13 @@ public class FriendsPage {
 
     public FriendsPage searchInFriendsListByUsername(String username) {
         friendsList.click();
-        searchInput.setValue(username);
-        searchInput.pressEnter();
+        setUsernameAndSearch(username);
         return this;
     }
 
     public FriendsPage searchInAllPeopleListByUsername(String username) {
         allPeoplesList.click();
-        searchInput.setValue(username);
-        searchInput.pressEnter();
+        setUsernameAndSearch(username);
         return this;
     }
 
@@ -63,5 +61,10 @@ public class FriendsPage {
                 .shouldHave(text("Waiting..."))
                 .should(visible);
         return this;
+    }
+
+    private void setUsernameAndSearch(String username) {
+        searchInput.setValue(username)
+                .pressEnter();
     }
 }

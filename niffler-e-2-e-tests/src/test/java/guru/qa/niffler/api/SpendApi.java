@@ -26,7 +26,9 @@ public interface SpendApi {
             @Query("filterCurrency") CurrencyValues currency);
 
     @DELETE("internal/spends/remove")
-    Call<Void> deleteSpendById(@Query("ids") List<String> ids);
+    Call<Void> removeSpends(
+            @Query("username") String username,
+            @Query("ids") List<String> ids);
 
     @POST("internal/categories/add")
     Call<CategoryJson> addCategory(@Body CategoryJson category);

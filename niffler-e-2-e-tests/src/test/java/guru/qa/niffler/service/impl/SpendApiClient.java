@@ -75,10 +75,10 @@ public class SpendApiClient implements SpendClient {
         return response.body();
     }
 
-    public void removeSpends(List<String> ids) {
+    public void removeSpends(String username, List<String> ids) {
         Response<Void> response;
         try {
-            response = spendApi.deleteSpendById(ids)
+            response = spendApi.removeSpends(username, ids)
                     .execute();
         } catch (IOException e) {
             throw new AssertionError(e);

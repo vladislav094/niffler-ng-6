@@ -3,6 +3,7 @@ package guru.qa.niffler.jupiter.extensions;
 import guru.qa.niffler.jupiter.annotations.Category;
 import guru.qa.niffler.jupiter.annotations.User;
 import guru.qa.niffler.model.CategoryJson;
+import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.UdUserJson;
 import guru.qa.niffler.service.SpendClient;
 import guru.qa.niffler.service.impl.SpendApiClient;
@@ -20,7 +21,7 @@ public class CategoryExtension implements ParameterResolver, BeforeEachCallback 
 
     public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(CategoryExtension.class);
 
-    private final SpendClient spendClient = new SpendDbClient();
+    private final SpendClient spendClient = new SpendApiClient();
 
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
@@ -40,7 +41,7 @@ public class CategoryExtension implements ParameterResolver, BeforeEachCallback 
                                     null,
                                     categoryName,
                                     user != null ? user.username() : userAnno.username(),
-                                    categoryAnno.archived()
+                                    false
                             );
                             CategoryJson createdCategory = spendClient.createCategory(category);
 
@@ -62,20 +63,6 @@ public class CategoryExtension implements ParameterResolver, BeforeEachCallback 
                     }
                 });
     }
-
-//    @Override
-//    public void afterTestExecution(ExtensionContext context) throws Exception {
-//        UdUserJson user = context.getStore(UserExtension.NAMESPACE)
-//                .get(context.getUniqueId(), UdUserJson.class);
-//
-//        List<CategoryJson> categories = user != null
-//                ? user.testData().categories()
-//                : context.getStore(NAMESPACE).get(context.getUniqueId(), List.class);
-//
-//        for (CategoryJson category : categories) {
-//            spendClient.removeCategory(category);
-//        }
-//    }
 
 
     @Override
