@@ -7,6 +7,8 @@ public interface SpendClient {
 
     SpendJson createSpend(SpendJson spend);
 
+    SpendJson updateSpend(SpendJson spend);
+
     CategoryJson createCategory(CategoryJson category);
 
     CategoryJson updateCategory(CategoryJson category);

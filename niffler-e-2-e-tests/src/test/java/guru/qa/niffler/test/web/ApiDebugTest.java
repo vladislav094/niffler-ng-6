@@ -1,17 +1,48 @@
 package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
+import guru.qa.niffler.jupiter.annotations.Category;
 import guru.qa.niffler.jupiter.annotations.Spending;
 import guru.qa.niffler.jupiter.annotations.User;
-import guru.qa.niffler.jupiter.annotations.meta.WebTest;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.UdUserJson;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.MainPage;
+import guru.qa.niffler.service.impl.UsersApiClient;
 import org.junit.jupiter.api.Test;
 
-@WebTest
-public class SpendingWebTest extends BaseWebTest {
+public class ApiDebugTest extends BaseWebTest {
+
+    @Test
+    void debugTest() {
+        UsersApiClient usersApiClient = new UsersApiClient();
+        usersApiClient.createUser("qweqwe", "12345");
+    }
+
+    @User(friends = 1)
+    @Test
+    void createFriendTest(UdUserJson user) {
+        UsersApiClient usersApiClient = new UsersApiClient();
+        System.out.println(user.username());
+        System.out.println(user.testData().friends().getFirst().username());
+
+    }
+
+    @User(incomingRequests = 1)
+    @Test
+    void createIncomingFriendRequestTest(UdUserJson user) {
+        System.out.println(user.username());
+        System.out.println(user.testData().incomingRequest().getFirst().username());
+
+    }
+
+    @User(outcomingRequests = 1)
+    @Test
+    void createOutcomingFriendRequestTest(UdUserJson user) {
+        System.out.println(user.username());
+        System.out.println(user.testData().outcomingRequest().getFirst().username());
+
+    }
 
     @User(
             spendings = @Spending(
@@ -32,4 +63,3 @@ public class SpendingWebTest extends BaseWebTest {
         new MainPage().checkThatTableContainsSpending(newDescription);
     }
 }
-

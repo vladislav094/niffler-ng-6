@@ -1,30 +1,32 @@
-package guru.qa.niffler.api;
+package guru.qa.niffler.service.impl;
 
+import guru.qa.niffler.api.SpendApi;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.PeriodValues;
 import guru.qa.niffler.model.SpendJson;
+import guru.qa.niffler.service.RestClient;
+import guru.qa.niffler.service.SpendClient;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.jackson.JacksonConverterFactory;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
 import java.util.List;
 
-import static org.apache.hc.core5.http.HttpStatus.*;
+import static org.apache.hc.core5.http.HttpStatus.SC_CREATED;
+import static org.apache.hc.core5.http.HttpStatus.SC_OK;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class SpendApiClient {
+@ParametersAreNonnullByDefault
+public class SpendApiClient implements SpendClient {
 
-    private final Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl(Config.getInstance().spendUrl())
-            .addConverterFactory(JacksonConverterFactory.create())
-            .build();
+    private static final Config CFG = Config.getInstance();
+    private final SpendApi spendApi = new RestClient.EmptyClient(CFG.spendUrl()).create(SpendApi.class);
 
-    private final SpendApi spendApi = retrofit.create(SpendApi.class);
 
-    public SpendJson addSpend(SpendJson spendJson) {
+    @Override
+    public SpendJson createSpend(SpendJson spendJson) {
         final Response<SpendJson> response;
         try {
             response = spendApi.addSpend(spendJson)
@@ -36,7 +38,8 @@ public class SpendApiClient {
         return response.body();
     }
 
-    public SpendJson editSpend(SpendJson spendJson) {
+    @Override
+    public SpendJson updateSpend(SpendJson spendJson) {
         final Response<SpendJson> response;
         try {
             response = spendApi.editSpend(spendJson)
@@ -49,15 +52,15 @@ public class SpendApiClient {
     }
 
     public SpendJson getSpend(String id) {
-       final Response<SpendJson> response;
-       try {
-           response = spendApi.getSpendById(id)
-                   .execute();
-       } catch (IOException e) {
-           throw new AssertionError(e);
-       }
-       assertEquals(SC_OK, response.code());
-       return response.body();
+        final Response<SpendJson> response;
+        try {
+            response = spendApi.getSpendById(id)
+                    .execute();
+        } catch (IOException e) {
+            throw new AssertionError(e);
+        }
+        assertEquals(SC_OK, response.code());
+        return response.body();
     }
 
     public List<SpendJson> getAllSpend(PeriodValues period, CurrencyValues currency) {
@@ -72,10 +75,10 @@ public class SpendApiClient {
         return response.body();
     }
 
-    public void deleteSpends(List<String> ids) {
+    public void removeSpends(String username, List<String> ids) {
         Response<Void> response;
         try {
-            response = spendApi.deleteSpendById(ids)
+            response = spendApi.removeSpends(username, ids)
                     .execute();
         } catch (IOException e) {
             throw new AssertionError(e);
@@ -83,7 +86,8 @@ public class SpendApiClient {
         assertEquals(SC_OK, response.code());
     }
 
-    public CategoryJson addCategory(CategoryJson categoryJson) {
+    @Override
+    public CategoryJson createCategory(CategoryJson categoryJson) {
         final Response<CategoryJson> response;
         try {
             response = spendApi.addCategory(categoryJson)
@@ -95,6 +99,7 @@ public class SpendApiClient {
         return response.body();
     }
 
+    @Override
     public CategoryJson updateCategory(CategoryJson categoryJson) {
         final Response<CategoryJson> response;
         try {
@@ -117,5 +122,10 @@ public class SpendApiClient {
         }
         assertEquals(SC_OK, response.code());
         return response.body();
+    }
+
+    @Override
+    public void removeCategory(CategoryJson category) {
+        throw new UnsupportedOperationException("Category can't remove by API");
     }
 }

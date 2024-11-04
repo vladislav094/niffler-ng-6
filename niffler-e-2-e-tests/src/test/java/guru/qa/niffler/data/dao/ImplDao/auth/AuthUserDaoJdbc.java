@@ -4,8 +4,6 @@ import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.auth.AuthUserDao;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.mapper.AuthUserEntityRowMapper;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -23,8 +21,6 @@ public class AuthUserDaoJdbc implements AuthUserDao {
     private static final Config CFG = Config.getInstance();
     private final String url = CFG.authJdbcUrl();
 
-    private static final PasswordEncoder pe = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-
     @Override
     public AuthUserEntity create(AuthUserEntity user) {
         try (PreparedStatement ps = holder(url).connection().prepareStatement(
@@ -33,7 +29,7 @@ public class AuthUserDaoJdbc implements AuthUserDao {
                 Statement.RETURN_GENERATED_KEYS
         )) {
             ps.setString(1, user.getUsername());
-            ps.setString(2, pe.encode(user.getPassword()));
+            ps.setString(2, user.getPassword());
             ps.setBoolean(3, user.getEnabled());
             ps.setBoolean(4, user.getAccountNonExpired());
             ps.setBoolean(5, user.getAccountNonLocked());
@@ -55,7 +51,7 @@ public class AuthUserDaoJdbc implements AuthUserDao {
 
     @Override
     public AuthUserEntity update(AuthUserEntity user) {
-        try(PreparedStatement ps = holder(url).connection().prepareStatement(
+        try (PreparedStatement ps = holder(url).connection().prepareStatement(
                 "UPDATE \"user\" SET password = ?," +
                         " enabled = ?," +
                         "account_non_expired = ?," +
