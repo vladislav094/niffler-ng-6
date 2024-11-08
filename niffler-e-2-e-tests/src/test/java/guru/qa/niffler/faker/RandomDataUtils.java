@@ -17,4 +17,8 @@ public class RandomDataUtils {
     public static String randomCategoryName() {
         return faker.commerce().department() + " and " + faker.country().name();
     }
+
+    public static String randomDescription() {
+        return faker.commerce().productName();
+    }
 }

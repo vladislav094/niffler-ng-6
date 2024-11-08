@@ -1,6 +1,7 @@
 package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
+import guru.qa.niffler.faker.RandomDataUtils;
 import guru.qa.niffler.jupiter.annotations.Category;
 import guru.qa.niffler.jupiter.annotations.User;
 import guru.qa.niffler.jupiter.annotations.meta.WebTest;
@@ -28,7 +29,7 @@ public class ProfileWebTest extends BaseWebTest {
                 .setUsername(user.username())
                 .setPassword(user.testData().password())
                 .clickLogInButton()
-                .clickAvatarButton()
+                .clickMenuButton()
                 .clickProfileButton()
                 .searchCategoryByName(testCategoryName)
                 .archivedCategoryByName(testCategoryName)
@@ -54,7 +55,7 @@ public class ProfileWebTest extends BaseWebTest {
                 .setUsername(user.username())
                 .setPassword(user.testData().password())
                 .clickLogInButton()
-                .clickAvatarButton()
+                .clickMenuButton()
                 .clickProfileButton()
                 .showArchivedCategories()
                 .searchCategoryByName(testCategoryName)
@@ -66,5 +67,19 @@ public class ProfileWebTest extends BaseWebTest {
         step("Категория, которая была разархивирована, отображается в списке активных категорий", () -> {
             page.profilePage.shouldHaveActiveCategoryByName(testCategoryName);
         });
+    }
+
+    @User
+    @Test
+    void editProfile(UdUserJson user) {
+        String randomName = RandomDataUtils.randomUsername().split("\\.")[0];
+
+        Selenide.open(frontUrl, LoginPage.class)
+                .login(user.username(), user.testData().password())
+                .getHeader()
+                .toProfilePage()
+                .setName(randomName)
+                .clickSaveChange()
+                .checkSuccessfulMessage("Profile successfully updated");
     }
 }
