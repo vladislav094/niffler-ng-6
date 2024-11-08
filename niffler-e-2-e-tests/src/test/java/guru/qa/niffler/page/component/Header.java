@@ -11,15 +11,19 @@ import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 
-public class Header {
+public class Header extends BaseComponent<Header> {
 
     private final Calendar calendar = new Calendar();
-    private final SelenideElement self = $("#root header");
+//    private final SelenideElement self = $("#root header");
     private final SelenideElement menuButton = self.$("[aria-label='Menu'");
     private final SelenideElement mainPageLink = self.$("a[href*='/main']");
     private final SelenideElement addSpendingsButton = self.$("a[href*='/spending']");
     private final SelenideElement menu = $("ul[role='menu']");
     private final ElementsCollection menuList = menu.$$("li");
+
+    public Header() {
+        super($("#root header"));
+    }
 
     @Step("Open friends page")
     @Nonnull

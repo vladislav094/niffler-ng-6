@@ -54,7 +54,7 @@ public class SpendingWebTest extends BaseWebTest {
                 .setDate(date)
                 .setDescription(description)
                 .saveSpending()
-                .checkSuccessfulMessage("New spending is successfully created");
+                .checkAlertMessage("New spending is successfully created");
     }
 }
 

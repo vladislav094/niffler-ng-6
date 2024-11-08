@@ -12,7 +12,7 @@ import static com.codeborne.selenide.Selectors.withText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 
-public class ProfilePage {
+public class ProfilePage extends BasePage<ProfilePage> {
 
     private final SelenideElement nameInput = $("#name");
     private final SelenideElement saveChangeBtn = $("button[type='submit']");
@@ -123,13 +123,6 @@ public class ProfilePage {
                 .$(unarchivedCategoryLocator)
                 .click();
         return this;
-    }
-
-    @Step("Check message about successful edit profile description: {0}")
-    public void checkSuccessfulMessage(String message) {
-        $("div[role='alert']")
-                .should(visible)
-                .should(text(message));
     }
 
     @Step("Click archived button")

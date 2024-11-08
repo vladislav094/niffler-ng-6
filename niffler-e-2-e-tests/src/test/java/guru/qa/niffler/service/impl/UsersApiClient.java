@@ -2,17 +2,16 @@ package guru.qa.niffler.service.impl;
 
 import guru.qa.niffler.api.AuthApi;
 import guru.qa.niffler.api.UserdataApi;
+import guru.qa.niffler.api.core.RestClient;
+import guru.qa.niffler.api.core.ThreadSafeCookieStore;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.model.TestData;
 import guru.qa.niffler.model.UdUserJson;
-import guru.qa.niffler.service.RestClient;
-import guru.qa.niffler.service.ThreadSafeCookieStore;
 import guru.qa.niffler.service.UsersClient;
 import retrofit2.Response;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
-import java.util.Objects;
 
 import static guru.qa.niffler.faker.RandomDataUtils.randomUsername;
 import static java.util.Objects.requireNonNull;
@@ -38,7 +37,7 @@ public class UsersApiClient implements UsersClient {
                     password,
                     ThreadSafeCookieStore.INSTANCE.cookieValue("XSRF-TOKEN")
             ).execute();
-            System.out.println(ThreadSafeCookieStore.INSTANCE.cookieValue("XSRF-TOKEN"));
+
             UdUserJson user = requireNonNull(userdataApi.getCurrentUser(username).execute().body());
             return user.addTestData(
                     new TestData(password)

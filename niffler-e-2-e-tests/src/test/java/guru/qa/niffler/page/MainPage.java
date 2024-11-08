@@ -2,7 +2,6 @@ package guru.qa.niffler.page;
 
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
-import guru.qa.niffler.page.component.Header;
 import io.qameta.allure.Step;
 
 import javax.annotation.Nonnull;
@@ -12,9 +11,8 @@ import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 
-public class MainPage {
+public class MainPage extends BasePage<ProfilePage> {
 
-    protected final Header header = new Header();
     private final ElementsCollection tableRows = $("#spendings tbody").$$("tr");
     private final SelenideElement spendingHistoryTable = $("#spendings");
     private final SelenideElement spendingStatisticsCanvas = $("#stat");
@@ -24,10 +22,6 @@ public class MainPage {
     private final SelenideElement profileButton = $(".nav-link[href*='profile']");
     private final SelenideElement friendsButton = $(".nav-link[href*='friends']");
     private final ElementsCollection categoryRows = $$(".css-gq8o4k");
-
-    public Header getHeader() {
-        return header;
-    }
 
     @Step("Set spending description: {0}")
     @Nonnull

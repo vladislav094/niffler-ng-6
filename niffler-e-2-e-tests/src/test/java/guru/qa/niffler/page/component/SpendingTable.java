@@ -14,14 +14,18 @@ import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 
-public class SpendingTable {
+public class SpendingTable extends BaseComponent<SpendingTable> {
 
     private final SearchField searchField = new SearchField();
-    private final SelenideElement self = $("#spendings");
+//    private final SelenideElement self = $("#spendings");
     private final SelenideElement periodDropdown = self.$("#period");
     private final SelenideElement currencyDropdown = self.$("#currency");
     private final ElementsCollection optionForChoose = $$("[role='option']");
     private final ElementsCollection spendingsList = $("tbody").$$("tr");
+
+    public SpendingTable(SelenideElement self) {
+        super($("#spendings"));
+    }
 
     @Step("Select spending period: {0}")
     @Nonnull
