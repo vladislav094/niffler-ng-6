@@ -1,4 +1,4 @@
-package guru.qa.niffler.service;
+package guru.qa.niffler.api.core;
 
 import guru.qa.niffler.config.Config;
 import okhttp3.Interceptor;

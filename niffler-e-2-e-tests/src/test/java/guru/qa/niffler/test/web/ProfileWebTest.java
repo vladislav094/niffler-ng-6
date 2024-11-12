@@ -80,6 +80,6 @@ public class ProfileWebTest extends BaseWebTest {
                 .toProfilePage()
                 .setName(randomName)
                 .clickSaveChange()
-                .checkSuccessfulMessage("Profile successfully updated");
+                .checkAlertMessage("Profile successfully updated");
     }
 }

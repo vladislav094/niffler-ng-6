@@ -5,7 +5,7 @@ import guru.qa.niffler.config.Config;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
-import guru.qa.niffler.service.RestClient;
+import guru.qa.niffler.api.core.RestClient;
 import guru.qa.niffler.service.SpendClient;
 import retrofit2.Response;
 
@@ -15,7 +15,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;
 import static org.apache.hc.core5.http.HttpStatus.SC_CREATED;

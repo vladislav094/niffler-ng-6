@@ -1,15 +1,16 @@
 package guru.qa.niffler.page.component;
 
-import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
 
 import javax.annotation.Nonnull;
 
 import static com.codeborne.selenide.Selenide.$;
 
-public class SearchField {
+public class SearchField extends BaseComponent<SearchField> {
 
-    private final SelenideElement self = $("input[placeholder='Search']");
+    public SearchField() {
+        super($("input[placeholder='Search']"));
+    }
 
     @Step("Fill search field and find")
     @Nonnull
