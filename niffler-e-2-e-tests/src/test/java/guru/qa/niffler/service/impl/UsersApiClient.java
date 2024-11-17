@@ -11,11 +11,15 @@ import guru.qa.niffler.service.UsersClient;
 import retrofit2.Response;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 
 import static guru.qa.niffler.faker.RandomDataUtils.randomUsername;
 import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.apache.hc.core5.http.HttpStatus.SC_OK;
 
 public class UsersApiClient implements UsersClient {
 
@@ -45,6 +49,22 @@ public class UsersApiClient implements UsersClient {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Nonnull
+    public List<UdUserJson> getAllUsers(@Nonnull String username, @Nullable String searchQuery) {
+
+        final Response<List<UdUserJson>> response;
+        try {
+            response = userdataApi.getAllUsers(username, searchQuery)
+                    .execute();
+        } catch (IOException e) {
+            throw new AssertionError(e);
+        }
+        assertEquals(SC_OK, response.code());
+        return response.body() != null
+                ? response.body()
+                : Collections.emptyList();
     }
 
     @Override
