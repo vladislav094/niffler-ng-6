@@ -2,15 +2,24 @@ package guru.qa.niffler.page;
 
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
+import guru.qa.niffler.utils.ScreenDiffResult;
 import io.qameta.allure.Step;
+import lombok.SneakyThrows;
 import org.openqa.selenium.By;
+import org.openqa.selenium.devtools.v126.page.model.Screenshot;
+import ru.yandex.qatools.ashot.AShot;
 
 import javax.annotation.Nonnull;
+import javax.imageio.ImageIO;
+
+import java.awt.image.BufferedImage;
+import java.io.File;
 
 import static com.codeborne.selenide.Condition.*;
-import static com.codeborne.selenide.Selectors.withText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ProfilePage extends BasePage<ProfilePage> {
 
@@ -23,6 +32,9 @@ public class ProfilePage extends BasePage<ProfilePage> {
     private final SelenideElement archiveButton = $(By.xpath("//button[contains(text(), 'Archive')]"));
     private final SelenideElement unarchivedButton = $(By.xpath("//button[contains(text(), 'Unarchive')]"));
     private final SelenideElement messageAfterArchivedUnarchivedCategory = $(".MuiAlert-message");
+    private final SelenideElement uploadNewPictureBtn = $("#image__input");
+    private final SelenideElement avatar = $$("img[src^='data:image/png;base64']").get(0);
+    private final SelenideElement profilePhoto = $$("img[src^='data:image/png;base64']").get(1);
 
     @Step("Set name: {0}")
     @Nonnull
@@ -69,6 +81,21 @@ public class ProfilePage extends BasePage<ProfilePage> {
         showArchivedButton.scrollIntoView(false);
         showArchivedButton.click();
         return this;
+    }
+
+    @Step("Upload picture from file {0}")
+    @Nonnull
+    public ProfilePage uploadPicture(String path) {
+        uploadNewPictureBtn.uploadFromClasspath(path);
+        clickSaveChange();
+        return this;
+    }
+
+    @SneakyThrows
+    @Step("Check avatar equals expected picture")
+    public void checkThatAvatarEqualsUploadingImage(BufferedImage expected) {
+        BufferedImage actual = ImageIO.read(avatar.screenshot());
+        assertFalse(new ScreenDiffResult(actual, expected));
     }
 
     @Step("Check category by name {0} is active")

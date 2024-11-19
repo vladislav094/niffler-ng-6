@@ -1,6 +1,6 @@
 package guru.qa.niffler.jupiter.extensions;
 
-import guru.qa.niffler.faker.RandomDataUtils;
+import guru.qa.niffler.utils.RandomDataUtils;
 import guru.qa.niffler.jupiter.annotations.User;
 import guru.qa.niffler.model.UdUserJson;
 import guru.qa.niffler.service.UsersClient;

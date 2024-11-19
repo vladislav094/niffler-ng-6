@@ -14,6 +14,7 @@ public abstract class BasePage<T extends BasePage<?>> {
 
     protected final Header header = new Header();
     protected final SelenideElement alert = $("div[role='alert']");
+    protected final SelenideElement popup = $("[role='dialog']");
 
 
     @Step("Check message: {0}")

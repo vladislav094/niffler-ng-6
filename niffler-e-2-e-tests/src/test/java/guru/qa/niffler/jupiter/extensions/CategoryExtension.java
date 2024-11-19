@@ -3,11 +3,9 @@ package guru.qa.niffler.jupiter.extensions;
 import guru.qa.niffler.jupiter.annotations.Category;
 import guru.qa.niffler.jupiter.annotations.User;
 import guru.qa.niffler.model.CategoryJson;
-import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.UdUserJson;
 import guru.qa.niffler.service.SpendClient;
 import guru.qa.niffler.service.impl.SpendApiClient;
-import guru.qa.niffler.service.impl.SpendDbClient;
 import org.apache.commons.lang.ArrayUtils;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
@@ -15,7 +13,7 @@ import org.junit.platform.commons.support.AnnotationSupport;
 import java.util.ArrayList;
 import java.util.List;
 
-import static guru.qa.niffler.faker.RandomDataUtils.randomCategoryName;
+import static guru.qa.niffler.utils.RandomDataUtils.randomCategoryName;
 
 public class CategoryExtension implements ParameterResolver, BeforeEachCallback {
 

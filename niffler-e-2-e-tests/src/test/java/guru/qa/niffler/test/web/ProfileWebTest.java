@@ -1,7 +1,8 @@
 package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
-import guru.qa.niffler.faker.RandomDataUtils;
+import guru.qa.niffler.jupiter.annotations.ScreenShotTest;
+import guru.qa.niffler.utils.RandomDataUtils;
 import guru.qa.niffler.jupiter.annotations.Category;
 import guru.qa.niffler.jupiter.annotations.User;
 import guru.qa.niffler.jupiter.annotations.meta.WebTest;
@@ -9,6 +10,9 @@ import guru.qa.niffler.model.UdUserJson;
 import guru.qa.niffler.page.LoginPage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 import static io.qameta.allure.Allure.step;
 
@@ -81,5 +85,16 @@ public class ProfileWebTest extends BaseWebTest {
                 .setName(randomName)
                 .clickSaveChange()
                 .checkAlertMessage("Profile successfully updated");
+    }
+
+    @User
+    @ScreenShotTest("img/expected-avatar.png")
+    public void checkAvatarAfterUploading(UdUserJson user, BufferedImage expected) throws IOException {
+        Selenide.open(frontUrl, LoginPage.class)
+                .login(user.username(), user.testData().password())
+                .clickMenuButton()
+                .clickProfileButton()
+                .uploadPicture("img/expected-avatar.png")
+                .checkThatAvatarEqualsUploadingImage(expected);
     }
 }

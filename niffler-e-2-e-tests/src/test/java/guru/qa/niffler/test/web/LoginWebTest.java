@@ -11,7 +11,7 @@ import io.qameta.allure.Story;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static guru.qa.niffler.faker.RandomDataUtils.randomPassword;
+import static guru.qa.niffler.utils.RandomDataUtils.randomPassword;
 import static io.qameta.allure.Allure.step;
 
 @DisplayName("Авторизация")

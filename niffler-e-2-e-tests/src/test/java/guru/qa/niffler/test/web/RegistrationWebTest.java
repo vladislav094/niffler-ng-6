@@ -1,7 +1,7 @@
 package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
-import guru.qa.niffler.faker.RandomDataUtils;
+import guru.qa.niffler.utils.RandomDataUtils;
 import guru.qa.niffler.jupiter.annotations.User;
 import guru.qa.niffler.jupiter.annotations.meta.WebTest;
 import guru.qa.niffler.model.UdUserJson;
@@ -10,8 +10,8 @@ import io.qameta.allure.Story;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static guru.qa.niffler.faker.RandomDataUtils.randomPassword;
-import static guru.qa.niffler.faker.RandomDataUtils.randomUsername;
+import static guru.qa.niffler.utils.RandomDataUtils.randomPassword;
+import static guru.qa.niffler.utils.RandomDataUtils.randomUsername;
 import static io.qameta.allure.Allure.step;
 
 @DisplayName("Регистрация")

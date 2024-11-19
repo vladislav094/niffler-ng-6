@@ -23,7 +23,7 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 
-import static guru.qa.niffler.faker.RandomDataUtils.randomUsername;
+import static guru.qa.niffler.utils.RandomDataUtils.randomUsername;
 import static java.util.Objects.requireNonNull;
 
 @ParametersAreNonnullByDefault
