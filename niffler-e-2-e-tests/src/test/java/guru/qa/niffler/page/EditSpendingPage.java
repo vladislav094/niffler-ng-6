@@ -90,8 +90,8 @@ public class EditSpendingPage extends BasePage<ProfilePage> {
 
     @Step("Click save button")
     @Nonnull
-    public EditSpendingPage saveSpending() {
+    public MainPage saveSpending() {
         saveBtn.click();
-        return this;
+        return new MainPage();
     }
 }

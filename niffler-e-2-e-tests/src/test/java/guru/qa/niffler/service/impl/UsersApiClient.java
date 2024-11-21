@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
-import static guru.qa.niffler.faker.RandomDataUtils.randomUsername;
+import static guru.qa.niffler.utils.RandomDataUtils.randomUsername;
 import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.apache.hc.core5.http.HttpStatus.SC_OK;

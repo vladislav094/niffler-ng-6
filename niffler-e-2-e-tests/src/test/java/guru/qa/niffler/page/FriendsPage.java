@@ -27,7 +27,6 @@ public class FriendsPage extends BasePage<ProfilePage> {
     private final SelenideElement notFriendsText = $(By.xpath("//p[contains(text(), 'There are no users yet')]"));
     private final SelenideElement outcomingFriendRequestText = $(By.xpath("//span[contains(text(), 'Waiting...')]"));
     private final SelenideElement searchInput = $("input[placeholder='Search']");
-    private final SelenideElement popup = $("[role='dialog']");
 
     public SearchField getSearchField() {
         return searchField;
