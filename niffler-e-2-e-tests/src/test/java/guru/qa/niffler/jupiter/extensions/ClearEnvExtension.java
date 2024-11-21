@@ -1,7 +1,7 @@
 package guru.qa.niffler.jupiter.extensions;
 
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.data.tpl.DataSources;
+import guru.qa.niffler.jdbc.DataSources;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.springframework.jdbc.core.JdbcTemplate;
 

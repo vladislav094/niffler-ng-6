@@ -1,15 +1,12 @@
 package guru.qa.niffler.data.repository.implRepository.spend;
 
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.data.dao.ImplDao.spend.CategoryDaoJdbc;
 import guru.qa.niffler.data.dao.ImplDao.spend.CategoryDaoSpringJdbc;
-import guru.qa.niffler.data.dao.ImplDao.spend.SpendDaoJdbc;
 import guru.qa.niffler.data.dao.ImplDao.spend.SpendDaoSpringJdbc;
 import guru.qa.niffler.data.dao.spend.CategoryDao;
 import guru.qa.niffler.data.dao.spend.SpendDao;
 import guru.qa.niffler.data.entity.spend.CategoryEntity;
 import guru.qa.niffler.data.entity.spend.SpendEntity;
-import guru.qa.niffler.data.extractor.AuthUserEntityExtractor;
 import guru.qa.niffler.data.mapper.CategoryEntityRowMapper;
 import guru.qa.niffler.data.mapper.SpendEntityRowMapper;
 import guru.qa.niffler.data.repository.SpendRepository;
@@ -18,7 +15,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import java.util.Optional;
 import java.util.UUID;
 
-import static guru.qa.niffler.data.tpl.DataSources.getDataSource;
+import static guru.qa.niffler.jdbc.DataSources.getDataSource;
 
 public class SpendRepositorySpringJdbc implements SpendRepository {
 

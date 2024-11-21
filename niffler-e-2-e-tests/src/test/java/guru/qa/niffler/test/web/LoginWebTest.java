@@ -42,7 +42,7 @@ public class LoginWebTest extends BaseWebTest {
     @DisplayName("Выполняем авторизацию пользователя")
     public void testMainPageShouldBeDisplayedAfterSuccessfulLogin(UdUserJson user) {
 
-        step("Открываем страницу авторизации и заполняем форму персистентными данными (username, password)", () -> {
+        step("Открываем страницу авторизации и заполняем форму (username, password)", () -> {
             Selenide.open(CFG.frontUrl(), LoginPage.class)
                     .setUsername(user.username())
                     .setPassword(user.testData().password())
