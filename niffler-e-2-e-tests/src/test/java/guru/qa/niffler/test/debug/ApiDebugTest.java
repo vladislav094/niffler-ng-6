@@ -1,14 +1,13 @@
-package guru.qa.niffler.test.web;
+package guru.qa.niffler.test.debug;
 
 import com.codeborne.selenide.Selenide;
-import guru.qa.niffler.jupiter.annotations.Category;
 import guru.qa.niffler.jupiter.annotations.Spending;
 import guru.qa.niffler.jupiter.annotations.User;
-import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.UdUserJson;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.MainPage;
 import guru.qa.niffler.service.impl.UsersApiClient;
+import guru.qa.niffler.test.web.BaseWebTest;
 import org.junit.jupiter.api.Test;
 
 public class ApiDebugTest extends BaseWebTest {
