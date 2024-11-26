@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static guru.qa.niffler.data.tpl.DataSources.getDataSource;
+import static guru.qa.niffler.jdbc.DataSources.getDataSource;
 
 public class SpendDaoSpringJdbc implements SpendDao {
 

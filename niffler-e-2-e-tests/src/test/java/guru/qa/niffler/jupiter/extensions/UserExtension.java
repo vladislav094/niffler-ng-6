@@ -1,10 +1,11 @@
 package guru.qa.niffler.jupiter.extensions;
 
-import guru.qa.niffler.utils.RandomDataUtils;
 import guru.qa.niffler.jupiter.annotations.User;
 import guru.qa.niffler.model.UdUserJson;
 import guru.qa.niffler.service.UsersClient;
+import guru.qa.niffler.service.impl.UserdataDbClient;
 import guru.qa.niffler.service.impl.UsersApiClient;
+import guru.qa.niffler.utils.RandomDataUtils;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
 
@@ -13,7 +14,7 @@ public class UserExtension implements ParameterResolver, BeforeEachCallback {
     public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(UserExtension.class);
     private static final String defaultPassword = "12345";
 
-    private final UsersClient usersClient = new UsersApiClient();
+    private final UsersClient usersClient = new UserdataDbClient();
 
     @Override
     public void beforeEach(ExtensionContext context) {

@@ -12,7 +12,7 @@ import java.sql.Date;
 import java.util.Optional;
 import java.util.UUID;
 
-import static guru.qa.niffler.data.tpl.DataSources.getDataSource;
+import static guru.qa.niffler.jdbc.DataSources.getDataSource;
 
 public class UdUserRepositorySpringJdbc implements UdUserRepository {
 

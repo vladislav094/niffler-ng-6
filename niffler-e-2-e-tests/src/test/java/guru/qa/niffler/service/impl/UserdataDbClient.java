@@ -7,12 +7,18 @@ import guru.qa.niffler.data.entity.auth.Authority;
 import guru.qa.niffler.data.entity.userdata.UdUserEntity;
 import guru.qa.niffler.data.repository.AuthUserRepository;
 import guru.qa.niffler.data.repository.UdUserRepository;
+import guru.qa.niffler.data.repository.implRepository.auth.AuthUserRepositoryHibernate;
 import guru.qa.niffler.data.repository.implRepository.auth.AuthUserRepositoryJdbc;
+import guru.qa.niffler.data.repository.implRepository.auth.AuthUserRepositorySpringJdbc;
+import guru.qa.niffler.data.repository.implRepository.userdata.UdUserRepositoryHibernate;
 import guru.qa.niffler.data.repository.implRepository.userdata.UdUserRepositoryJdbc;
+import guru.qa.niffler.data.repository.implRepository.userdata.UdUserRepositorySpringJdbc;
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.CurrencyValues;
+import guru.qa.niffler.model.TestData;
 import guru.qa.niffler.model.UdUserJson;
 import guru.qa.niffler.service.UsersClient;
+import io.qameta.allure.Step;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -32,15 +38,8 @@ public class UserdataDbClient implements UsersClient {
     private static final Config CFG = Config.getInstance();
     private static final PasswordEncoder pe = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
-    private final AuthUserRepository authUserRepository = new AuthUserRepositoryJdbc();
-    private final UdUserRepository udUserRepository = new UdUserRepositoryJdbc();
-//    private final TransactionTemplate txTemplate = new TransactionTemplate(
-//            new ChainedTransactionManager(
-//                    new JdbcTransactionManager(
-//                            DataSources.getDataSource(CFG.userdataJdbcUrl())),
-//                    new JdbcTransactionManager(DataSources.getDataSource(CFG.authJdbcUrl()))
-//            ));
-//    private final JdbcTransactionsTemplate jdbcTxTemplate = new JdbcTransactionsTemplate(CFG.userdataJdbcUrl());
+    private final AuthUserRepository authUserRepository = new AuthUserRepositorySpringJdbc();
+    private final UdUserRepository udUserRepository = new UdUserRepositorySpringJdbc();
 
     private final XaTransactionTemplate xaTxTemplate = new XaTransactionTemplate(
             CFG.authJdbcUrl(),
@@ -50,13 +49,14 @@ public class UserdataDbClient implements UsersClient {
     // USERDATA DB, USER TABLE
     @Override
     @Nonnull
+    @Step("Create user using SQL")
     public UdUserJson createUser(@Nonnull String username, @Nonnull String password) {
         return requireNonNull(xaTxTemplate.execute(() -> {
             AuthUserEntity authUser = authUserEntity(username, password);
             authUserRepository.create(authUser);
-            return UdUserJson.fromEntity(
-                    udUserRepository.create(userEntity(username)),
+            UdUserJson user = UdUserJson.fromEntity(udUserRepository.create(userEntity(username)),
                     null);
+            return user.addTestData(new TestData(password));
         }));
     }
 

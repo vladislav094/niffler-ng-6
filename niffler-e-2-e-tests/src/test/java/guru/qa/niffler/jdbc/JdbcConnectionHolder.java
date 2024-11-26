@@ -1,4 +1,4 @@
-package guru.qa.niffler.data.tpl;
+package guru.qa.niffler.jdbc;
 
 import javax.sql.DataSource;
 import java.sql.Connection;

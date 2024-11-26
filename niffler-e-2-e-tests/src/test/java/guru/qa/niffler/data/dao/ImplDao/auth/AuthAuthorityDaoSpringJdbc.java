@@ -12,7 +12,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
-import static guru.qa.niffler.data.tpl.DataSources.getDataSource;
+import static guru.qa.niffler.jdbc.DataSources.getDataSource;
 
 public class AuthAuthorityDaoSpringJdbc implements AuthAuthorityDao {
 
