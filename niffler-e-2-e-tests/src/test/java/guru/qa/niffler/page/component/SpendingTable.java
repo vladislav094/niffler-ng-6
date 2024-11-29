@@ -2,7 +2,9 @@ package guru.qa.niffler.page.component;
 
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
+import guru.qa.niffler.condition.SpendConditions;
 import guru.qa.niffler.model.DataFilterValues;
+import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.page.EditSpendingPage;
 import io.qameta.allure.Step;
 
@@ -23,7 +25,7 @@ public class SpendingTable extends BaseComponent<SpendingTable> {
     private final ElementsCollection optionForChoose = $$("[role='option']");
     private final ElementsCollection spendingsList = $("tbody").$$("tr");
 
-    public SpendingTable(SelenideElement self) {
+    public SpendingTable() {
         super($("#spendings"));
     }
 
@@ -63,6 +65,13 @@ public class SpendingTable extends BaseComponent<SpendingTable> {
     @Nonnull
     public SpendingTable checkTableSize(int expectedSize) {
         spendingsList.should(size(expectedSize));
+        return this;
+    }
+
+    @Step("Check spendings in table on main page: {0}")
+    @Nonnull
+    public SpendingTable checkSpends(SpendJson... spends) {
+        spendingsList.should(SpendConditions.spends(spends));
         return this;
     }
 }

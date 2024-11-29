@@ -14,6 +14,7 @@ import javax.annotation.Nullable;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
 
+import static okhttp3.logging.HttpLoggingInterceptor.Level.BASIC;
 import static okhttp3.logging.HttpLoggingInterceptor.Level.HEADERS;
 
 public abstract class RestClient {
@@ -62,7 +63,7 @@ public abstract class RestClient {
                 okHttpBuilder.addNetworkInterceptor(interceptor);
             }
         }
-        okHttpBuilder.addNetworkInterceptor(new HttpLoggingInterceptor().setLevel(loggingLevel));
+        okHttpBuilder.addNetworkInterceptor(new HttpLoggingInterceptor().setLevel(BASIC));
         okHttpBuilder.addNetworkInterceptor(new AllureOkHttp3());
         okHttpBuilder.cookieJar(
                 new JavaNetCookieJar(
