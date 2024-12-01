@@ -23,6 +23,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ProfilePage extends BasePage<ProfilePage> {
 
+    public static final String URL = CFG.frontUrl() + "profile";
+
     private final SelenideElement nameInput = $("#name");
     private final SelenideElement saveChangeBtn = $("button[type='submit']");
     private final SelenideElement categoryInput = $("input[name=category]");
@@ -35,6 +37,11 @@ public class ProfilePage extends BasePage<ProfilePage> {
     private final SelenideElement uploadNewPictureBtn = $("#image__input");
     private final SelenideElement avatar = $$("img[src^='data:image/png;base64']").get(0);
     private final SelenideElement profilePhoto = $$("img[src^='data:image/png;base64']").get(1);
+
+    @Override
+    public ProfilePage checkThatPageLoaded() {
+        return null;
+    }
 
     @Step("Set name: {0}")
     @Nonnull

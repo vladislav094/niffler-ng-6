@@ -1,10 +1,8 @@
 package guru.qa.niffler.api;
 
-import guru.qa.niffler.model.TokenResponse;
+import com.fasterxml.jackson.databind.JsonNode;
 import retrofit2.Call;
 import retrofit2.http.*;
-
-import java.util.Map;
 
 public interface AuthApi {
 
@@ -21,11 +19,11 @@ public interface AuthApi {
     );
 
     @GET("oauth2/authorize")
-    Call<Void> getOauth2Authorize(
+    Call<Void> authorize(
             @Query("response_type") String responseType,
             @Query("client_id") String clientId,
             @Query("scope") String scope,
-            @Query("redirect_uri") String redirectUri,
+            @Query(value = "redirect_uri", encoded = true) String redirectUri,
             @Query("code_challenge") String codeChallenge,
             @Query("code_challenge_method") String codeChallengeMethod
     );
@@ -40,15 +38,11 @@ public interface AuthApi {
 
     @POST("oauth2/token")
     @FormUrlEncoded
-    Call<TokenResponse> token(
+    Call<JsonNode> token(
             @Field("code") String code,
             @Field(value = "redirect_uri", encoded = true) String redirectUri,
             @Field("code_verifier") String codeVerifier,
             @Field("grant_type") String grantType,
             @Field("client_id") String client
     );
-
-    @POST("oauth2/token")
-    @FormUrlEncoded
-    Call<Void> tokenFieldMap(@FieldMap Map<String, String> fieldMap);
 }
