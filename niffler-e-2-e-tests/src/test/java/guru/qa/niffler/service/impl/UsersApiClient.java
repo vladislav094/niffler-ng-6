@@ -5,10 +5,13 @@ import guru.qa.niffler.api.UserdataApi;
 import guru.qa.niffler.api.core.RestClient;
 import guru.qa.niffler.api.core.ThreadSafeCookieStore;
 import guru.qa.niffler.config.Config;
+import guru.qa.niffler.model.FriendState;
 import guru.qa.niffler.model.TestData;
 import guru.qa.niffler.model.UdUserJson;
 import guru.qa.niffler.service.UsersClient;
 import io.qameta.allure.Step;
+import org.jetbrains.annotations.NotNull;
+import retrofit2.Call;
 import retrofit2.Response;
 
 import javax.annotation.Nonnull;
@@ -17,6 +20,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
+import static guru.qa.niffler.model.FriendState.*;
 import static guru.qa.niffler.utils.RandomDataUtils.randomUsername;
 import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -125,5 +129,58 @@ public class UsersApiClient implements UsersClient {
                 targetUser.testData().friends().add(response.body());
             }
         }
+    }
+
+    @Nonnull
+    public List<UdUserJson> getAllOutcomingInvitations(@Nonnull String username, @Nullable String searchQuery) {
+        final Response<List<UdUserJson>> response;
+        try {
+            response = userdataApi.getAllUsers(username, searchQuery).execute();
+        } catch (IOException e) {
+            throw new AssertionError(e);
+        }
+
+        assertEquals(SC_OK, response.code());
+        if (response.body() == null) {
+            return Collections.emptyList();
+        }
+
+        return response.body().stream()
+                .filter(userJson -> userJson.friendState() != null)
+                .filter(userJson -> userJson.friendState().name().equals(INVITE_SENT.name()))
+                .toList();
+    }
+
+    @Nonnull
+    public List<UdUserJson> getAllIncomingInvitations(@Nonnull String username, @Nullable String searchQuery) {
+
+        return getFriendsWithFriendState(username, searchQuery, INVITE_RECEIVED);
+    }
+
+    @Nonnull
+    public List<UdUserJson> getFriends(@Nonnull String username, @Nullable String searchQuery) {
+
+        return getFriendsWithFriendState(username, searchQuery, FRIEND);
+    }
+
+    // используем для получения списка пользователей при запросе на /internal/friends/all
+    @NotNull
+    private List<UdUserJson> getFriendsWithFriendState(@Nonnull String username, @Nullable String searchQuery, FriendState inviteReceived) {
+        final Response<List<UdUserJson>> response;
+        try {
+            response = userdataApi.getAllFriends(username, searchQuery).execute();
+        } catch (IOException e) {
+            throw new AssertionError(e);
+        }
+
+        assertEquals(SC_OK, response.code());
+        if (response.body() == null) {
+            return Collections.emptyList();
+        }
+
+        return response.body().stream()
+                .filter(userJson -> userJson.friendState() != null)
+                .filter(userJson -> userJson.friendState().name().equals(inviteReceived.name()))
+                .toList();
     }
 }

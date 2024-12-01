@@ -11,12 +11,11 @@ import javax.annotation.Nonnull;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static com.codeborne.selenide.Condition.text;
-import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.$$;
 
-public class EditSpendingPage extends BasePage<ProfilePage> {
+public class EditSpendingPage extends BasePage<EditSpendingPage> {
+
+    public static final String URL = CFG.frontUrl() + "spending";
 
     private final Calendar calendar = new Calendar();
     private final SelenideElement descriptionInput = $("#description");
@@ -24,6 +23,11 @@ public class EditSpendingPage extends BasePage<ProfilePage> {
     private final SelenideElement categoryInput = $("#category");
     private final SelenideElement currencyDropdown = $("#currency");
     private final SelenideElement saveBtn = $("#save");
+
+    @Override
+    public EditSpendingPage checkThatPageLoaded() {
+        return null;
+    }
 
     public EditSpendingPage setNewSpendingDescription(String description) {
         descriptionInput.clear();

@@ -2,6 +2,7 @@ package guru.qa.niffler.page;
 
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
+import guru.qa.niffler.page.component.SpendingTable;
 import guru.qa.niffler.page.component.StatComponent;
 import guru.qa.niffler.utils.ScreenDiffResult;
 import io.qameta.allure.Step;
@@ -18,7 +19,11 @@ import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-public class MainPage extends BasePage<ProfilePage> {
+public class MainPage extends BasePage<MainPage> {
+
+    public static final String URL = CFG.frontUrl() + "main";
+
+    protected final SpendingTable spendingTable = new SpendingTable();
 
     protected final StatComponent statComponent = new StatComponent();
     private final ElementsCollection tableRows = $("#spendings tbody").$$("tr");
@@ -110,6 +115,16 @@ public class MainPage extends BasePage<ProfilePage> {
             statisticCells.findBy(text(category))
                     .shouldBe(visible);
         }
+        return this;
+    }
+
+    @Step("Check that page is loaded")
+    @Override
+    @Nonnull
+    public MainPage checkThatPageLoaded() {
+        header.getSelf().should(visible).shouldHave(text("Niffler"));
+        statComponent.getSelf().should(visible).shouldHave(text("Statistics"));
+        spendingTable.getSelf().should(visible).shouldHave(text("History of Spendings"));
         return this;
     }
 }

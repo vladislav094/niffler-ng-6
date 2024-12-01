@@ -9,7 +9,9 @@ import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
-public class RegisterPage extends BasePage<ProfilePage> {
+public class RegisterPage extends BasePage<RegisterPage> {
+
+    public static final String URL = CFG.authUrl() + "register";
 
     private final SelenideElement usernameInput = $("input[name='username']");
     private final SelenideElement passwordInput = $("input[name='password']");
@@ -18,6 +20,11 @@ public class RegisterPage extends BasePage<ProfilePage> {
     private final SelenideElement signInLink = $(".form_sign-in");
     private final SelenideElement successfulRegistrationMessage = $(".form__paragraph.form__paragraph_success");
     private final SelenideElement errorMessage = $("span.form__error");
+
+    @Override
+    public RegisterPage checkThatPageLoaded() {
+        return null;
+    }
 
     @Step("Set username: {0}")
     @Nonnull
