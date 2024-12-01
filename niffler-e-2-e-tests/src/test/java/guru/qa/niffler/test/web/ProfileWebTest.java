@@ -1,7 +1,9 @@
 package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
+import guru.qa.niffler.jupiter.annotations.ApiLogin;
 import guru.qa.niffler.jupiter.annotations.ScreenShotTest;
+import guru.qa.niffler.page.ProfilePage;
 import guru.qa.niffler.utils.RandomDataUtils;
 import guru.qa.niffler.jupiter.annotations.Category;
 import guru.qa.niffler.jupiter.annotations.User;
@@ -74,14 +76,12 @@ public class ProfileWebTest extends BaseWebTest {
     }
 
     @User
+    @ApiLogin
     @Test
-    void editProfile(UdUserJson user) {
+    void editProfile() {
         String randomName = RandomDataUtils.randomUsername().split("\\.")[0];
 
-        Selenide.open(frontUrl, LoginPage.class)
-                .login(user.username(), user.testData().password())
-                .getHeader()
-                .toProfilePage()
+        Selenide.open(ProfilePage.URL, ProfilePage.class)
                 .setName(randomName)
                 .clickSaveChange()
                 .checkAlertMessage("Profile successfully updated");

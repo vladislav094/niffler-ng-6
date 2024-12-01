@@ -10,13 +10,18 @@ import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 
-public class LoginPage extends BasePage<ProfilePage> {
+public class LoginPage extends BasePage<LoginPage> {
 
     private final SelenideElement usernameInput = $("input[name='username']");
     private final SelenideElement passwordInput = $("input[name='password']");
     private final SelenideElement submitButton = $("button[type='submit']");
     private final SelenideElement createNewAccountLink = $(byText("Create new account"));
     private final SelenideElement errorText = $(".form__error");
+
+    @Override
+    public LoginPage checkThatPageLoaded() {
+        return null;
+    }
 
     @Step("Set credentials : {0}, {1}")
     @Nonnull

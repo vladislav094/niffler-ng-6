@@ -8,9 +8,10 @@ import java.security.SecureRandom;
 import java.util.Base64;
 
 public class OauthUtils {
+    
+    private static SecureRandom secureRandom = new SecureRandom();
 
     public static String generateCodeVerifier() {
-        SecureRandom secureRandom = new SecureRandom();
         byte[] codeVerifier = new byte[32];
         secureRandom.nextBytes(codeVerifier);
         return Base64.getUrlEncoder().withoutPadding().encodeToString(codeVerifier);

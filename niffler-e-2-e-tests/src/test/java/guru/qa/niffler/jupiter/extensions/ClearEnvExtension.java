@@ -15,8 +15,8 @@ public class ClearEnvExtension implements SuiteExtension {
     @Override
     public void beforeAll(ExtensionContext context) {
 
-        authDb.execute("TRUNCATE TABLE authority, \"user\" CASCADE;");
-        spendDb.execute("TRUNCATE TABLE category, spend CASCADE;");
-        userdataDb.execute("TRUNCATE TABLE friendship, \"user\"  CASCADE;");
+//        authDb.execute("TRUNCATE TABLE authority, \"user\" CASCADE;");
+//        spendDb.execute("TRUNCATE TABLE category, spend CASCADE;");
+//        userdataDb.execute("TRUNCATE TABLE friendship, \"user\"  CASCADE;");
     }
 }
