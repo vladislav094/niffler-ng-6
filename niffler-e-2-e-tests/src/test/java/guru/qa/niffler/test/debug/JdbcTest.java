@@ -1,21 +1,13 @@
-package guru.qa.niffler.test.web;
+package guru.qa.niffler.test.debug;
 
 import guru.qa.niffler.jupiter.annotations.User;
 import guru.qa.niffler.jupiter.annotations.meta.WebTest;
 import guru.qa.niffler.jupiter.extensions.UsersClientExtension;
-import guru.qa.niffler.model.CategoryJson;
-import guru.qa.niffler.model.CurrencyValues;
-import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.UdUserJson;
 import guru.qa.niffler.service.UsersClient;
-import guru.qa.niffler.service.impl.SpendDbClient;
 import guru.qa.niffler.service.impl.UserdataDbClient;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
-
-import java.util.Date;
 
 @WebTest
 @ExtendWith(UsersClientExtension.class)
