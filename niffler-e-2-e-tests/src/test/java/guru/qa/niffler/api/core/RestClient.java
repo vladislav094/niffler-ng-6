@@ -14,7 +14,8 @@ import javax.annotation.Nullable;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
 
-import static okhttp3.logging.HttpLoggingInterceptor.Level.*;
+import static okhttp3.logging.HttpLoggingInterceptor.Level.BASIC;
+import static okhttp3.logging.HttpLoggingInterceptor.Level.HEADERS;
 
 public abstract class RestClient {
 
@@ -24,32 +25,32 @@ public abstract class RestClient {
     protected final Retrofit retrofit;
 
     public RestClient(String baseUrl) {
-        this(baseUrl, false, JacksonConverterFactory.create(), HEADERS, new Interceptor[0]);
+        this(baseUrl, false, JacksonConverterFactory.create(), HEADERS,  new Interceptor[0]);
     }
 
     public RestClient(String baseUrl, boolean followRedirect) {
-        this(baseUrl, followRedirect, JacksonConverterFactory.create(), BASIC, new Interceptor[0]);
+        this(baseUrl, followRedirect, JacksonConverterFactory.create(), HEADERS,  new Interceptor[0]);
 
     }
 
     public RestClient(String baseUrl, HttpLoggingInterceptor.Level loggingLevel) {
-        this(baseUrl, false, JacksonConverterFactory.create(), loggingLevel, new Interceptor[0]);
+        this(baseUrl, false, JacksonConverterFactory.create(), loggingLevel,  new Interceptor[0]);
 
     }
 
     public RestClient(String baseUrl, Converter.Factory converterFactory, HttpLoggingInterceptor.Level loggingLevel) {
-        this(baseUrl, false, converterFactory, loggingLevel, new Interceptor[0]);
+        this(baseUrl, false, converterFactory, loggingLevel,  new Interceptor[0]);
 
     }
 
     public RestClient(String baseUrl, boolean followRedirect, HttpLoggingInterceptor.Level loggingLevel) {
-        this(baseUrl, followRedirect, JacksonConverterFactory.create(), loggingLevel, new Interceptor[0]);
+        this(baseUrl, followRedirect, JacksonConverterFactory.create(), loggingLevel,  new Interceptor[0]);
 
     }
 
     public RestClient(String baseUrl, boolean followRedirect, Converter.Factory converterFactory,
                       HttpLoggingInterceptor.Level loggingLevel) {
-        this(baseUrl, followRedirect, converterFactory, loggingLevel, new Interceptor[0]);
+        this(baseUrl, followRedirect, converterFactory, loggingLevel,  new Interceptor[0]);
 
     }
 
@@ -57,7 +58,6 @@ public abstract class RestClient {
                       HttpLoggingInterceptor.Level loggingLevel, @Nullable Interceptor... interceptors) {
         OkHttpClient.Builder okHttpBuilder = new OkHttpClient.Builder()
                 .followRedirects(followRedirect);
-
         if (interceptors != null) {
             for (Interceptor interceptor : interceptors) {
                 okHttpBuilder.addNetworkInterceptor(interceptor);

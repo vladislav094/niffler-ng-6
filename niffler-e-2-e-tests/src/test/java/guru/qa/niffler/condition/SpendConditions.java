@@ -47,6 +47,7 @@ public class SpendConditions {
                     return CheckResult.rejected(message, elements.size());
                 }
 
+                boolean passed = true;
                 // создаю массив, в который буду добавлять строки с актуальными данными спендинга
                 List<String> actualSpendsTextList = new ArrayList<>();
 
@@ -75,7 +76,9 @@ public class SpendConditions {
                 actualSpendsTextList.sort(String::compareTo);
 
                 // если passed == false, в это условие код не попадёт и продолжит исполнение оставшейся части программы
-                boolean passed = actualSpendsTextList.equals(expectedSpendsTextList);
+                if (passed) {
+                    passed = actualSpendsTextList.equals(expectedSpendsTextList);
+                }
 
                 if (!passed) {
                     String actualSpendsText = actualSpendsTextList.toString();
