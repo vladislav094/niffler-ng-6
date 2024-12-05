@@ -21,7 +21,7 @@ import org.openqa.selenium.Cookie;
 import java.util.List;
 import java.util.Objects;
 
-public class ApiLoginExtension implements BeforeEachCallback, ParameterResolver {
+public class ApiLoginExtension implements BeforeTestExecutionCallback, ParameterResolver {
 
     private final Config CFG = Config.getInstance();
     public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(ApiLoginExtension.class);
@@ -39,12 +39,12 @@ public class ApiLoginExtension implements BeforeEachCallback, ParameterResolver 
         this.setupBrowser = setupBrowser;
     }
 
-    public static ApiLoginExtension restApiLoginExtension() {
+    public static ApiLoginExtension rest() {
         return new ApiLoginExtension(false);
     }
 
     @Override
-    public void beforeEach(ExtensionContext context) throws Exception {
+    public void beforeTestExecution(ExtensionContext context) throws Exception {
         AnnotationSupport.findAnnotation(context.getRequiredTestMethod(), ApiLogin.class)
                 .ifPresent(apiLogin -> {
                     final UdUserJson userToLogin;
@@ -90,10 +90,7 @@ public class ApiLoginExtension implements BeforeEachCallback, ParameterResolver 
                         Selenide.open(CFG.frontUrl());
                         Selenide.localStorage().setItem("id_token", getToken());
                         WebDriverRunner.getWebDriver().manage().addCookie(
-                                new Cookie(
-                                        "JSESSIONID",
-                                        ThreadSafeCookieStore.INSTANCE.cookieValue("JSESSIONID")
-                                )
+                                getJsessionidCookie()
                         );
                         Selenide.open(MainPage.URL, MainPage.class).checkThatPageLoaded();
                     }
@@ -108,7 +105,7 @@ public class ApiLoginExtension implements BeforeEachCallback, ParameterResolver 
 
     @Override
     public String resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-        return getToken();
+        return "Bearer " + getToken();
     }
 
     public static void setToken(String token) {
