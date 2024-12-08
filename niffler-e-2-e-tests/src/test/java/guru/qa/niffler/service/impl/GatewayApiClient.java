@@ -85,4 +85,28 @@ public class GatewayApiClient extends RestClient {
         assertEquals(200, response.code());
         return response.body();
     }
+
+    @Step("send /api/users/current GET request to niffler-gateway")
+    public UdUserJson getCurrentUser(@Nonnull String bearerToken) {
+        final Response<UdUserJson> response;
+        try {
+            response = gatewayApi.currentUser(bearerToken).execute();
+        } catch (IOException e) {
+            throw new AssertionError(e);
+        }
+        assertEquals(200, response.code());
+        return response.body();
+    }
+
+    @Step("send /api/users/all GET request to niffler-gateway")
+    public List<UdUserJson> allUsers(@Nonnull String bearerToken, @Nullable String searchQuery) {
+        final Response<List<UdUserJson>> response;
+        try {
+            response = gatewayApi.allUsers(bearerToken, searchQuery).execute();
+        } catch (IOException e) {
+            throw new AssertionError(e);
+        }
+        assertEquals(200, response.code());
+        return response.body();
+    }
 }

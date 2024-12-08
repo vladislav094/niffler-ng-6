@@ -1,5 +1,6 @@
 package guru.qa.niffler.test.rest;
 
+import guru.qa.niffler.api.core.ThreadSafeCookieStore;
 import guru.qa.niffler.jupiter.annotations.ApiLogin;
 import guru.qa.niffler.jupiter.annotations.Token;
 import guru.qa.niffler.jupiter.annotations.User;
@@ -8,7 +9,9 @@ import guru.qa.niffler.jupiter.extensions.ApiLoginExtension;
 import guru.qa.niffler.model.FriendState;
 import guru.qa.niffler.model.UdUserJson;
 import guru.qa.niffler.model.rest.FriendJson;
+import guru.qa.niffler.service.impl.AuthApiClient;
 import guru.qa.niffler.service.impl.GatewayApiClient;
+import guru.qa.niffler.service.impl.GatewayApiV2Client;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -21,6 +24,7 @@ public class FriendsTest {
     @RegisterExtension
     private static final ApiLoginExtension apiLoginExtension = ApiLoginExtension.rest();
     private final GatewayApiClient gatewayApiClient = new GatewayApiClient();
+    private final GatewayApiV2Client gatewayApiV2Client = new GatewayApiV2Client();
 
     @User(friends = 2, incomingRequests = 1)
     @ApiLogin
@@ -92,9 +96,6 @@ public class FriendsTest {
         final UdUserJson expectedFriend = user.testData().incomingRequest().getFirst();
         final List<UdUserJson> result = gatewayApiClient.allFriends(token, expectedFriend.username());
 
-        System.out.println(user);
-        System.out.println(expectedFriend);
-        System.out.println(result);
         Assertions.assertNotNull(result);
         Assertions.assertEquals(1, result.size());
 
@@ -149,7 +150,6 @@ public class FriendsTest {
 
         // список друзей после отклонения запроса в друзья
         final List<UdUserJson> userFriendAfterDeclinedInvitation = gatewayApiClient.allFriends(token, null);
-        System.out.println(userFriendAfterDeclinedInvitation);
 
         Assertions.assertNotNull(userFromInvitation);
         Assertions.assertEquals(0, userFriendAfterDeclinedInvitation.size());
@@ -160,18 +160,26 @@ public class FriendsTest {
     @Test
     void testAfterSendOutcomingInvitationShouldBeCreateIncomingAndOutcomingRequestAccordingly(UdUserJson user, @Token String token) {
         // пользователь из аннотации которому был отправлен запрос в друзья
-        final UdUserJson expectedFriend = user.testData().outcomingRequest().getFirst();
+        final UdUserJson expectedFriendFromAnno = user.testData().outcomingRequest().getFirst();
 
-        final UdUserJson userFromInvitation = gatewayApiClient.sendInvitation(
-                token, new FriendJson(expectedFriend.username())
-        );
+        final UdUserJson userWithFriendStateInviteSent = gatewayApiClient.allUsers(token, null)
+                .stream()
+                .filter(u -> u.friendState() == FriendState.INVITE_SENT)
+                .toList()
+                .getFirst();
 
-        final List<UdUserJson> friendsAfterSendInvitation = gatewayApiClient.allFriends(token, null);
+        Assertions.assertEquals(expectedFriendFromAnno.username(), userWithFriendStateInviteSent.username());
 
-        System.out.println(userFromInvitation);
-        System.out.println(user);
-        System.out.println(expectedFriend);
-        System.out.println(friendsAfterSendInvitation);
+        ThreadSafeCookieStore.INSTANCE.removeAll();
+        String tokenUserWhomWasSentInvitation = new AuthApiClient().login(expectedFriendFromAnno.username(),
+                expectedFriendFromAnno.testData().password());
+        final UdUserJson userFromWhomWasReceivedInvitation = gatewayApiClient.allFriends(
+                        "Bearer " + tokenUserWhomWasSentInvitation, null)
+                .stream()
+                .filter(u -> u.friendState() == FriendState.INVITE_RECEIVED)
+                .toList()
+                .getFirst();
 
+        Assertions.assertEquals(user.username(), userFromWhomWasReceivedInvitation.username());
     }
 }
