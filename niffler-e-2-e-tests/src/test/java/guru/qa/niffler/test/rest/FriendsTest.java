@@ -11,7 +11,6 @@ import guru.qa.niffler.model.UdUserJson;
 import guru.qa.niffler.model.rest.FriendJson;
 import guru.qa.niffler.service.impl.AuthApiClient;
 import guru.qa.niffler.service.impl.GatewayApiClient;
-import guru.qa.niffler.service.impl.GatewayApiV2Client;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -24,7 +23,6 @@ public class FriendsTest {
     @RegisterExtension
     private static final ApiLoginExtension apiLoginExtension = ApiLoginExtension.rest();
     private final GatewayApiClient gatewayApiClient = new GatewayApiClient();
-    private final GatewayApiV2Client gatewayApiV2Client = new GatewayApiV2Client();
 
     @User(friends = 2, incomingRequests = 1)
     @ApiLogin
