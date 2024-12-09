@@ -34,7 +34,7 @@ enum DockerConfig implements Config {
   }
 
   @Override
-  public String gatewayUtl() {
+  public String gatewayUrl() {
     return "";
   }
 

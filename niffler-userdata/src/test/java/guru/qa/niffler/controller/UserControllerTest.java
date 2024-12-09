@@ -11,6 +11,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -39,5 +43,29 @@ class UserControllerTest {
         )
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.username").value("dima"));
+  }
+
+  @Test
+  void allUsersEndpoint() throws Exception {
+    UserEntity firstUser = new UserEntity();
+    firstUser.setUsername("a.user");
+    firstUser.setCurrency(CurrencyValues.RUB);
+    UserEntity secondUser = new UserEntity();
+    secondUser.setUsername("b.user");
+    secondUser.setCurrency(CurrencyValues.RUB);
+
+    usersRepository.save(firstUser);
+    usersRepository.save(secondUser);
+    List<UserEntity> allUsers = usersRepository.findAll();
+    System.out.println(allUsers.size());
+
+    mockMvc.perform(get("/internal/users/all")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .param("username", "a")
+            )
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(2))) // Проверяем, что массив содержит 2 элемента
+            .andExpect(jsonPath("$[0].username").value("a.user")) // Проверяем первого пользователя
+            .andExpect(jsonPath("$[1].username").value("b.user")); // Проверяем второго пользователя
   }
 }
