@@ -18,7 +18,7 @@ public interface Config {
 
   String authJdbcUrl();
 
-  String gatewayUtl();
+  String gatewayUrl();
 
   String userdataUrl();
 
