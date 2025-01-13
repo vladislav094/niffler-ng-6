@@ -8,11 +8,10 @@ import guru.qa.niffler.jupiter.annotations.meta.RestTest;
 import guru.qa.niffler.jupiter.extensions.ApiLoginExtension;
 import guru.qa.niffler.model.FriendState;
 import guru.qa.niffler.model.UdUserJson;
-import guru.qa.niffler.model.rest.FriendJson;
 import guru.qa.niffler.model.rest.pageable.RestResponsePage;
 import guru.qa.niffler.service.impl.AuthApiClient;
-import guru.qa.niffler.service.impl.GatewayApiClient;
 import guru.qa.niffler.service.impl.GatewayApiV2Client;
+import io.qameta.allure.Step;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -90,6 +89,7 @@ public class FriendsV2Test {
     @User(outcomingRequests = 1)
     @ApiLogin
     @Test
+    @Step
     void testAfterSendOutcomingInvitationShouldBeCreateIncomingAndOutcomingRequestAccordingly(UdUserJson user, @Token String token) {
         // пользователь из аннотации которому был отправлен запрос в друзья
         final UdUserJson expectedFriendFromAnno = user.testData().outcomingRequest().getFirst();
