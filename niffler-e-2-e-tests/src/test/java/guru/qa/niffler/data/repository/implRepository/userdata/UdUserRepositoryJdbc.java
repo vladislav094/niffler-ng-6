@@ -12,7 +12,7 @@ import java.sql.SQLException;
 import java.util.Optional;
 import java.util.UUID;
 
-import static guru.qa.niffler.jdbc.Connections.holder;
+import static guru.qa.niffler.data.jdbc.Connections.holder;
 
 public class UdUserRepositoryJdbc implements UdUserRepository {
 

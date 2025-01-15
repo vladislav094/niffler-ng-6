@@ -11,7 +11,6 @@ import guru.qa.niffler.model.UdUserJson;
 import guru.qa.niffler.service.UsersClient;
 import io.qameta.allure.Step;
 import org.jetbrains.annotations.NotNull;
-import retrofit2.Call;
 import retrofit2.Response;
 
 import javax.annotation.Nonnull;
@@ -23,8 +22,8 @@ import java.util.List;
 import static guru.qa.niffler.model.FriendState.*;
 import static guru.qa.niffler.utils.RandomDataUtils.randomUsername;
 import static java.util.Objects.requireNonNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.apache.hc.core5.http.HttpStatus.SC_OK;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class UsersApiClient implements UsersClient {
 

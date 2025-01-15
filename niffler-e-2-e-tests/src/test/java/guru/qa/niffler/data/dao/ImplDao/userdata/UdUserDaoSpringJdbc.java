@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static guru.qa.niffler.jdbc.DataSources.getDataSource;
+import static guru.qa.niffler.data.jdbc.DataSources.dataSource;
 
 public class UdUserDaoSpringJdbc implements UdUserDao {
 
@@ -25,7 +25,7 @@ public class UdUserDaoSpringJdbc implements UdUserDao {
 
     @Override
     public UdUserEntity create(UdUserEntity user) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(getDataSource(url));
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource(url));
         KeyHolder kh = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(
@@ -50,7 +50,7 @@ public class UdUserDaoSpringJdbc implements UdUserDao {
 
     @Override
     public UdUserEntity update(UdUserEntity user) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(getDataSource(url));
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource(url));
         jdbcTemplate.update("""
                         UPDATE "user"
                             SET currency = ?,
@@ -95,7 +95,7 @@ public class UdUserDaoSpringJdbc implements UdUserDao {
 
     @Override
     public Optional<UdUserEntity> findById(UUID id) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(getDataSource(url));
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource(url));
         return Optional.ofNullable(
                 jdbcTemplate.queryForObject(
                         "SELECT * FROM \"user\" WHERE id = ?",
@@ -107,7 +107,7 @@ public class UdUserDaoSpringJdbc implements UdUserDao {
     @Override
     public Optional<UdUserEntity> findByUsername(String username) {
         return Optional.ofNullable(
-                new JdbcTemplate(getDataSource(url)).queryForObject(
+                new JdbcTemplate(dataSource(url)).queryForObject(
                         "SELECT * FROM \"user\" WHERE username = ?",
                         UserdataUserEntityRowMapper.instance,
                         username
@@ -116,7 +116,7 @@ public class UdUserDaoSpringJdbc implements UdUserDao {
 
     @Override
     public List<UdUserEntity> findAll() {
-        return new JdbcTemplate(getDataSource(url)).query(
+        return new JdbcTemplate(dataSource(url)).query(
                 "SELECT * FROM \"user\"",
                 UserdataUserEntityRowMapper.instance
         );
@@ -124,7 +124,7 @@ public class UdUserDaoSpringJdbc implements UdUserDao {
 
     @Override
     public void remove(UdUserEntity user) {
-        new JdbcTemplate(getDataSource(url)).update(
+        new JdbcTemplate(dataSource(url)).update(
                 "DELETE FROM \"user\" WHERE id = ?",
                 user.getId()
         );

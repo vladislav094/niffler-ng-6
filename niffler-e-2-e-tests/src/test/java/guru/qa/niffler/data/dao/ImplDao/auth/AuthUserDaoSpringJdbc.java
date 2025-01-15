@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static guru.qa.niffler.jdbc.DataSources.getDataSource;
+import static guru.qa.niffler.data.jdbc.DataSources.dataSource;
 
 public class AuthUserDaoSpringJdbc implements AuthUserDao {
 
@@ -23,7 +23,7 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
 
     @Override
     public AuthUserEntity create(AuthUserEntity user) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(getDataSource(url));
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource(url));
         KeyHolder kh = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(
@@ -48,7 +48,7 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
 
     @Override
     public AuthUserEntity update(AuthUserEntity user) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(getDataSource(url));
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource(url));
         KeyHolder kh = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(
@@ -71,7 +71,7 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
 
     @Override
     public Optional<AuthUserEntity> findById(UUID id) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(getDataSource(url));
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource(url));
         return Optional.ofNullable(
                 jdbcTemplate.queryForObject(
                         "SELECT * FROM \"user\" WHERE id = ?",
@@ -83,7 +83,7 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
 
     @Override
     public Optional<AuthUserEntity> findByUsername(String username) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(getDataSource(url));
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource(url));
         return Optional.ofNullable(
                 jdbcTemplate.queryForObject(
                         "SELECT * FROM \"user\" WHERE username = ?",
@@ -95,7 +95,7 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
 
     @Override
     public List<AuthUserEntity> findAll() {
-        return new JdbcTemplate(getDataSource(url)).query(
+        return new JdbcTemplate(dataSource(url)).query(
                 "SELECT * FROM \"user\"",
                 AuthUserEntityRowMapper.instance
         );
@@ -103,7 +103,7 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
 
     @Override
     public void remove(AuthUserEntity user) {
-        new JdbcTemplate(getDataSource(url)).update(
+        new JdbcTemplate(dataSource(url)).update(
                 "DELETE FROM \"user\" WHERE id = ?",
                 user.getId()
         );

@@ -14,7 +14,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import java.util.Optional;
 import java.util.UUID;
 
-import static guru.qa.niffler.jdbc.DataSources.getDataSource;
+import static guru.qa.niffler.data.jdbc.DataSources.dataSource;
 
 public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
 
@@ -36,7 +36,7 @@ public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
 
     @Override
     public Optional<AuthUserEntity> findById(UUID id) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(getDataSource(CFG.authJdbcUrl()));
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource(CFG.authJdbcUrl()));
         return Optional.ofNullable(
                 jdbcTemplate.query(
                         "SELECT a.id as authority_id," +
@@ -57,7 +57,7 @@ public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
 
     @Override
     public Optional<AuthUserEntity> findByUsername(String username) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(getDataSource(CFG.authJdbcUrl()));
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource(CFG.authJdbcUrl()));
         return Optional.ofNullable(
                 jdbcTemplate.query(
                         "SELECT a.id as authority_id," +

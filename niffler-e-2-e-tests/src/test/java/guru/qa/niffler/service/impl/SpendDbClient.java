@@ -4,19 +4,15 @@ import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.entity.spend.CategoryEntity;
 import guru.qa.niffler.data.entity.spend.SpendEntity;
 import guru.qa.niffler.data.repository.SpendRepository;
-import guru.qa.niffler.data.repository.implRepository.spend.SpendRepositoryHibernate;
 import guru.qa.niffler.data.repository.implRepository.spend.SpendRepositoryJdbc;
-import guru.qa.niffler.data.repository.implRepository.spend.SpendRepositorySpringJdbc;
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.service.SpendClient;
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 

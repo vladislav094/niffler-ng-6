@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static guru.qa.niffler.jdbc.DataSources.getDataSource;
+import static guru.qa.niffler.data.jdbc.DataSources.dataSource;
 
 public class CategoryDaoSpringJdbc implements CategoryDao {
 
@@ -24,7 +24,7 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
 
     @Override
     public CategoryEntity create(CategoryEntity category) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(getDataSource(url));
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource(url));
         KeyHolder kh = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(
@@ -43,7 +43,7 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
 
     @Override
     public CategoryEntity update(CategoryEntity category) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(getDataSource(url));
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource(url));
         KeyHolder kh = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement("UPDATE category SET name = ?, username = ?, archived = ? WHERE id",
@@ -58,7 +58,7 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
 
     @Override
     public Optional<CategoryEntity> findById(UUID id) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(getDataSource(url));
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource(url));
         try {
             return Optional.ofNullable(
                     jdbcTemplate.queryForObject(
@@ -74,7 +74,7 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
 
     @Override
     public List<CategoryEntity> findAll() {
-        return new JdbcTemplate(getDataSource(url)).query(
+        return new JdbcTemplate(dataSource(url)).query(
                 "SELECT * FROM category",
                 CategoryEntityRowMapper.instance
         );
@@ -82,7 +82,7 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
 
     @Override
     public void remove(CategoryEntity category) {
-        new JdbcTemplate(getDataSource(url)).update(
+        new JdbcTemplate(dataSource(url)).update(
                 "DELETE FROM category WHERE id = ?",
                 category.getId()
         );

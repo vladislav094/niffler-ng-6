@@ -18,6 +18,7 @@ public interface AuthApi {
             @Field("_csrf") String csrf
     );
 
+
     @GET("oauth2/authorize")
     Call<Void> authorize(
             @Query("response_type") String responseType,

@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static guru.qa.niffler.jdbc.DataSources.getDataSource;
+import static guru.qa.niffler.data.jdbc.DataSources.dataSource;
 
 public class SpendDaoSpringJdbc implements SpendDao {
 
@@ -23,7 +23,7 @@ public class SpendDaoSpringJdbc implements SpendDao {
 
     @Override
     public SpendEntity create(SpendEntity spend) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(getDataSource(url));
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource(url));
         KeyHolder kh = new GeneratedKeyHolder();
         jdbcTemplate.update(
                 con -> {
@@ -47,7 +47,7 @@ public class SpendDaoSpringJdbc implements SpendDao {
 
     @Override
     public SpendEntity update(SpendEntity spend) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(getDataSource(url));
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource(url));
         KeyHolder kh = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(
@@ -71,7 +71,7 @@ public class SpendDaoSpringJdbc implements SpendDao {
     @Override
     public Optional<SpendEntity> findById(UUID id) {
         return Optional.ofNullable(
-                new JdbcTemplate(getDataSource(url)).queryForObject(
+                new JdbcTemplate(dataSource(url)).queryForObject(
                         "SELECT * FROM spend WHERE id = ?",
                         SpendEntityRowMapper.instance,
                         id
@@ -81,7 +81,7 @@ public class SpendDaoSpringJdbc implements SpendDao {
 
     @Override
     public List<SpendEntity> findAll() {
-        return new JdbcTemplate(getDataSource(url)).query(
+        return new JdbcTemplate(dataSource(url)).query(
                 "SELECT * FROM spend",
                 SpendEntityRowMapper.instance
         );
@@ -89,7 +89,7 @@ public class SpendDaoSpringJdbc implements SpendDao {
 
     @Override
     public void remove(SpendEntity spend) {
-        new JdbcTemplate(getDataSource(url)).update(
+        new JdbcTemplate(dataSource(url)).update(
                 "DELETE FROM spend WHERE id = ?",
                 spend.getId()
         );

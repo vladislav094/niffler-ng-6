@@ -38,9 +38,9 @@ public class GatewayApiV2Client extends RestClient {
 
     @Step("send /api/v2/users/all GET request to niffler-gateway")
     public RestResponsePage<UdUserJson> allUsers(@Nonnull String bearerToken,
-                                                   @Nullable String searchQuery,
-                                                   int page,
-                                                   @Nullable String sort) {
+                                                 @Nullable String searchQuery,
+                                                 int page,
+                                                 @Nullable String sort) {
         final Response<RestResponsePage<UdUserJson>> response;
         try {
             response = gatewayV2Api.allUsers(bearerToken, searchQuery, page, sort).execute();
