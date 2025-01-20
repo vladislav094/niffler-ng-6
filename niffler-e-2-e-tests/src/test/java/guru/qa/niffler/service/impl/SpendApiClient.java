@@ -1,11 +1,11 @@
 package guru.qa.niffler.service.impl;
 
 import guru.qa.niffler.api.SpendApi;
+import guru.qa.niffler.api.core.RestClient;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
-import guru.qa.niffler.api.core.RestClient;
 import guru.qa.niffler.service.SpendClient;
 import retrofit2.Response;
 
@@ -70,9 +70,9 @@ public class SpendApiClient implements SpendClient {
 
     @Nullable
     public List<SpendJson> getAllSpend(String username,
-                                                 @Nullable CurrencyValues currency,
-                                                 @Nullable String from,
-                                                 @Nullable String to) {
+                                       @Nullable CurrencyValues currency,
+                                       @Nullable String from,
+                                       @Nullable String to) {
         final Response<List<SpendJson>> response;
         try {
             response = spendApi.getAllSpends(username, currency, from, to)
@@ -129,7 +129,7 @@ public class SpendApiClient implements SpendClient {
     public List<CategoryJson> getAllCategories(String username, boolean excludeArchived) {
         final Response<List<CategoryJson>> response;
         try {
-            response = spendApi.getAllCategories(username,excludeArchived)
+            response = spendApi.getAllCategories(username, excludeArchived)
                     .execute();
         } catch (IOException e) {
             throw new AssertionError(e);

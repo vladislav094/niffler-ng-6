@@ -15,7 +15,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import java.util.Optional;
 import java.util.UUID;
 
-import static guru.qa.niffler.jdbc.DataSources.getDataSource;
+import static guru.qa.niffler.data.jdbc.DataSources.dataSource;
 
 public class SpendRepositorySpringJdbc implements SpendRepository {
 
@@ -50,7 +50,7 @@ public class SpendRepositorySpringJdbc implements SpendRepository {
 
     @Override
     public Optional<CategoryEntity> findCategoryByUsernameAndName(String username, String categoryName) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(getDataSource(url));
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource(url));
         return Optional.ofNullable(
                 jdbcTemplate.queryForObject(
                         "SELECT * FROM category WHERE username = ? AND name = ?",
@@ -66,7 +66,7 @@ public class SpendRepositorySpringJdbc implements SpendRepository {
 
     @Override
     public Optional<SpendEntity> findSpendByUsernameAndDescription(String username, String description) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(getDataSource(url));
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource(url));
         return Optional.ofNullable(
                 jdbcTemplate.queryForObject(
                         "SELECT * FROM spend WHERE username = ? AND description = ?",

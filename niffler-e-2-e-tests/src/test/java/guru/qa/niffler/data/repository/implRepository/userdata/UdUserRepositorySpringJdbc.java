@@ -12,7 +12,7 @@ import java.sql.Date;
 import java.util.Optional;
 import java.util.UUID;
 
-import static guru.qa.niffler.jdbc.DataSources.getDataSource;
+import static guru.qa.niffler.data.jdbc.DataSources.dataSource;
 
 public class UdUserRepositorySpringJdbc implements UdUserRepository {
 
@@ -42,7 +42,7 @@ public class UdUserRepositorySpringJdbc implements UdUserRepository {
 
     @Override
     public void sendInvitation(UdUserEntity requester, UdUserEntity addressee) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(getDataSource(url));
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource(url));
         jdbcTemplate.update(
                 "INSERT INTO \"friendship\" (requester_id, addressee_id, status, created_date) " +
                         "VALUES (?, ?, ?, ?)",
@@ -54,7 +54,7 @@ public class UdUserRepositorySpringJdbc implements UdUserRepository {
 
     @Override
     public void addFriend(UdUserEntity requester, UdUserEntity addressee) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(getDataSource(url));
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource(url));
         jdbcTemplate.update(
                 "INSERT INTO \"friendship\" (requester_id, addressee_id, status, created_date) " +
                         "VALUES (?, ?, ?, ?)",

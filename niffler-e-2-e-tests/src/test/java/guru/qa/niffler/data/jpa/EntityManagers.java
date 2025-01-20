@@ -1,6 +1,6 @@
 package guru.qa.niffler.data.jpa;
 
-import guru.qa.niffler.jdbc.DataSources;
+import guru.qa.niffler.data.jdbc.DataSources;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
@@ -19,7 +19,7 @@ public class EntityManagers {
         return emfs.computeIfAbsent(
                 jdbcUrl,
                 key -> {
-                    DataSources.getDataSource(jdbcUrl);
+                    DataSources.dataSource(jdbcUrl);
                     return Persistence.createEntityManagerFactory(jdbcUrl);
                 }
         ).createEntityManager();

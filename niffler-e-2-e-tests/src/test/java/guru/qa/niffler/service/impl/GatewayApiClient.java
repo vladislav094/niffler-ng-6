@@ -62,7 +62,7 @@ public class GatewayApiClient extends RestClient {
 
     @Step("send /api/invitations/send POST request to niffler-gateway")
     public UdUserJson sendInvitation(@Nonnull String bearerToken,
-                                       FriendJson friend) {
+                                     FriendJson friend) {
         final Response<UdUserJson> response;
         try {
             response = gatewayApi.sendInvitation(bearerToken, friend).execute();
@@ -75,7 +75,7 @@ public class GatewayApiClient extends RestClient {
 
     @Step("send /api/invitations/decline POST request to niffler-gateway")
     public UdUserJson declineInvitation(@Nonnull String bearerToken,
-                                       FriendJson friend) {
+                                        FriendJson friend) {
         final Response<UdUserJson> response;
         try {
             response = gatewayApi.declineInvitation(bearerToken, friend).execute();
