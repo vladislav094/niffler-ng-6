@@ -1,12 +1,12 @@
 package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
-import guru.qa.niffler.jupiter.annotations.ApiLogin;
-import guru.qa.niffler.jupiter.annotations.Category;
-import guru.qa.niffler.jupiter.annotations.ScreenShotTest;
-import guru.qa.niffler.jupiter.annotations.User;
-import guru.qa.niffler.jupiter.annotations.meta.WebTest;
-import guru.qa.niffler.model.UdUserJson;
+import guru.qa.niffler.jupiter.annotation.ApiLogin;
+import guru.qa.niffler.jupiter.annotation.Category;
+import guru.qa.niffler.jupiter.annotation.ScreenShotTest;
+import guru.qa.niffler.jupiter.annotation.User;
+import guru.qa.niffler.jupiter.annotation.meta.WebTest;
+import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.page.ProfilePage;
 import guru.qa.niffler.utils.RandomDataUtils;
 import org.junit.jupiter.api.DisplayName;
@@ -28,7 +28,7 @@ public class ProfileWebTest extends BaseWebTest {
     )
     @ApiLogin
     @Test
-    void archivedCategoryShouldPresentInCategoriesList(UdUserJson user) {
+    void archivedCategoryShouldPresentInCategoriesList(UserJson user) {
         final String testCategoryName = user.testData().categories().getFirst().name();
 
         Selenide.open(ProfilePage.URL, ProfilePage.class)
@@ -50,7 +50,7 @@ public class ProfileWebTest extends BaseWebTest {
     )
     @ApiLogin
     @Test
-    void activeCategoryShouldPresentInCategoriesList(UdUserJson user) {
+    void activeCategoryShouldPresentInCategoriesList(UserJson user) {
         final String testCategoryName = user.testData().categories().getFirst().name();
 
         Selenide.open(ProfilePage.URL, ProfilePage.class)

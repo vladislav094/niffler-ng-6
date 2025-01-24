@@ -19,12 +19,12 @@ public class FriendshipEntity implements Serializable {
     @Id
     @ManyToOne
     @JoinColumn(name = "requester_id", referencedColumnName = "id")
-    private UdUserEntity requester;
+    private UserEntity requester;
 
     @Id
     @ManyToOne
     @JoinColumn(name = "addressee_id", referencedColumnName = "id")
-    private UdUserEntity addressee;
+    private UserEntity addressee;
 
     @Column(name = "created_date", columnDefinition = "DATE", nullable = false)
     private Date createdDate;

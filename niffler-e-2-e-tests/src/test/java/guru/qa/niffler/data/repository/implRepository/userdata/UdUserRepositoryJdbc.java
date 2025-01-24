@@ -1,10 +1,10 @@
 package guru.qa.niffler.data.repository.implRepository.userdata;
 
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.data.dao.ImplDao.userdata.UdUserDaoJdbc;
-import guru.qa.niffler.data.dao.userdata.UdUserDao;
+import guru.qa.niffler.data.dao.ImplDao.userdata.UserdataUserDaoJdbc;
+import guru.qa.niffler.data.dao.userdata.UserdataUserDao;
 import guru.qa.niffler.data.entity.userdata.FriendshipStatus;
-import guru.qa.niffler.data.entity.userdata.UdUserEntity;
+import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.data.repository.UdUserRepository;
 
 import java.sql.PreparedStatement;
@@ -18,31 +18,31 @@ public class UdUserRepositoryJdbc implements UdUserRepository {
 
     private static final Config CFG = Config.getInstance();
     private final String url = CFG.userdataJdbcUrl();
-    private final UdUserDao udUserDao = new UdUserDaoJdbc();
+    private final UserdataUserDao userdataUserDao = new UserdataUserDaoJdbc();
 
     @Override
-    public UdUserEntity create(UdUserEntity user) {
-        return udUserDao.create(user);
+    public UserEntity create(UserEntity user) {
+        return userdataUserDao.create(user);
     }
 
     @Override
-    public UdUserEntity update(UdUserEntity user) {
-        return udUserDao.update(user);
+    public UserEntity update(UserEntity user) {
+        return userdataUserDao.update(user);
     }
 
     @Override
-    public Optional<UdUserEntity> findById(UUID id) {
-        return udUserDao.findById(id);
+    public Optional<UserEntity> findById(UUID id) {
+        return userdataUserDao.findById(id);
     }
 
     @Override
-    public Optional<UdUserEntity> findByUsername(String username) {
-        return udUserDao.findByUsername(username);
+    public Optional<UserEntity> findByUsername(String username) {
+        return userdataUserDao.findByUsername(username);
     }
 
     // Friendship table
     @Override
-    public void sendInvitation(UdUserEntity requester, UdUserEntity addressee) {
+    public void sendInvitation(UserEntity requester, UserEntity addressee) {
         try (PreparedStatement ps = holder(url).connection().prepareStatement(
                 "INSERT INTO \"friendship\" (requester_id, addressee_id, status, created_date) " +
                         "VALUES (?, ?, ?, ?)"
@@ -58,7 +58,7 @@ public class UdUserRepositoryJdbc implements UdUserRepository {
     }
 
     @Override
-    public void addFriend(UdUserEntity requester, UdUserEntity addressee) {
+    public void addFriend(UserEntity requester, UserEntity addressee) {
         try (PreparedStatement ps = holder(url).connection().prepareStatement(
                 "INSERT INTO \"friendship\" (requester_id, addressee_id, status, created_date) " +
                         "VALUES (?, ?, ?, ?)"
@@ -81,7 +81,7 @@ public class UdUserRepositoryJdbc implements UdUserRepository {
     }
 
     @Override
-    public void remove(UdUserEntity user) {
-        udUserDao.remove(user);
+    public void remove(UserEntity user) {
+        userdataUserDao.remove(user);
     }
 }

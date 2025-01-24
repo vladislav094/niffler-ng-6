@@ -3,7 +3,7 @@ package guru.qa.niffler.condition;
 import com.codeborne.selenide.CheckResult;
 import com.codeborne.selenide.Driver;
 import com.codeborne.selenide.WebElementsCondition;
-import guru.qa.niffler.model.SpendJson;
+import guru.qa.niffler.model.rest.SpendJson;
 import guru.qa.niffler.utils.ConvertCurrencyUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.jetbrains.annotations.NotNull;

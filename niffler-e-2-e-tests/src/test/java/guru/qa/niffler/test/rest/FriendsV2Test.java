@@ -1,13 +1,13 @@
 package guru.qa.niffler.test.rest;
 
 import guru.qa.niffler.api.core.ThreadSafeCookieStore;
-import guru.qa.niffler.jupiter.annotations.ApiLogin;
-import guru.qa.niffler.jupiter.annotations.Token;
-import guru.qa.niffler.jupiter.annotations.User;
-import guru.qa.niffler.jupiter.annotations.meta.RestTest;
-import guru.qa.niffler.jupiter.extensions.ApiLoginExtension;
-import guru.qa.niffler.model.FriendState;
-import guru.qa.niffler.model.UdUserJson;
+import guru.qa.niffler.jupiter.annotation.ApiLogin;
+import guru.qa.niffler.jupiter.annotation.Token;
+import guru.qa.niffler.jupiter.annotation.User;
+import guru.qa.niffler.jupiter.annotation.meta.RestTest;
+import guru.qa.niffler.jupiter.extension.ApiLoginExtension;
+import guru.qa.niffler.model.rest.FriendshipStatus;
+import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.model.rest.pageable.RestResponsePage;
 import guru.qa.niffler.service.impl.AuthApiClient;
 import guru.qa.niffler.service.impl.GatewayApiV2Client;
@@ -28,10 +28,10 @@ public class FriendsV2Test {
     @User(friends = 2, incomingRequests = 1)
     @ApiLogin
     @Test
-    void allFriendsAndIncomeInvitationsShouldBeReturnedFromUser(UdUserJson user, @Token String token) {
-        final List<UdUserJson> expectedFriends = user.testData().friends();
-        final List<UdUserJson> expectedInvitations = user.testData().incomingRequest();
-        final RestResponsePage<UdUserJson> result = gatewayApiV2Client.allFriends(
+    void allFriendsAndIncomeInvitationsShouldBeReturnedFromUser(UserJson user, @Token String token) {
+        final List<UserJson> expectedFriends = user.testData().friends();
+        final List<UserJson> expectedInvitations = user.testData().incomingRequest();
+        final RestResponsePage<UserJson> result = gatewayApiV2Client.allFriends(
                 token,
                 null,
                 0,
@@ -39,11 +39,11 @@ public class FriendsV2Test {
         );
         Assertions.assertNotNull(result);
         Assertions.assertEquals(3, result.getContent().size());
-        final List<UdUserJson> friendsFromResponse = result.stream().filter(
-                u -> u.friendState() == FriendState.FRIEND
+        final List<UserJson> friendsFromResponse = result.stream().filter(
+                u -> u.friendshipStatus() == FriendshipStatus.FRIEND
         ).toList();
-        final List<UdUserJson> invitationsFromResponse = result.stream().filter(
-                u -> u.friendState() == FriendState.INVITE_RECEIVED
+        final List<UserJson> invitationsFromResponse = result.stream().filter(
+                u -> u.friendshipStatus() == FriendshipStatus.INVITE_RECEIVED
         ).toList();
         Assertions.assertEquals(2, friendsFromResponse.size());
         Assertions.assertEquals(1, invitationsFromResponse.size());
@@ -51,8 +51,8 @@ public class FriendsV2Test {
                 expectedInvitations.getFirst().username(),
                 invitationsFromResponse.getFirst().username()
         );
-        final UdUserJson firstUserFromRequest = friendsFromResponse.getFirst();
-        final UdUserJson secondUserFromRequest = friendsFromResponse.getLast();
+        final UserJson firstUserFromRequest = friendsFromResponse.getFirst();
+        final UserJson secondUserFromRequest = friendsFromResponse.getLast();
         Assertions.assertEquals(
                 expectedFriends.getFirst().username(),
                 firstUserFromRequest.username()
@@ -66,18 +66,18 @@ public class FriendsV2Test {
     @User(friends = 3)
     @ApiLogin
     @Test
-    void testFriendShouldBeReturnedForUserWithFilerByUsername(UdUserJson user, @Token String token) {
-        final UdUserJson expectedFriend = user.testData().friends().getFirst();
+    void testFriendShouldBeReturnedForUserWithFilerByUsername(UserJson user, @Token String token) {
+        final UserJson expectedFriend = user.testData().friends().getFirst();
         final String filter = expectedFriend.username();
-        final RestResponsePage<UdUserJson> result = gatewayApiV2Client.allFriends(
+        final RestResponsePage<UserJson> result = gatewayApiV2Client.allFriends(
                 token,
                 filter,
                 0,
                 usernameAscSort);
 
-        final List<UdUserJson> friendWasFoundByFilter = result.getContent()
+        final List<UserJson> friendWasFoundByFilter = result.getContent()
                 .stream()
-                .filter(u -> u.username().equals(filter) && u.friendState() == FriendState.FRIEND)
+                .filter(u -> u.username().equals(filter) && u.friendshipStatus() == FriendshipStatus.FRIEND)
                 .toList();
 
         Assertions.assertNotNull(result);
@@ -88,17 +88,17 @@ public class FriendsV2Test {
     @User(outcomingRequests = 1)
     @ApiLogin
     @Test
-    void testAfterSendOutcomingInvitationShouldBeCreateIncomingAndOutcomingRequestAccordingly(UdUserJson user, @Token String token) {
+    void testAfterSendOutcomingInvitationShouldBeCreateIncomingAndOutcomingRequestAccordingly(UserJson user, @Token String token) {
         // пользователь из аннотации которому был отправлен запрос в друзья
-        final UdUserJson expectedFriendFromAnno = user.testData().outcomingRequest().getFirst();
-        final RestResponsePage<UdUserJson> result = gatewayApiV2Client.allUsers(
+        final UserJson expectedFriendFromAnno = user.testData().outcomingRequest().getFirst();
+        final RestResponsePage<UserJson> result = gatewayApiV2Client.allUsers(
                 token,
                 null,
                 0,
                 usernameAscSort);
 
         System.out.println(result.getContent().stream().toList());
-        final UdUserJson userWithFriendStateInviteSent = result.getContent().stream().toList().getFirst();
+        final UserJson userWithFriendStateInviteSent = result.getContent().stream().toList().getFirst();
 
         Assertions.assertEquals(expectedFriendFromAnno.username(), userWithFriendStateInviteSent.username());
 
@@ -106,17 +106,64 @@ public class FriendsV2Test {
         String tokenUserWhomWasSentInvitation = "Bearer " + new AuthApiClient().login(expectedFriendFromAnno.username(),
                 expectedFriendFromAnno.testData().password());
 
-        final UdUserJson userFromWhomWasReceivedInvitation = gatewayApiV2Client.allFriends(
+        final UserJson userFromWhomWasReceivedInvitation = gatewayApiV2Client.allFriends(
                         tokenUserWhomWasSentInvitation,
                         null,
                         0,
                         usernameAscSort)
                 .getContent()
                 .stream()
-                .filter(u -> u.friendState() == FriendState.INVITE_RECEIVED)
+                .filter(u -> u.friendshipStatus() == FriendshipStatus.INVITE_RECEIVED)
                 .toList()
                 .getFirst();
 
         Assertions.assertEquals(user.username(), userFromWhomWasReceivedInvitation.username());
+    }
+
+    @User(friends = 2, incomingRequests = 1)
+    @ApiLogin
+    @Test
+    void allFriendsAndIncomeInvitationsShouldBeReturnedFroUser(UserJson user, @Token String token) {
+        final List<UserJson> expectedFriends = user.testData().friends();
+        final List<UserJson> expectedInvitations = user.testData().incomingRequest();
+
+        final RestResponsePage<UserJson> result = gatewayApiV2Client.allFriends(
+                token,
+                null,
+                0,
+                "username,ASC"
+        );
+
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(3, result.getContent().size());
+
+        final List<UserJson> friendsFromResponse = result.stream().filter(
+                u -> u.friendshipStatus() == FriendshipStatus.FRIEND
+        ).toList();
+
+        final List<UserJson> invitationsFromResponse = result.stream().filter(
+                u -> u.friendshipStatus() == FriendshipStatus.INVITE_RECEIVED
+        ).toList();
+
+        Assertions.assertEquals(2, friendsFromResponse.size());
+        Assertions.assertEquals(1, invitationsFromResponse.size());
+
+        Assertions.assertEquals(
+                expectedInvitations.getFirst().username(),
+                invitationsFromResponse.getFirst().username()
+        );
+
+        final UserJson firstUserFromRequest = friendsFromResponse.getFirst();
+        final UserJson secondUserFromRequest = friendsFromResponse.getLast();
+
+        Assertions.assertEquals(
+                expectedFriends.getFirst().username(),
+                firstUserFromRequest.username()
+        );
+
+        Assertions.assertEquals(
+                expectedFriends.getLast().username(),
+                secondUserFromRequest.username()
+        );
     }
 }

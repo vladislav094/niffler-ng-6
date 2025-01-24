@@ -4,15 +4,15 @@ import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.entity.auth.AuthAuthorityEntity;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.entity.auth.Authority;
-import guru.qa.niffler.data.entity.userdata.UdUserEntity;
+import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.data.repository.AuthUserRepository;
 import guru.qa.niffler.data.repository.UdUserRepository;
 import guru.qa.niffler.data.repository.implRepository.auth.AuthUserRepositorySpringJdbc;
 import guru.qa.niffler.data.repository.implRepository.userdata.UdUserRepositorySpringJdbc;
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
-import guru.qa.niffler.model.CurrencyValues;
-import guru.qa.niffler.model.TestData;
-import guru.qa.niffler.model.UdUserJson;
+import guru.qa.niffler.model.rest.CurrencyValues;
+import guru.qa.niffler.model.rest.TestData;
+import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.service.UsersClient;
 import io.qameta.allure.Step;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -46,44 +46,44 @@ public class UserdataDbClient implements UsersClient {
     @Override
     @Nonnull
     @Step("Create user using SQL")
-    public UdUserJson createUser(@Nonnull String username, @Nonnull String password) {
+    public UserJson createUser(@Nonnull String username, @Nonnull String password) {
         return requireNonNull(xaTxTemplate.execute(() -> {
             AuthUserEntity authUser = authUserEntity(username, password);
             authUserRepository.create(authUser);
-            UdUserJson user = UdUserJson.fromEntity(udUserRepository.create(userEntity(username)),
+            UserJson user = UserJson.fromEntity(udUserRepository.create(userEntity(username)),
                     null);
             return user.addTestData(new TestData(password));
         }));
     }
 
     @Nullable
-    public UdUserJson getUserByName(@Nonnull String name) {
-        Optional<UdUserEntity> user = udUserRepository.findByUsername(name);
-        return UdUserJson.fromEntity(user.orElseThrow(), null);
+    public UserJson getUserByName(@Nonnull String name) {
+        Optional<UserEntity> user = udUserRepository.findByUsername(name);
+        return UserJson.fromEntity(user.orElseThrow(), null);
     }
 
     @Nullable
-    public UdUserJson getUserById(@Nonnull String id) {
-        Optional<UdUserEntity> user = udUserRepository.findById(UUID.fromString(id));
-        return UdUserJson.fromEntity(user.orElseThrow(), null);
+    public UserJson getUserById(@Nonnull String id) {
+        Optional<UserEntity> user = udUserRepository.findById(UUID.fromString(id));
+        return UserJson.fromEntity(user.orElseThrow(), null);
     }
 
     @Nonnull
-    public UdUserJson updateUser(@Nonnull UdUserJson user) {
+    public UserJson updateUser(@Nonnull UserJson user) {
         return requireNonNull(xaTxTemplate.execute(() -> {
-            UdUserEntity userEntity = UdUserEntity.fromJson(user);
-            return UdUserJson.fromEntity(udUserRepository.update(userEntity), null);
+            UserEntity userEntity = UserEntity.fromJson(user);
+            return UserJson.fromEntity(udUserRepository.update(userEntity), null);
         }));
     }
 
     @Override
-    public void createIncomingInvitation(@Nonnull UdUserJson targetUser, int count) {
+    public void createIncomingInvitation(@Nonnull UserJson targetUser, int count) {
         if (count > 0) {
-            UdUserEntity targetEntity = targetUserEntity(targetUser);
+            UserEntity targetEntity = targetUserEntity(targetUser);
             for (int i = 0; i < count; i++) {
                 xaTxTemplate.execute(() -> {
                     AuthUserEntity authUser = randomAuthUserEntity();
-                    UdUserEntity newUser = udUserRepository.create(userEntity(authUser.getUsername()));
+                    UserEntity newUser = udUserRepository.create(userEntity(authUser.getUsername()));
                     udUserRepository.sendInvitation(newUser, targetEntity);
                     return null;
                 });
@@ -92,13 +92,13 @@ public class UserdataDbClient implements UsersClient {
     }
 
     @Override
-    public void createOutcomingInvitation(@Nonnull UdUserJson targetUser, int count) {
+    public void createOutcomingInvitation(@Nonnull UserJson targetUser, int count) {
         if (count > 0) {
-            UdUserEntity targetEntity = targetUserEntity(targetUser);
+            UserEntity targetEntity = targetUserEntity(targetUser);
             for (int i = 0; i < count; i++) {
                 xaTxTemplate.execute(() -> {
                     AuthUserEntity authUser = randomAuthUserEntity();
-                    UdUserEntity newUser = udUserRepository.create(userEntity(authUser.getUsername()));
+                    UserEntity newUser = udUserRepository.create(userEntity(authUser.getUsername()));
                     udUserRepository.sendInvitation(targetEntity, newUser);
                     return null;
                 });
@@ -107,13 +107,13 @@ public class UserdataDbClient implements UsersClient {
     }
 
     @Override
-    public void createFriend(@Nonnull UdUserJson targetUser, int count) {
+    public void createFriend(@Nonnull UserJson targetUser, int count) {
         if (count > 0) {
-            UdUserEntity targetEntity = targetUserEntity(targetUser);
+            UserEntity targetEntity = targetUserEntity(targetUser);
             for (int i = 0; i < count; i++) {
                 xaTxTemplate.execute(() -> {
                     AuthUserEntity authUser = randomAuthUserEntity();
-                    UdUserEntity newUser = udUserRepository.create(userEntity(authUser.getUsername()));
+                    UserEntity newUser = udUserRepository.create(userEntity(authUser.getUsername()));
                     udUserRepository.addFriend(targetEntity, newUser);
                     return null;
                 });
@@ -121,14 +121,14 @@ public class UserdataDbClient implements UsersClient {
         }
     }
 
-    public void deleteUdUser(@Nonnull UdUserJson user) {
+    public void deleteUdUser(@Nonnull UserJson user) {
         xaTxTemplate.execute(() -> {
-            udUserRepository.remove(UdUserEntity.fromJson(user));
+            udUserRepository.remove(UserEntity.fromJson(user));
             return null;
         });
     }
 
-    private UdUserEntity targetUserEntity(UdUserJson user) {
+    private UserEntity targetUserEntity(UserJson user) {
         return udUserRepository.findById(user.id())
                 .orElseThrow();
     }
@@ -139,8 +139,8 @@ public class UserdataDbClient implements UsersClient {
         return authUserRepository.create(authUser);
     }
 
-    private UdUserEntity userEntity(String username) {
-        UdUserEntity ue = new UdUserEntity();
+    private UserEntity userEntity(String username) {
+        UserEntity ue = new UserEntity();
         ue.setUsername(username);
         ue.setCurrency(CurrencyValues.RUB);
         return ue;

@@ -1,11 +1,11 @@
 package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
-import guru.qa.niffler.jupiter.annotations.Category;
-import guru.qa.niffler.jupiter.annotations.Spending;
-import guru.qa.niffler.jupiter.annotations.User;
-import guru.qa.niffler.jupiter.annotations.meta.WebTest;
-import guru.qa.niffler.model.UdUserJson;
+import guru.qa.niffler.jupiter.annotation.Category;
+import guru.qa.niffler.jupiter.annotation.Spending;
+import guru.qa.niffler.jupiter.annotation.User;
+import guru.qa.niffler.jupiter.annotation.meta.WebTest;
+import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.page.LoginPage;
 import io.qameta.allure.Story;
 import org.junit.jupiter.api.DisplayName;
@@ -40,7 +40,7 @@ public class LoginWebTest extends BaseWebTest {
     @Test
     @Story("Успешная авторизация")
     @DisplayName("Выполняем авторизацию пользователя")
-    public void testMainPageShouldBeDisplayedAfterSuccessfulLogin(UdUserJson user) {
+    public void testMainPageShouldBeDisplayedAfterSuccessfulLogin(UserJson user) {
 
         step("Открываем страницу авторизации и заполняем форму (username, password)", () -> {
             Selenide.open(CFG.frontUrl(), LoginPage.class)

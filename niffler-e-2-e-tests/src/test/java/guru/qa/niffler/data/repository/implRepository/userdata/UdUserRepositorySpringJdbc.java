@@ -1,10 +1,10 @@
 package guru.qa.niffler.data.repository.implRepository.userdata;
 
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.data.dao.ImplDao.userdata.UdUserDaoSpringJdbc;
-import guru.qa.niffler.data.dao.userdata.UdUserDao;
+import guru.qa.niffler.data.dao.ImplDao.userdata.UserdataUserDaoSpringJdbc;
+import guru.qa.niffler.data.dao.userdata.UserdataUserDao;
 import guru.qa.niffler.data.entity.userdata.FriendshipStatus;
-import guru.qa.niffler.data.entity.userdata.UdUserEntity;
+import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.data.repository.UdUserRepository;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -18,30 +18,30 @@ public class UdUserRepositorySpringJdbc implements UdUserRepository {
 
     private static final Config CFG = Config.getInstance();
     private final String url = CFG.userdataJdbcUrl();
-    private final UdUserDao udUserDao = new UdUserDaoSpringJdbc();
+    private final UserdataUserDao userdataUserDao = new UserdataUserDaoSpringJdbc();
 
     @Override
-    public UdUserEntity create(UdUserEntity user) {
-        return udUserDao.create(user);
+    public UserEntity create(UserEntity user) {
+        return userdataUserDao.create(user);
     }
 
     @Override
-    public UdUserEntity update(UdUserEntity user) {
-        return udUserDao.update(user);
+    public UserEntity update(UserEntity user) {
+        return userdataUserDao.update(user);
     }
 
     @Override
-    public Optional<UdUserEntity> findById(UUID id) {
-        return udUserDao.findById(id);
+    public Optional<UserEntity> findById(UUID id) {
+        return userdataUserDao.findById(id);
     }
 
     @Override
-    public Optional<UdUserEntity> findByUsername(String username) {
-        return udUserDao.findByUsername(username);
+    public Optional<UserEntity> findByUsername(String username) {
+        return userdataUserDao.findByUsername(username);
     }
 
     @Override
-    public void sendInvitation(UdUserEntity requester, UdUserEntity addressee) {
+    public void sendInvitation(UserEntity requester, UserEntity addressee) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource(url));
         jdbcTemplate.update(
                 "INSERT INTO \"friendship\" (requester_id, addressee_id, status, created_date) " +
@@ -53,7 +53,7 @@ public class UdUserRepositorySpringJdbc implements UdUserRepository {
     }
 
     @Override
-    public void addFriend(UdUserEntity requester, UdUserEntity addressee) {
+    public void addFriend(UserEntity requester, UserEntity addressee) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource(url));
         jdbcTemplate.update(
                 "INSERT INTO \"friendship\" (requester_id, addressee_id, status, created_date) " +
@@ -74,7 +74,7 @@ public class UdUserRepositorySpringJdbc implements UdUserRepository {
     }
 
     @Override
-    public void remove(UdUserEntity user) {
-        udUserDao.remove(user);
+    public void remove(UserEntity user) {
+        userdataUserDao.remove(user);
     }
 }
