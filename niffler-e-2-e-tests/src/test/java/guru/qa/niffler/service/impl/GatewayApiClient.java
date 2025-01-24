@@ -2,8 +2,8 @@ package guru.qa.niffler.service.impl;
 
 import guru.qa.niffler.api.GatewayApi;
 import guru.qa.niffler.api.core.RestClient;
-import guru.qa.niffler.model.UdUserJson;
 import guru.qa.niffler.model.rest.FriendJson;
+import guru.qa.niffler.model.rest.UserJson;
 import io.qameta.allure.Step;
 import retrofit2.Response;
 
@@ -23,9 +23,9 @@ public class GatewayApiClient extends RestClient {
     }
 
     @Step("send /api/friends/all GET request to niffler-gateway")
-    public List<UdUserJson> allFriends(@Nonnull String bearerToken,
-                                       @Nullable String searchQuery) {
-        final Response<List<UdUserJson>> response;
+    public List<UserJson> allFriends(@Nonnull String bearerToken,
+                                     @Nullable String searchQuery) {
+        final Response<List<UserJson>> response;
         try {
             response = gatewayApi.allFriends(bearerToken, searchQuery).execute();
         } catch (IOException e) {
@@ -48,9 +48,9 @@ public class GatewayApiClient extends RestClient {
     }
 
     @Step("send /api/invitations/accept POST request to niffler-gateway")
-    public UdUserJson acceptInvitation(@Nonnull String bearerToken,
-                                       FriendJson friend) {
-        final Response<UdUserJson> response;
+    public UserJson acceptInvitation(@Nonnull String bearerToken,
+                                     FriendJson friend) {
+        final Response<UserJson> response;
         try {
             response = gatewayApi.acceptInvitation(bearerToken, friend).execute();
         } catch (IOException e) {
@@ -61,9 +61,9 @@ public class GatewayApiClient extends RestClient {
     }
 
     @Step("send /api/invitations/send POST request to niffler-gateway")
-    public UdUserJson sendInvitation(@Nonnull String bearerToken,
-                                     FriendJson friend) {
-        final Response<UdUserJson> response;
+    public UserJson sendInvitation(@Nonnull String bearerToken,
+                                   FriendJson friend) {
+        final Response<UserJson> response;
         try {
             response = gatewayApi.sendInvitation(bearerToken, friend).execute();
         } catch (IOException e) {
@@ -74,9 +74,9 @@ public class GatewayApiClient extends RestClient {
     }
 
     @Step("send /api/invitations/decline POST request to niffler-gateway")
-    public UdUserJson declineInvitation(@Nonnull String bearerToken,
-                                        FriendJson friend) {
-        final Response<UdUserJson> response;
+    public UserJson declineInvitation(@Nonnull String bearerToken,
+                                      FriendJson friend) {
+        final Response<UserJson> response;
         try {
             response = gatewayApi.declineInvitation(bearerToken, friend).execute();
         } catch (IOException e) {
@@ -87,8 +87,8 @@ public class GatewayApiClient extends RestClient {
     }
 
     @Step("send /api/users/current GET request to niffler-gateway")
-    public UdUserJson getCurrentUser(@Nonnull String bearerToken) {
-        final Response<UdUserJson> response;
+    public UserJson getCurrentUser(@Nonnull String bearerToken) {
+        final Response<UserJson> response;
         try {
             response = gatewayApi.currentUser(bearerToken).execute();
         } catch (IOException e) {
@@ -99,8 +99,8 @@ public class GatewayApiClient extends RestClient {
     }
 
     @Step("send /api/users/all GET request to niffler-gateway")
-    public List<UdUserJson> allUsers(@Nonnull String bearerToken, @Nullable String searchQuery) {
-        final Response<List<UdUserJson>> response;
+    public List<UserJson> allUsers(@Nonnull String bearerToken, @Nullable String searchQuery) {
+        final Response<List<UserJson>> response;
         try {
             response = gatewayApi.allUsers(bearerToken, searchQuery).execute();
         } catch (IOException e) {

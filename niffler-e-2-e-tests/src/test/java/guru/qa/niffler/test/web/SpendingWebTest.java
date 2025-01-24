@@ -3,11 +3,11 @@ package guru.qa.niffler.test.web;
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.condition.Bubble;
 import guru.qa.niffler.condition.Color;
-import guru.qa.niffler.jupiter.annotations.*;
-import guru.qa.niffler.jupiter.annotations.meta.WebTest;
-import guru.qa.niffler.model.CategoryJson;
-import guru.qa.niffler.model.SpendJson;
-import guru.qa.niffler.model.UdUserJson;
+import guru.qa.niffler.jupiter.annotation.*;
+import guru.qa.niffler.jupiter.annotation.meta.WebTest;
+import guru.qa.niffler.model.rest.CategoryJson;
+import guru.qa.niffler.model.rest.SpendJson;
+import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.page.EditSpendingPage;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.MainPage;
@@ -52,7 +52,7 @@ public class SpendingWebTest extends BaseWebTest {
     )
     @ApiLogin
     @Test
-    void addNewSpending(UdUserJson user) {
+    void addNewSpending(UserJson user) {
         int amount = 50;
         Date date = new Date();
         String description = RandomDataUtils.randomDescription();
@@ -105,7 +105,7 @@ public class SpendingWebTest extends BaseWebTest {
     @ScreenShotTest("img/expected-edit-stat.png")
     @Story("Скриншотный тест компонента статистики на главно странице")
     @DisplayName("Сравниваем состояние компонента статистик с имеющимся скриншотом, который соответствует данным аннотации")
-    void checkStatComponentAfterEditSpendingTest(UdUserJson user, BufferedImage expected) {
+    void checkStatComponentAfterEditSpendingTest(UserJson user, BufferedImage expected) {
         BufferedImage imageBeforeEdit = ImageIO.read(new ClassPathResource("img/expected-stat.png").getInputStream());
 
         Selenide.open(MainPage.URL, MainPage.class)
@@ -130,7 +130,7 @@ public class SpendingWebTest extends BaseWebTest {
     @ScreenShotTest("img/expected-deleted-stat.png")
     @Story("Скриншотный тест компонента статистики на главно странице")
     @DisplayName("Сравниваем состояние компонента статистик с имеющимся скриншотом, который соответствует данным аннотации")
-    void checkStatComponentAfterDeleteSpendingTest(UdUserJson user, BufferedImage expected) {
+    void checkStatComponentAfterDeleteSpendingTest(UserJson user, BufferedImage expected) {
         BufferedImage imageBeforeEdit = ImageIO.read(new ClassPathResource("img/expected-stat.png").getInputStream());
         List<String> categoriesName = user.testData().categories().stream()
                 .map(CategoryJson::name).toList();
@@ -162,7 +162,7 @@ public class SpendingWebTest extends BaseWebTest {
     @ApiLogin
     @Story("Состояние таблицы трат на главной странице")
     @DisplayName("Проверяем описание трат в таблице на главной странице и сравниваем их с данными из аннотации")
-    void checkSpendingsInTableOnMainPage(UdUserJson user) {
+    void checkSpendingsInTableOnMainPage(UserJson user) {
         List<SpendJson> spendings = user.testData().spendings();
 
         Selenide.open(MainPage.URL, MainPage.class);
@@ -188,7 +188,7 @@ public class SpendingWebTest extends BaseWebTest {
     @Test
     @Story("Состояние плашек с тратами на главной странице")
     @DisplayName("Проверяем описание трат в плашках под компонентом статистики на главной странице")
-    void checkBubblesInStatComponent(UdUserJson user) {
+    void checkBubblesInStatComponent(UserJson user) {
         Bubble firstBubble = new Bubble(Color.yellow, "Обучение 79990 ₽");
         Bubble secondBubble = new Bubble(Color.green, "Рыбалка 400 ₽");
         StatComponent statComponent = new StatComponent();

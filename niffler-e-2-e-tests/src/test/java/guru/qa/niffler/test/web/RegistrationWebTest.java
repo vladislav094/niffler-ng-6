@@ -2,9 +2,9 @@ package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.utils.RandomDataUtils;
-import guru.qa.niffler.jupiter.annotations.User;
-import guru.qa.niffler.jupiter.annotations.meta.WebTest;
-import guru.qa.niffler.model.UdUserJson;
+import guru.qa.niffler.jupiter.annotation.User;
+import guru.qa.niffler.jupiter.annotation.meta.WebTest;
+import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.page.LoginPage;
 import io.qameta.allure.Story;
 import org.junit.jupiter.api.DisplayName;
@@ -48,7 +48,7 @@ public class RegistrationWebTest extends BaseWebTest {
     @Story("Неуспешная регистрация")
     @User
     @DisplayName("Попытка регистрации с username ранее зарегистрированного пользователя")
-    public void testShouldNotRegisterUserWithExistingUsername(UdUserJson user) {
+    public void testShouldNotRegisterUserWithExistingUsername(UserJson user) {
         final String earlieRegisterUserName = user.username();
 
         step("Открыть страницу регистрации", () -> {

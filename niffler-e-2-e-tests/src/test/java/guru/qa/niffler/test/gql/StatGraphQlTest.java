@@ -4,9 +4,9 @@ import com.apollographql.apollo.api.ApolloResponse;
 import com.apollographql.java.client.ApolloCall;
 import com.apollographql.java.rx2.Rx2Apollo;
 import guru.qa.StatQuery;
-import guru.qa.niffler.jupiter.annotations.ApiLogin;
-import guru.qa.niffler.jupiter.annotations.Token;
-import guru.qa.niffler.jupiter.annotations.User;
+import guru.qa.niffler.jupiter.annotation.ApiLogin;
+import guru.qa.niffler.jupiter.annotation.Token;
+import guru.qa.niffler.jupiter.annotation.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

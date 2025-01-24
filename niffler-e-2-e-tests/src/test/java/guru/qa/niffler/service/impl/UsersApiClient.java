@@ -5,9 +5,9 @@ import guru.qa.niffler.api.UserdataApi;
 import guru.qa.niffler.api.core.RestClient;
 import guru.qa.niffler.api.core.ThreadSafeCookieStore;
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.model.FriendState;
-import guru.qa.niffler.model.TestData;
-import guru.qa.niffler.model.UdUserJson;
+import guru.qa.niffler.model.rest.FriendshipStatus;
+import guru.qa.niffler.model.rest.TestData;
+import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.service.UsersClient;
 import io.qameta.allure.Step;
 import org.jetbrains.annotations.NotNull;
@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
-import static guru.qa.niffler.model.FriendState.*;
+import static guru.qa.niffler.model.rest.FriendshipStatus.*;
 import static guru.qa.niffler.utils.RandomDataUtils.randomUsername;
 import static java.util.Objects.requireNonNull;
 import static org.apache.hc.core5.http.HttpStatus.SC_OK;
@@ -37,7 +37,7 @@ public class UsersApiClient implements UsersClient {
     @Override
     @Nonnull
     @Step("Create user using API")
-    public UdUserJson createUser(String username, String password) {
+    public UserJson createUser(String username, String password) {
         try {
             authApi.getRegisterForm().execute();
             authApi.registerUser(
@@ -47,7 +47,7 @@ public class UsersApiClient implements UsersClient {
                     ThreadSafeCookieStore.INSTANCE.cookieValue("XSRF-TOKEN")
             ).execute();
 
-            UdUserJson user = requireNonNull(userdataApi.getCurrentUser(username).execute().body());
+            UserJson user = requireNonNull(userdataApi.getCurrentUser(username).execute().body());
             return user.addTestData(
                     new TestData(password)
             );
@@ -57,9 +57,9 @@ public class UsersApiClient implements UsersClient {
     }
 
     @Nonnull
-    public List<UdUserJson> getAllUsers(@Nonnull String username, @Nullable String searchQuery) {
+    public List<UserJson> getAllUsers(@Nonnull String username, @Nullable String searchQuery) {
 
-        final Response<List<UdUserJson>> response;
+        final Response<List<UserJson>> response;
         try {
             response = userdataApi.getAllUsers(username, searchQuery)
                     .execute();
@@ -73,11 +73,11 @@ public class UsersApiClient implements UsersClient {
     }
 
     @Override
-    public void createIncomingInvitation(UdUserJson targetUser, int count) {
+    public void createIncomingInvitation(UserJson targetUser, int count) {
         if (count > 0) {
             for (int i = 0; i < count; i++) {
-                final Response<UdUserJson> response;
-                final UdUserJson newUser;
+                final Response<UserJson> response;
+                final UserJson newUser;
                 try {
                     newUser = createUser(randomUsername(), defaultPassword);
                     response = userdataApi.sendInvitation(newUser.username(), targetUser.username()).execute();
@@ -92,11 +92,11 @@ public class UsersApiClient implements UsersClient {
     }
 
     @Override
-    public void createOutcomingInvitation(UdUserJson targetUser, int count) {
+    public void createOutcomingInvitation(UserJson targetUser, int count) {
         if (count > 0) {
             for (int i = 0; i < count; i++) {
-                final Response<UdUserJson> response;
-                final UdUserJson newUser;
+                final Response<UserJson> response;
+                final UserJson newUser;
                 try {
                     newUser = createUser(randomUsername(), defaultPassword);
                     response = userdataApi.sendInvitation(targetUser.username(), newUser.username()).execute();
@@ -111,11 +111,11 @@ public class UsersApiClient implements UsersClient {
     }
 
     @Override
-    public void createFriend(UdUserJson targetUser, int count) {
+    public void createFriend(UserJson targetUser, int count) {
         if (count > 0) {
             for (int i = 0; i < count; i++) {
-                final Response<UdUserJson> response;
-                final UdUserJson newUser;
+                final Response<UserJson> response;
+                final UserJson newUser;
                 try {
                     newUser = createUser(randomUsername(), defaultPassword);
                     userdataApi.sendInvitation(newUser.username(), targetUser.username()).execute();
@@ -131,8 +131,8 @@ public class UsersApiClient implements UsersClient {
     }
 
     @Nonnull
-    public List<UdUserJson> getAllOutcomingInvitations(@Nonnull String username, @Nullable String searchQuery) {
-        final Response<List<UdUserJson>> response;
+    public List<UserJson> getAllOutcomingInvitations(@Nonnull String username, @Nullable String searchQuery) {
+        final Response<List<UserJson>> response;
         try {
             response = userdataApi.getAllUsers(username, searchQuery).execute();
         } catch (IOException e) {
@@ -145,27 +145,27 @@ public class UsersApiClient implements UsersClient {
         }
 
         return response.body().stream()
-                .filter(userJson -> userJson.friendState() != null)
-                .filter(userJson -> userJson.friendState().name().equals(INVITE_SENT.name()))
+                .filter(userJson -> userJson.friendshipStatus() != null)
+                .filter(userJson -> userJson.friendshipStatus().name().equals(INVITE_SENT.name()))
                 .toList();
     }
 
     @Nonnull
-    public List<UdUserJson> getAllIncomingInvitations(@Nonnull String username, @Nullable String searchQuery) {
+    public List<UserJson> getAllIncomingInvitations(@Nonnull String username, @Nullable String searchQuery) {
 
         return getFriendsWithFriendState(username, searchQuery, INVITE_RECEIVED);
     }
 
     @Nonnull
-    public List<UdUserJson> getFriends(@Nonnull String username, @Nullable String searchQuery) {
+    public List<UserJson> getFriends(@Nonnull String username, @Nullable String searchQuery) {
 
         return getFriendsWithFriendState(username, searchQuery, FRIEND);
     }
 
     // используем для получения списка пользователей при запросе на /internal/friends/all
     @NotNull
-    private List<UdUserJson> getFriendsWithFriendState(@Nonnull String username, @Nullable String searchQuery, FriendState inviteReceived) {
-        final Response<List<UdUserJson>> response;
+    private List<UserJson> getFriendsWithFriendState(@Nonnull String username, @Nullable String searchQuery, FriendshipStatus inviteReceived) {
+        final Response<List<UserJson>> response;
         try {
             response = userdataApi.getAllFriends(username, searchQuery).execute();
         } catch (IOException e) {
@@ -178,8 +178,8 @@ public class UsersApiClient implements UsersClient {
         }
 
         return response.body().stream()
-                .filter(userJson -> userJson.friendState() != null)
-                .filter(userJson -> userJson.friendState().name().equals(inviteReceived.name()))
+                .filter(userJson -> userJson.friendshipStatus() != null)
+                .filter(userJson -> userJson.friendshipStatus().name().equals(inviteReceived.name()))
                 .toList();
     }
 }
