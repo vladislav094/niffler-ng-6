@@ -1,8 +1,8 @@
 package guru.qa.niffler.test.web;
 
-import guru.qa.niffler.jupiter.annotations.User;
-import guru.qa.niffler.jupiter.annotations.meta.WebTest;
-import guru.qa.niffler.model.UdUserJson;
+import guru.qa.niffler.jupiter.annotation.User;
+import guru.qa.niffler.jupiter.annotation.meta.WebTest;
+import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.service.impl.UsersApiClient;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -24,18 +24,18 @@ public class CountUsersTest {
     @User
     @Test
     @Order(1)
-    void otherUsersNotExistsTest(UdUserJson user) {
+    void otherUsersNotExistsTest(UserJson user) {
         UsersApiClient usersApiClient = new UsersApiClient();
-        List<UdUserJson> responseList = usersApiClient.getAllUsers(user.username(), null);
+        List<UserJson> responseList = usersApiClient.getAllUsers(user.username(), null);
         assertTrue(responseList.isEmpty());
     }
 
     @User
     @Test
     @Order(2)
-    void haveAnotherUsersTest(UdUserJson user) {
+    void haveAnotherUsersTest(UserJson user) {
         UsersApiClient usersApiClient = new UsersApiClient();
-        List<UdUserJson> responseList = usersApiClient.getAllUsers(user.username(), null);
+        List<UserJson> responseList = usersApiClient.getAllUsers(user.username(), null);
         assertFalse(responseList.isEmpty());
     }
 }

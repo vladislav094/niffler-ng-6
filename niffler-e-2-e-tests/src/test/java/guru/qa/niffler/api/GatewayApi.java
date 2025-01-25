@@ -1,10 +1,6 @@
 package guru.qa.niffler.api;
 
-import guru.qa.niffler.model.*;
-import guru.qa.niffler.model.rest.CurrencyJson;
-import guru.qa.niffler.model.rest.FriendJson;
-import guru.qa.niffler.model.rest.SessionJson;
-import guru.qa.niffler.model.rest.StatisticJson;
+import guru.qa.niffler.model.rest.*;
 import retrofit2.Call;
 import retrofit2.http.*;
 
@@ -25,24 +21,24 @@ public interface GatewayApi {
     Call<List<CurrencyJson>> allCurrencies(@Header("Authorization") String bearerToken);
 
     @GET("api/friends/all")
-    Call<List<UdUserJson>> allFriends(@Header("Authorization") String bearerToken,
-                                      @Query("searchQuery") @Nonnull String searchQuery);
+    Call<List<UserJson>> allFriends(@Header("Authorization") String bearerToken,
+                                    @Query("searchQuery") @Nonnull String searchQuery);
 
     @DELETE("api/friends/remove")
     Call<Void> removeFriend(@Header("Authorization") String bearerToken,
                             @Query("username") @Nullable String targetUsername);
 
     @POST("api/invitations/send")
-    Call<UdUserJson> sendInvitation(@Header("Authorization") String bearerToken,
-                                    @Body FriendJson friend);
+    Call<UserJson> sendInvitation(@Header("Authorization") String bearerToken,
+                                  @Body FriendJson friend);
 
     @POST("api/invitations/accept")
-    Call<UdUserJson> acceptInvitation(@Header("Authorization") String bearerToken,
-                                      @Body FriendJson friend);
+    Call<UserJson> acceptInvitation(@Header("Authorization") String bearerToken,
+                                    @Body FriendJson friend);
 
     @POST("api/invitations/decline")
-    Call<UdUserJson> declineInvitation(@Header("Authorization") String bearerToken,
-                                       @Body FriendJson friend);
+    Call<UserJson> declineInvitation(@Header("Authorization") String bearerToken,
+                                     @Body FriendJson friend);
 
     @GET("api/session/current")
     Call<SessionJson> currentSession(@Header("Authorization") String bearerToken);
@@ -70,13 +66,13 @@ public interface GatewayApi {
                                         @Query("filterPeriod") @Nullable DataFilterValues filterPeriod);
 
     @GET("api/users/current")
-    Call<UdUserJson> currentUser(@Header("Authorization") String bearerToken);
+    Call<UserJson> currentUser(@Header("Authorization") String bearerToken);
 
     @GET("api/users/all")
-    Call<List<UdUserJson>> allUsers(@Header("Authorization") String bearerToken,
-                                    @Query("searchQuery") @Nullable String searchQuery);
+    Call<List<UserJson>> allUsers(@Header("Authorization") String bearerToken,
+                                  @Query("searchQuery") @Nullable String searchQuery);
 
     @POST("api/users/update")
-    Call<UdUserJson> updateUser(@Header("Authorization") String bearerToken,
-                                @Body UdUserJson user);
+    Call<UserJson> updateUser(@Header("Authorization") String bearerToken,
+                              @Body UserJson user);
 }

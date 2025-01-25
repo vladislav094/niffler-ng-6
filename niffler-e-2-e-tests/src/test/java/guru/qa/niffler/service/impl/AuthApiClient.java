@@ -6,7 +6,7 @@ import guru.qa.niffler.api.core.CodeInterceptor;
 import guru.qa.niffler.api.core.RestClient;
 import guru.qa.niffler.api.core.ThreadSafeCookieStore;
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.jupiter.extensions.ApiLoginExtension;
+import guru.qa.niffler.jupiter.extension.ApiLoginExtension;
 import guru.qa.niffler.utils.OauthUtils;
 import lombok.SneakyThrows;
 import retrofit2.Response;

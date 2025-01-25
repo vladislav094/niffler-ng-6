@@ -1,7 +1,6 @@
 package guru.qa.niffler.model.rest;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import guru.qa.niffler.model.SpendJson;
 
 import java.util.List;
 

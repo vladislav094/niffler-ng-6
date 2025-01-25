@@ -1,10 +1,10 @@
 package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
-import guru.qa.niffler.jupiter.annotations.ApiLogin;
-import guru.qa.niffler.jupiter.annotations.User;
-import guru.qa.niffler.jupiter.annotations.meta.WebTest;
-import guru.qa.niffler.model.UdUserJson;
+import guru.qa.niffler.jupiter.annotation.ApiLogin;
+import guru.qa.niffler.jupiter.annotation.User;
+import guru.qa.niffler.jupiter.annotation.meta.WebTest;
+import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.page.FriendsPage;
 import org.junit.jupiter.api.Test;
 
@@ -14,7 +14,7 @@ public class FriendsWebTest extends BaseWebTest {
     @User(friends = 1)
     @ApiLogin
     @Test
-    void friendShouldBePresentInFriendsTable(UdUserJson user) {
+    void friendShouldBePresentInFriendsTable(UserJson user) {
         final String expectedName = user.testData().friends().getFirst().username();
 
         Selenide.open(FriendsPage.URL, FriendsPage.class)
@@ -33,7 +33,7 @@ public class FriendsWebTest extends BaseWebTest {
     @User(incomingRequests = 1)
     @ApiLogin
     @Test
-    void incomeInvitationBePresentInFriendsTable(UdUserJson user) {
+    void incomeInvitationBePresentInFriendsTable(UserJson user) {
         final String expectedName = user.testData().incomingRequest().getFirst().username();
 
         Selenide.open(FriendsPage.URL, FriendsPage.class)
@@ -44,7 +44,7 @@ public class FriendsWebTest extends BaseWebTest {
     @User(outcomingRequests = 1)
     @ApiLogin
     @Test
-    void outcomeInvitationBePresentInAppPeoplesTable(UdUserJson user) {
+    void outcomeInvitationBePresentInAppPeoplesTable(UserJson user) {
         final String expectedName = user.testData().outcomingRequest().getFirst().username();
 
         Selenide.open(FriendsPage.URL, FriendsPage.class)
@@ -55,7 +55,7 @@ public class FriendsWebTest extends BaseWebTest {
     @User(incomingRequests = 1)
     @ApiLogin
     @Test
-    void acceptFriendshipRequest(UdUserJson user) {
+    void acceptFriendshipRequest(UserJson user) {
         final String requesterName = user.testData().incomingRequest().getFirst().username();
 
         FriendsPage friendsPage = Selenide.open(FriendsPage.URL, FriendsPage.class)
@@ -70,7 +70,7 @@ public class FriendsWebTest extends BaseWebTest {
     @User(incomingRequests = 1)
     @ApiLogin
     @Test
-    void declineFriendshipRequest(UdUserJson user) {
+    void declineFriendshipRequest(UserJson user) {
         final String requesterName = user.testData().incomingRequest().getFirst().username();
 
         FriendsPage friendsPage = Selenide.open(FriendsPage.URL, FriendsPage.class)

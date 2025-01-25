@@ -2,7 +2,7 @@ package guru.qa.niffler.service.impl;
 
 import guru.qa.niffler.api.GatewayV2Api;
 import guru.qa.niffler.api.core.RestClient;
-import guru.qa.niffler.model.UdUserJson;
+import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.model.rest.pageable.RestResponsePage;
 import io.qameta.allure.Step;
 import retrofit2.Response;
@@ -22,11 +22,11 @@ public class GatewayApiV2Client extends RestClient {
     }
 
     @Step("send /api/v2/friends/all GET request to niffler-gateway")
-    public RestResponsePage<UdUserJson> allFriends(@Nonnull String bearerToken,
-                                                   @Nullable String searchQuery,
-                                                   int page,
-                                                   @Nullable String sort) {
-        final Response<RestResponsePage<UdUserJson>> response;
+    public RestResponsePage<UserJson> allFriends(@Nonnull String bearerToken,
+                                                 @Nullable String searchQuery,
+                                                 int page,
+                                                 @Nullable String sort) {
+        final Response<RestResponsePage<UserJson>> response;
         try {
             response = gatewayV2Api.allFriends(bearerToken, searchQuery, page, sort).execute();
         } catch (IOException e) {
@@ -37,11 +37,11 @@ public class GatewayApiV2Client extends RestClient {
     }
 
     @Step("send /api/v2/users/all GET request to niffler-gateway")
-    public RestResponsePage<UdUserJson> allUsers(@Nonnull String bearerToken,
-                                                 @Nullable String searchQuery,
-                                                 int page,
-                                                 @Nullable String sort) {
-        final Response<RestResponsePage<UdUserJson>> response;
+    public RestResponsePage<UserJson> allUsers(@Nonnull String bearerToken,
+                                               @Nullable String searchQuery,
+                                               int page,
+                                               @Nullable String sort) {
+        final Response<RestResponsePage<UserJson>> response;
         try {
             response = gatewayV2Api.allUsers(bearerToken, searchQuery, page, sort).execute();
         } catch (IOException e) {
