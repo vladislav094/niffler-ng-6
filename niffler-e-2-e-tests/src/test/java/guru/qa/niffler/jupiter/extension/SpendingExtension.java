@@ -42,7 +42,7 @@ public class SpendingExtension implements ParameterResolver, BeforeEachCallback 
                                             user != null ? user.username() : userAnno.username(),
                                             false
                                     ),
-                                    CurrencyValues.RUB,
+                                    spendAnno.currency(),
                                     spendAnno.amount(),
                                     spendAnno.description(),
                                     user != null ? user.username() : userAnno.username()
