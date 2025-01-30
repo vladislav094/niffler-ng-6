@@ -15,6 +15,7 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 public class BaseGraphQlTest {
 
   protected static final Config CFG = Config.getInstance();
+  protected static final String authorization = "Authorization";
 
   @RegisterExtension
   protected static final ApiLoginExtension apiLoginExtension = ApiLoginExtension.rest();

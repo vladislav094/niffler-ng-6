@@ -20,7 +20,7 @@ public class CurrenciesGraphQlTest extends BaseGraphQlTest {
     @ApiLogin
     void allCurrenciesShouldBeReturnedFromGateway(@Token String bearerToken) {
         final ApolloCall<CurrenciesQuery.Data> currenciesCall = apolloClient.query(new CurrenciesQuery())
-                .addHttpHeader("authorization", bearerToken);
+                .addHttpHeader(authorization, bearerToken);
 
         final ApolloResponse<CurrenciesQuery.Data> response = Rx2Apollo.single(currenciesCall).blockingGet();
         final CurrenciesQuery.Data data = response.dataOrThrow();
