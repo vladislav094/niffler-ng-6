@@ -1,6 +1,5 @@
 package guru.qa.niffler.jupiter.extension;
 
-import com.codeborne.selenide.Browsers;
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.WebDriverRunner;
@@ -10,6 +9,8 @@ import io.qameta.allure.selenide.AllureSelenide;
 import org.junit.jupiter.api.extension.*;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.firefox.FirefoxOptions;
 
 import java.io.ByteArrayInputStream;
 
@@ -19,13 +20,41 @@ public class BrowserExtension implements
         TestExecutionExceptionHandler,
         LifecycleMethodExecutionExceptionHandler {
 
-    @Override
+    static {
+        String browser = System.getenv("BROWSER");
+        if (browser == null || browser.isEmpty()) {
+            browser = "chrome";
+        }
+
+        Configuration.timeout = 8000;
+        Configuration.pageLoadStrategy = "eager";
+
+        if ("docker".equals(System.getProperty("test.env"))) {
+            Configuration.remote = "http://selenoid:4444/wd/hub";
+
+            if ("chrome".equalsIgnoreCase(browser)) {
+                Configuration.browser = "chrome";
+                Configuration.browserVersion = "127.0";
+                Configuration.browserCapabilities = new ChromeOptions().addArguments("--no-sandbox");
+            } else if ("firefox".equalsIgnoreCase(browser)) {
+                Configuration.browser = "firefox";
+                Configuration.browserVersion = "125.0";
+                Configuration.browserCapabilities = new FirefoxOptions();
+            } else {
+                throw new IllegalArgumentException("Unsupported browser: " + browser);
+            }
+        } else {
+            Configuration.browser = "chrome";
+            Configuration.browserVersion = "127.0";
+            Configuration.browserCapabilities = new ChromeOptions().addArguments("--no-sandbox");
+        }
+    }
+
     public void beforeEach(ExtensionContext context) throws Exception {
-        Configuration.browser = Browsers.CHROME;
-        Configuration.browserSize = "19020x1080";
         SelenideLogger.addListener("Allure-selenide", new AllureSelenide()
                 .savePageSource(false)
-                .screenshots(false));
+                .screenshots(false)
+        );
     }
 
     @Override

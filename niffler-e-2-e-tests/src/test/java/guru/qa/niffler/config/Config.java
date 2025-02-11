@@ -1,5 +1,7 @@
 package guru.qa.niffler.config;
 
+import javax.annotation.Nonnull;
+
 public interface Config {
 
     static Config getInstance() {
@@ -32,5 +34,8 @@ public interface Config {
         return 8092;
     }
 
-    String ghUrl();
+  @Nonnull
+  default String ghUrl() {
+    return "https://api.github.com/";
+  }
 }
