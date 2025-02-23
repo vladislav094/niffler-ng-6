@@ -5,63 +5,51 @@ enum DockerConfig implements Config {
 
   @Override
   public String frontUrl() {
-    return "";
-  }
-
-  @Override
-  public String spendUrl() {
-    return "";
-  }
-
-  @Override
-  public String spendJdbcUrl() {
-    return "";
-  }
-
-  @Override
-  public String ghUrl() {
-    return "";
+    return "http://frontend.niffler.dc/";
   }
 
   @Override
   public String authUrl() {
-    return "";
+    return "http://auth.niffler.dc:9000/";
   }
 
   @Override
   public String authJdbcUrl() {
-    return "";
+    return "jdbc:postgresql://niffler-all-db:5432/niffler-auth";
   }
 
   @Override
   public String gatewayUrl() {
-    return "";
+    return "http://gateway.niffler.dc:8090/";
   }
 
   @Override
   public String userdataUrl() {
-    return "";
+    return "http://userdata.niffler.dc:8089/";
   }
 
   @Override
   public String userdataJdbcUrl() {
-    return "";
+    return "jdbc:postgresql://niffler-all-db:5432/niffler-userdata";
+  }
+
+  @Override
+  public String spendUrl() {
+    return "http://spend.niffler.dc:8093/";
+  }
+
+  @Override
+  public String spendJdbcUrl() {
+    return "jdbc:postgresql://niffler-all-db:5432/niffler-spend";
   }
 
   @Override
   public String currencyJdbcUrl() {
-    return "";
+    return "jdbc:postgresql://niffler-all-db:5432/niffler-currency";
   }
 
   @Override
   public String currencyGrpcAddress() {
-    return "";
+    return "currency.niffler.dc";
   }
-
-  @Override
-  public int currencyGrpcPort() {
-    return Config.super.currencyGrpcPort();
-  }
-
-
 }

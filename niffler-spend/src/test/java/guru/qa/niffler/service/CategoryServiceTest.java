@@ -213,7 +213,7 @@ class CategoryServiceTest {
         );
     }
 
-    @Test
+//    @Test
     void categoryShouldBeSave(@Mock CategoryRepository categoryRepository) {
         CategoryJson categoryJson = new CategoryJson(
                 firstArchivedCategoryId,

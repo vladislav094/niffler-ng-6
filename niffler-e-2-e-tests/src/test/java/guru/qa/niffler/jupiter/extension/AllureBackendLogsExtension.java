@@ -16,18 +16,20 @@ public class AllureBackendLogsExtension implements SuiteExtension {
     @SneakyThrows
     @Override
     public void afterSuite() {
-        final AllureLifecycle allureLifecycle = Allure.getLifecycle();
-        final String caseId = UUID.randomUUID().toString();
-        allureLifecycle.scheduleTestCase(new TestResult().setUuid(caseId).setName(caseName));
-        allureLifecycle.startTestCase(caseId);
-        addLogAttachment("Niffler-auth log", "./logs/niffler-auth/app.log");
-        addLogAttachment("Niffler-currency log", "./logs/niffler-currency/app.log");
-        addLogAttachment("Niffler-gateway log", "./logs/niffler-gateway/app.log");
-        addLogAttachment("Niffler-spend log", "./logs/niffler-spend/app.log");
-        addLogAttachment("Niffler-userdata log", "./logs/niffler-userdata/app.log");
+        if (!"docker".equals(System.getProperty("test.env"))) {
+            final AllureLifecycle allureLifecycle = Allure.getLifecycle();
+            final String caseId = UUID.randomUUID().toString();
+            allureLifecycle.scheduleTestCase(new TestResult().setUuid(caseId).setName(caseName));
+            allureLifecycle.startTestCase(caseId);
+            addLogAttachment("Niffler-auth log", "./logs/niffler-auth/app.log");
+            addLogAttachment("Niffler-currency log", "./logs/niffler-currency/app.log");
+            addLogAttachment("Niffler-gateway log", "./logs/niffler-gateway/app.log");
+            addLogAttachment("Niffler-spend log", "./logs/niffler-spend/app.log");
+            addLogAttachment("Niffler-userdata log", "./logs/niffler-userdata/app.log");
 
-        allureLifecycle.stopTestCase(caseId);
-        allureLifecycle.writeTestCase(caseId);
+            allureLifecycle.stopTestCase(caseId);
+            allureLifecycle.writeTestCase(caseId);
+        }
     }
 
     @SneakyThrows
