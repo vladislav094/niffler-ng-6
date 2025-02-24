@@ -11,6 +11,7 @@ import guru.qa.niffler.data.repository.AuthUserRepository;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -54,5 +55,10 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
     @Override
     public void remove(AuthUserEntity user) {
         authUserDao.remove(user);
+    }
+
+    @Override
+    public List<AuthUserEntity> all() {
+        throw new UnsupportedOperationException();
     }
 }

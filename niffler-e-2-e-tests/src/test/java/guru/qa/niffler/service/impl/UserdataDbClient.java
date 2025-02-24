@@ -7,7 +7,9 @@ import guru.qa.niffler.data.entity.auth.Authority;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.data.repository.AuthUserRepository;
 import guru.qa.niffler.data.repository.UserdataUserRepository;
+import guru.qa.niffler.data.repository.implRepository.auth.AuthUserRepositoryHibernate;
 import guru.qa.niffler.data.repository.implRepository.auth.AuthUserRepositorySpringJdbc;
+import guru.qa.niffler.data.repository.implRepository.userdata.UserdataUserRepositoryHibernate;
 import guru.qa.niffler.data.repository.implRepository.userdata.UserdataUserRepositorySpringJdbc;
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.rest.CurrencyValues;
@@ -22,6 +24,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -34,8 +37,8 @@ public class UserdataDbClient implements UsersClient {
     private static final Config CFG = Config.getInstance();
     private static final PasswordEncoder pe = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
-    private final AuthUserRepository authUserRepository = new AuthUserRepositorySpringJdbc();
-    private final UserdataUserRepository userdataUserRepository = new UserdataUserRepositorySpringJdbc();
+    private final AuthUserRepository authUserRepository = new AuthUserRepositoryHibernate();
+    private final UserdataUserRepository userdataUserRepository = new UserdataUserRepositoryHibernate();
 
     private final XaTransactionTemplate xaTxTemplate = new XaTransactionTemplate(
             CFG.authJdbcUrl(),
@@ -165,5 +168,14 @@ public class UserdataDbClient implements UsersClient {
                 ).toList()
         );
         return authUser;
+    }
+
+    @Override
+    public List<UserJson> all() {
+        return authUserRepository.all().stream()
+                .map(e -> new UserJson(
+                        e.getUsername()
+                ))
+                .toList();
     }
 }

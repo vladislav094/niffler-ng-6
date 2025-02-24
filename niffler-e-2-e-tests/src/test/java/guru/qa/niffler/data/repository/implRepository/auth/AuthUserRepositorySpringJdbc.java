@@ -11,6 +11,7 @@ import guru.qa.niffler.data.extractor.AuthUserEntityExtractor;
 import guru.qa.niffler.data.repository.AuthUserRepository;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -79,5 +80,10 @@ public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
     @Override
     public void remove(AuthUserEntity user) {
         authUserDao.remove(user);
+    }
+
+    @Override
+    public List<AuthUserEntity> all() {
+        throw new UnsupportedOperationException();
     }
 }
