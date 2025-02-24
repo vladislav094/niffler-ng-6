@@ -182,4 +182,9 @@ public class UsersApiClient implements UsersClient {
                 .filter(userJson -> userJson.friendshipStatus().name().equals(inviteReceived.name()))
                 .toList();
     }
+
+    @Override
+    public List<UserJson> all() {
+        throw new UnsupportedOperationException();
+    }
 }

@@ -3,6 +3,7 @@ package guru.qa.niffler.service;
 import guru.qa.niffler.model.rest.UserJson;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 
 public interface UsersClient {
     @Nonnull
@@ -13,4 +14,6 @@ public interface UsersClient {
     void createOutcomingInvitation(UserJson targetUser, int count);
 
     void createFriend(UserJson targetUser, int count);
+
+    List<UserJson> all();
 }
