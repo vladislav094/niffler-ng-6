@@ -1,0 +1,34 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPathPattern": "/internal/categories/all",
+    "queryParameters": {
+      "username": {
+        "equalTo": "bee"
+      },
+      "excludeArchived": {
+        "equalTo": "false"
+      }
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": [
+      {
+        "id": "{{randomValue type='UUID'}}",
+        "name": "Веселье",
+        "username": "{{request.query.username}}",
+        "archived": false
+      },
+      {
+        "id": "{{randomValue type='UUID'}}",
+        "name": "Магазины",
+        "username": "{{request.query.username}}",
+        "archived": true
+      }
+    ]
+  }
+}

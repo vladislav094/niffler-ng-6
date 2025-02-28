@@ -41,3 +41,18 @@ tasks.register('printVersion') {
         println project.version
     }
 }
+
+protobuf {
+    protoc {
+        artifact = 'com.google.protobuf:protoc:3.22.0' // Версия protoc
+    }
+
+    generateProtoTasks {
+        all().each { task ->
+            task.generateDescriptorSet = true
+            task.descriptorSetOptions.includeSourceInfo = true
+            task.descriptorSetOptions.includeImports = true
+            task.descriptorSetOptions.path = "${buildDir}/generated/currency.dsc"
+        }
+    }
+}
