@@ -42,3 +42,7 @@ out/
 
 ### gRPC generated files ###
 /niffler-grpc-common/src/generated/**
+
+debug.http
+wiremock/rest/__files
+wiremock/rest/mappings

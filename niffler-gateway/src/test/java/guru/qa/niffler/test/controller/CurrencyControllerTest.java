@@ -92,4 +92,15 @@ class CurrencyControllerTest {
                 .andExpect(jsonPath("$[3].currency").value("KZT"))
                 .andExpect(jsonPath("$[3].currencyRate").value(0.2));
     }
+
+//     WireMock standalone test (in docker)
+//    @Test
+//    void categoriesListShouldBeReturnedForCurrentUser() throws Exception {
+//        final String fixtureUser = "bee";
+//
+//        mockMvc.perform(get("/api/currencies/all")
+//                        .with(jwt().jwt(c -> c.claim("sub", fixtureUser))))
+//                .andExpect(status().isOk())
+//                .andDo(print());
+//    }
 }

@@ -99,6 +99,17 @@ services:
     networks:
       - niffler-network
 
+#  spendmock.niffler.dc:
+#    container_name: spendmock.niffler.dc
+#    image: wiremock/wiremock:3.10.0
+#    ports:
+#      - 8094:8094
+#    entrypoint: [ "/docker-entrypoint.sh", "--port", "8094", "--global-response-templating", "--verbose", "--record-mappings", "--proxy-all=http://spend.niffler.dc:8093" ]
+#    volumes:
+#      - ./wiremock/rest:/home/wiremock
+#    networks:
+#      - niffler-network
+
   spend.niffler.dc:
     container_name: spend.niffler.dc
     image: ${PREFIX}/niffler-spend-docker:latest
