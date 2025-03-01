@@ -1,4 +1,4 @@
-package guru.qa.niffler.test.controller;
+package guru.qa.niffler.controller;
 
 import guru.qa.niffler.jupiter.annotation.WireMockStub;
 import guru.qa.niffler.jupiter.extension.WireMockStubExtension;
