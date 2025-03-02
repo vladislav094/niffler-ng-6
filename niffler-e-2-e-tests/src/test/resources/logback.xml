@@ -13,6 +13,10 @@
     <logger name="com.codeborne.selenide.drivercommands.CreateDriverCommand" level="error"/>
     <logger name="com.codeborne.selenide.drivercommands.CloseDriverCommand" level="error"/>
     <logger name="com.codeborne.selenide.drivercommands.DisposablesRegistry" level="error"/>
+    <logger name="org.osjava.sj.SimpleJndi" level="OFF" />
+
+    <!-- Отключаем логи от JULLogger Atomikos -->
+    <logger name="com.atomikos.logging" level="OFF" />
 
     <root level="info">
         <appender-ref ref="STDOUT"/>
