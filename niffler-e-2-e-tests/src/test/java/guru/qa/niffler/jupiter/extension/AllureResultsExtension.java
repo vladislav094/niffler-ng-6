@@ -24,8 +24,10 @@ public class AllureResultsExtension implements SuiteExtension {
 
     @Override
     public void afterSuite() {
-        sendResult(encodeResults());
-        generateReport();
+        if ("docker".equals(System.getProperty("test.env"))) {
+            sendResult(encodeResults());
+            generateReport();
+        }
     }
 
     @SneakyThrows
